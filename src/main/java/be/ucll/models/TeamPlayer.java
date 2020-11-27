@@ -34,7 +34,6 @@ public class TeamPlayer {
     }
 
     public void setId(Long id) {
-        throw new NotYetImplementedException();
         this.id = id;
     }
 
@@ -43,8 +42,6 @@ public class TeamPlayer {
     }
 
     public void setTeamId(Long teamId) {
-
-        throw new NotYetImplementedException();
         this.teamId = teamId;
     }
 
@@ -53,7 +50,6 @@ public class TeamPlayer {
     }
 
     public void setPlayerID(Long playerID) {
-        throw new NotYetImplementedException();
         this.playerID = playerID;
     }
 
@@ -62,7 +58,6 @@ public class TeamPlayer {
     }
 
     public void setSelected(Boolean selected) {
-        throw new NotYetImplementedException();
         isSelected = selected;
     }
 

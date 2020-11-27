@@ -4,6 +4,7 @@ import org.hibernate.cfg.NotYetImplementedException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 //TODO: implement setters for organisation
@@ -17,7 +18,7 @@ public class Organisation {
     @Column(name = "name")
     private String name;
     @Column(name ="teams")
-    private List<Team> teams = new ArrayList<>();
+    private List<Team> teams = new ArrayList<Team>();
     @Column(name ="provideID")
     private Long provideID;
     @Column(name ="toernamentID")
@@ -30,23 +31,19 @@ public class Organisation {
     private Organisation(OrganisationBuilder organisationBuilder) {
             setId(organisationBuilder.id);
             setName(organisationBuilder.name);
-            setTeams(organisationBuilder.teams);
+            this.teams.addAll(organisationBuilder.teams);
             setProvideID(organisationBuilder.provideID);
             setTournamentID(organisationBuilder.tournamentID);
     }
 
-
-
     public void addTeam(Team team){
-        if (team == null){
+        if (team != null){
             teams.add(team);
         }
         else {
             throw new IllegalArgumentException("Can not add empty team!");
         }
     }
-
-
 
     public Long getId() {
         return id;
@@ -66,10 +63,6 @@ public class Organisation {
 
     public List<Team> getTeams() {
         return teams;
-    }
-
-    public void setTeams(List<Team> teams) {
-        this.teams = teams;
     }
 
     public Long getProvideID() {
@@ -116,7 +109,7 @@ public class Organisation {
         public OrganisationBuilder(Organisation copy){
             this.id = copy.id;
             this.name = copy.name;
-            this.teams = copy.teams;
+            this.teams.addAll(copy.getTeams());
             this.provideID = copy.provideID;
             this.tournamentID= copy.tournamentID;
         }
