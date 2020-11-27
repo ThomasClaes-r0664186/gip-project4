@@ -78,10 +78,6 @@ public class TeamPlayer {
             this.isSelected = copy.isSelected();
         }
 
-        public static Builder teamPlayer() {
-            return new Builder();
-        }
-
         public Builder id(Long id) {
             this.id = id;
             return this;
