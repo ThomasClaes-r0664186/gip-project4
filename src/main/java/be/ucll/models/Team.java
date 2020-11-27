@@ -45,9 +45,6 @@ public class Team {
         return matches;
     }
 
-    public void setMatches(List<Match> matches) {
-        this.matches = matches;
-    }
 
     public Match getMatch(Long matchid) {
         for (Match match : matches) {
