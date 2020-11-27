@@ -1,11 +1,22 @@
 package be.ucll.models;
 
+import org.springframework.data.annotation.Id;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "Player")
 public class Player {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+    @Column(name = "match")
     private final List<Match>matches;
+    @Column(name = "accountId")
     private String accountId;
+    @Column(name = "name")
     private String name;
 
 
