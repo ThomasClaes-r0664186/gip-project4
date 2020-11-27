@@ -2,6 +2,8 @@ package be.ucll.models;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
+
 //TODO: implement setter for Team
 @Entity
 @Table(name = "team", schema = "liquibase")
@@ -14,18 +16,18 @@ public class Team {
     private String name;
 
     @Column(name = "players")
-    private final List<Player> players = new ArrayList<>();
+    private final List<Player> players = new ArrayList<Player>();
 
     @Column(name = "matches")
-    private final List<Match> matches = new ArrayList<>();
+    private final List<Match> matches = new ArrayList<Match>();
 
     public Team() {
     }
     private Team(TeamBuilder builder) {
         setId(builder.id);
         setName(builder.name);
-        setPlayers(builder.players);
-        setMatches(builder.matches);
+        this.players.addAll(builder.players);
+        this.matches.addAll(builder.matches);
     }
 
 
@@ -41,12 +43,6 @@ public class Team {
         return players;
     }
 
-    /**
-    public void setPlayers(List<Player> players) {
-        this.players = players;
-    }
-    **/
-
     public List<Match> getMatches() {
         return matches;
     }
@@ -56,37 +52,32 @@ public class Team {
         return name;
     }
 
-    /**
     public void setName(String name) {
         this.name = name;
     }
-    **/
 
     public Match getMatch(Long matchid) {
         for (Match match : matches) {
-            if (match.getId().equals(id) {
-                //return hier de juiste id
-            }
-            return match;
-        }
-
-
-        public void addPlayer(Player player){
-            if (player == null) {
-                players.add(player);
-            } else {
-                throw new IllegalArgumentException("player can not be null");
+            if (matchid != null && match.getId().equals(id)) {
+                return match;
             }
         }
-        public void removePlayer (Long playerid){
-            if (playerid == null) {
-                throw new IllegalArgumentException("playerid can not be null");
-            } else {
-                players.removeIf(player -> player.getId().equals(id));
-            }
+        return null;
+    }
+
+    public void addPlayer( Player player){
+        if (player == null) {
+            players.add(player);
+        } else {
+            throw new IllegalArgumentException("player can not be null");
         }
-
-
+    }
+    public void removePlayer (Long playerid){
+        if (playerid == null) {
+            throw new IllegalArgumentException("playerid can not be null");
+        } else {
+            players.removeIf(player -> player.getId().equals(id));
+        }
     }
 
 
@@ -101,7 +92,7 @@ public class Team {
         public TeamBuilder(Team copy) {
             this.id = copy.getId();
             this.name = copy.getName();
-            this.players = copy.getPlayers();
+            this.players.addAll(copy.getPlayers());
             this.matches= copy.getMatches();
 
         }
@@ -118,12 +109,12 @@ public class Team {
             return this;
         }
 
-        public TeamBuilder withPlayers(List<Player> players) {
+        public TeamBuilder players(List<Player> players) {
             this.players = players;
             return this;
         }
 
-        public TeamBuilder withMatches(List<Match> matches) {
+        public TeamBuilder matches(List<Match> matches) {
             this.matches = matches;
             return this;
         }

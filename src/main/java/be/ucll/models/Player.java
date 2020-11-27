@@ -3,6 +3,8 @@ package be.ucll.models;
 import org.springframework.data.annotation.Id;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Player", schema= "liquibase")
@@ -15,7 +17,7 @@ public class Player {
     @Column(name = "id")
     private Long id;
     @Column(name = "match")
-    private final List<Match>matches;
+    private final List<Match>matches = new ArrayList<Match>();
     @Column(name = "accountId")
     private String accountId;
     @Column(name = "name")
@@ -25,6 +27,7 @@ public class Player {
     private Player(PlayerBuilder playerBuilder){
         setId(playerBuilder.id);
         setAccountId(playerBuilder.accountId);
+        this.matches.addAll(playerBuilder.matches);
         setName(playerBuilder.name);
     }
 
@@ -78,7 +81,7 @@ public class Player {
             this.id = copy.id;
             this.accountId = copy.accountId;
             this.name = copy.name;
-            this.matches = copy.matches;
+            this.matches.addAll(copy.getMatches());
         }
 
         public PlayerBuilder id(Long id) {
