@@ -2,13 +2,16 @@ package be.ucll.models;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-
+//TODO: implement setter for Team
 @Entity
 @Table(name = "team", schema = "liquibase")
 public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "players")
     private List<Player> players = new ArrayList<>();
@@ -20,6 +23,7 @@ public class Team {
     }
     private Team(TeamBuilder builder) {
         setId(builder.id);
+        setName(builder.name);
         setPlayers(builder.players);
         setMatches(builder.matches);
     }
@@ -49,6 +53,14 @@ public class Team {
         this.matches = matches;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Match getMatch(Long matchid) {
         for (Match match : matches) {
             if (match.getId().equals(id) {
@@ -57,13 +69,8 @@ public class Team {
             return match;
         }
 
-        public String getName () {
-            return name;
-        }
-        public String setName () {
-            this.name = name;
-        }
-        public void addPlayer (Player player){
+
+        public void addPlayer(Player player){
             if (player == null) {
                 players.add(player);
             } else {
@@ -84,6 +91,7 @@ public class Team {
 
     public static final class TeamBuilder {
         private Long id;
+        private String name;
         private List<Player> players = new ArrayList<>();
         private List<Match> matches = new ArrayList<>();
 
@@ -91,6 +99,7 @@ public class Team {
         }
         public TeamBuilder(Team copy) {
             this.id = copy.getId();
+            this.name = copy.getName();
             this.players = copy.getPlayers();
             this.matches= copy.getMatches();
 
@@ -101,6 +110,10 @@ public class Team {
 
         public TeamBuilder withId(Long id) {
             this.id = id;
+            return this;
+        }
+        public TeamBuilder name(String val) {
+            name = val;
             return this;
         }
 
