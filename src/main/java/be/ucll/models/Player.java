@@ -5,7 +5,7 @@ import org.springframework.data.annotation.Id;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Player")
+@Table(name = "Player", schema= "liquibase")
 
 ///TODO setters not implemented in Player
 public class Player {
