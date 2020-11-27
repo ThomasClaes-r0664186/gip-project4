@@ -1,6 +1,6 @@
 package be.ucll.models;
 
-
+///TODO setters not implemented in Player
 public class Player {
 
     private Long id;
