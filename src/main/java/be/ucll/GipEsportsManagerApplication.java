@@ -9,5 +9,4 @@ public class GipEsportsManagerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(GipEsportsManagerApplication.class, args);
 	}
-
 }
