@@ -9,5 +9,4 @@ class GipEsportsManagerApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }
