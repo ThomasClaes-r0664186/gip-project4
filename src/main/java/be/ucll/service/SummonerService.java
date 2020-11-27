@@ -2,6 +2,7 @@ package be.ucll.service;
 
 import be.ucll.constants.Constants;
 
+import be.ucll.service.models.Summoner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;

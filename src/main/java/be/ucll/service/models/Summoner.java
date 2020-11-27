@@ -1,4 +1,4 @@
-package be.ucll.service.model;
+package be.ucll.service.models;
 
 public class Summoner {
 
