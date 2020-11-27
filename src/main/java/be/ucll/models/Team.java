@@ -14,10 +14,10 @@ public class Team {
     private String name;
 
     @Column(name = "players")
-    private List<Player> players = new ArrayList<>();
+    private final List<Player> players = new ArrayList<>();
 
     @Column(name = "matches")
-    private List<Match> matches = new ArrayList<>();
+    private final List<Match> matches = new ArrayList<>();
 
     public Team() {
     }
@@ -41,9 +41,11 @@ public class Team {
         return players;
     }
 
+    /**
     public void setPlayers(List<Player> players) {
         this.players = players;
     }
+    **/
 
     public List<Match> getMatches() {
         return matches;
@@ -54,9 +56,11 @@ public class Team {
         return name;
     }
 
+    /**
     public void setName(String name) {
         this.name = name;
     }
+    **/
 
     public Match getMatch(Long matchid) {
         for (Match match : matches) {
