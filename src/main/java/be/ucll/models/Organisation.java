@@ -13,13 +13,13 @@ public class Organisation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
+    @Column(name = "name")
     private String name;
-    @Column
+    @Column(name ="teams")
     private List<Team> teams = new ArrayList<>();
-    @Column
+    @Column(name ="provideID")
     private Long provideID;
-    @Column
+    @Column(name ="toernamentID")
     private Long tournamentID;
 
 
