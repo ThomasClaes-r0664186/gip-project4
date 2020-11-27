@@ -81,22 +81,22 @@ public class Player {
             this.matches = copy.matches;
         }
 
-        public PlayerBuilder withId(Long id) {
+        public PlayerBuilder id(Long id) {
             this.id = id;
             return this;
         }
 
-        public PlayerBuilder withMatches(List<Match> matches) {
+        public PlayerBuilder matches(List<Match> matches) {
             this.matches = matches;
             return this;
         }
 
-        public PlayerBuilder withAccountId(String accountId) {
+        public PlayerBuilder id(String accountId) {
             this.accountId = accountId;
             return this;
         }
 
-        public PlayerBuilder withName(String name) {
+        public PlayerBuilder name(String name) {
             this.name = name;
             return this;
         }
