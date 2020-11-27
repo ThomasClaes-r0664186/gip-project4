@@ -49,9 +49,6 @@ public class Team {
         return matches;
     }
 
-    public void setMatches(List<Match> matches) {
-        this.matches = matches;
-    }
 
     public String getName() {
         return name;
