@@ -22,6 +22,13 @@ public class TeamPlayer {
     @Column(name="isSelected")
     private Boolean isSelected;
 
+    public TeamPlayer(Builder builder){
+        setId(builder.id);
+        setTeamId(builder.teamId);
+        setPlayerID(builder.playerID);
+        setSelected(builder.isSelected);
+    }
+
     public Long getId() {
         return id;
     }
@@ -65,7 +72,10 @@ public class TeamPlayer {
         private Long playerID;
         private Boolean isSelected;
 
-        private Builder() {
+        private Builder(TeamPlayer copy) {
+            this.id = copy.getId();
+            this.teamId = copy.getTeamId();
+            this.isSelected = copy.isSelected();
         }
 
         public static Builder teamPlayer() {
@@ -93,12 +103,7 @@ public class TeamPlayer {
         }
 
         public TeamPlayer build() {
-            TeamPlayer teamPlayer = new TeamPlayer();
-            teamPlayer.setId(id);
-            teamPlayer.setTeamId(teamId);
-            teamPlayer.setPlayerID(playerID);
-            teamPlayer.isSelected = this.isSelected;
-            return teamPlayer;
+            return new TeamPlayer(this);
         }
     }
 
