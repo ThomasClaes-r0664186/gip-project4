@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 //TODO: implement setters for organisation
+@Entity
 @Table(name = "organisation", schema = "liquibase")
 public class Organisation {
 
