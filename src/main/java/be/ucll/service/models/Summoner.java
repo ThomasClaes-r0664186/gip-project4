@@ -1,5 +1,6 @@
 package be.ucll.service.models;
 
+//TODO summoner setters not yet implemented
 public class Summoner {
 
     private String id;

@@ -6,6 +6,8 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "Player")
+
+///TODO setters not implemented in Player
 public class Player {
 
     @Id
@@ -61,7 +63,7 @@ public class Player {
 
     public static final class PlayerBuilder {
         private Long id;
-        private List<Match>matches;
+        private List<Match> matches;
         private String accountId;
         private String name;
 
