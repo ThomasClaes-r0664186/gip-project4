@@ -15,18 +15,18 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("player")
-public class SpelerResource {
+public class PlayerResource {
 
    private SummonerService summonerService;
 
    @Autowired
-    public SpelerResource(SummonerService summonerService) {
+    public PlayerResource(SummonerService summonerService) {
         this.summonerService = summonerService;
     }
 
     @ApiOperation("De Summoner/Speler van league of legends creëren) ")
     @PostMapping
-    public Optional<Player> createSpeler(@ApiParam(value = "De gebruikersnaam van de league of legends speler", example = "7Stijn7", required = true) @RequestBody Player player){
+    public Optional<Player> createPlayer(@ApiParam(value = "De gebruikersnaam van de league of legends speler", example = "7Stijn7", required = true) @RequestBody Player player){
        if(summonerService.getSummoner(player.getName()).isPresent()){
          Summoner summoner = summonerService.getSummoner(player.getName()).get();
          return Optional.of(new Player(summoner.getName()));
