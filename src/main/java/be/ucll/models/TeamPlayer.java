@@ -107,4 +107,13 @@ public class TeamPlayer {
         }
     }
 
+    @Override
+    public String toString() {
+        return "TeamPlayer{" +
+                "id=" + id +
+                ", teamId=" + teamId +
+                ", playerID=" + playerID +
+                ", isSelected=" + isSelected +
+                '}';
+    }
 }
