@@ -76,6 +76,7 @@ public class TeamPlayer {
             this.id = copy.getId();
             this.teamId = copy.getTeamId();
             this.isSelected = copy.isSelected();
+            this.playerID = copy.getPlayerID();
         }
 
         public Builder id(Long id) {
