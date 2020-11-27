@@ -4,7 +4,7 @@ package be.ucll.models;
 public class Player {
 
     private Long id;
-    private final List<Match>matches;
+    private List<Match> matches;
     private String accountId;
     private String name;
 
@@ -50,7 +50,7 @@ public class Player {
 
     public static final class PlayerBuilder {
         private Long id;
-        private List<Match>matches;
+        private List<Match> matches;
         private String accountId;
         private String name;
 
