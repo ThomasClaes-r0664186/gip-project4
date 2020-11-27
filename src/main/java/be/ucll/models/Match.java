@@ -23,8 +23,8 @@ public class Match {
     @Column(name = "winnerId")
     private Long winnerId;
 
-    @Column(name = "matchId")
-    private Long matchId;
+    @Column(name = "matchID")
+    private Long matchID;
 
     @Column(name = "tournamentCode")
     private String tournamentCode;
@@ -39,7 +39,7 @@ public class Match {
         setTeam1Id(builder.team1Id);
         setTeam2Id(builder.team2Id);
         setWinnerId(builder.winnerId);
-        setMatchId(builder.matchId);
+        setMatchId(builder.matchID);
         setTournamentCode(builder.tournamentCode);
     }
 
@@ -84,11 +84,11 @@ public class Match {
     }
 
     public Long getMatchId() {
-        return matchId;
+        return matchID;
     }
 
-    public void setMatchId(Long matchId) {
-        this.matchId = matchId;
+    public void setMatchId(Long matchID) {
+        this.matchID = matchID;
     }
 
     public String getTournamentCode() {
@@ -105,7 +105,7 @@ public class Match {
         private Long team1Id;
         private Long team2Id;
         private Long winnerId;
-        private Long matchId;
+        private Long matchID;
         private String tournamentCode;
 
         private MatchBuilder() {
@@ -117,7 +117,7 @@ public class Match {
             this.team1Id = copy.team1Id;
             this.winnerId = copy.winnerId;
             this.team2Id = copy.team2Id;
-            this.matchId = copy.matchId;
+            this.matchID = copy.matchID;
             this.tournamentCode = copy.tournamentCode;
         }
 
@@ -146,8 +146,8 @@ public class Match {
             return this;
         }
 
-        public MatchBuilder matchId(Long matchId) {
-            this.matchId = matchId;
+        public MatchBuilder matchID(Long matchID) {
+            this.matchID = matchID;
             return this;
         }
 
@@ -169,7 +169,7 @@ public class Match {
                     ", team1Id='" + team1Id.toString() + '\'' +
                     ", team2Id='" + team2Id.toString() + '\'' +
                     ", winnerId='" + winnerId.toString() + '\'' +
-                    ", matchId='" + matchId.toString() + '\'' +
+                    ", matchID='" + matchID.toString() + '\'' +
                     ", tournamentCode='" + tournamentCode + '\'' +
                     '}';
     }
