@@ -14,18 +14,18 @@ public class TeamPlayer {
     private Long id;
 
     @Column(name="teamId")
-    private Long teamId;
+    private Team team;
 
     @Column(name="playerID")
-    private Long playerID;
+    private Player player;
 
     @Column(name="isSelected")
     private Boolean isSelected;
 
     public TeamPlayer(Builder builder){
         setId(builder.id);
-        setTeamId(builder.teamId);
-        setPlayerID(builder.playerID);
+        setTeam(builder.team);
+        setPlayer(builder.player);
         setSelected(builder.isSelected);
     }
 
@@ -37,20 +37,20 @@ public class TeamPlayer {
         this.id = id;
     }
 
-    public Long getTeamId() {
-        return teamId;
+    public Team getTeam() {
+        return team;
     }
 
-    public void setTeamId(Long teamId) {
-        this.teamId = teamId;
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
-    public Long getPlayerID() {
-        return playerID;
+    public Player getPlayer() {
+        return player;
     }
 
-    public void setPlayerID(Long playerID) {
-        this.playerID = playerID;
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public Boolean isSelected() {
@@ -63,15 +63,15 @@ public class TeamPlayer {
 
     public static final class Builder {
         private Long id;
-        private Long teamId;
-        private Long playerID;
+        private Team team;
+        private Player player;
         private Boolean isSelected;
 
         private Builder(TeamPlayer copy) {
             this.id = copy.getId();
-            this.teamId = copy.getTeamId();
+            this.team = copy.getTeam();
             this.isSelected = copy.isSelected();
-            this.playerID = copy.getPlayerID();
+            this.player = copy.getPlayer();
         }
 
         public Builder id(Long id) {
@@ -79,13 +79,13 @@ public class TeamPlayer {
             return this;
         }
 
-        public Builder teamId(Long teamId) {
-            this.teamId = teamId;
+        public Builder team(Team team) {
+            this.team = team;
             return this;
         }
 
-        public Builder playerID(Long playerID) {
-            this.playerID = playerID;
+        public Builder player(Player player) {
+            this.player = player;
             return this;
         }
 
@@ -103,8 +103,8 @@ public class TeamPlayer {
     public String toString() {
         return "TeamPlayer{" +
                 "id=" + id +
-                ", teamId=" + teamId +
-                ", playerID=" + playerID +
+                ", teamId=" + team +
+                ", playerID=" + player +
                 ", isSelected=" + isSelected +
                 '}';
     }
