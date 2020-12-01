@@ -17,11 +17,9 @@ public class Organisation {
     private Long id;
     @Column(name = "name")
     private String name;
-    @Column(name ="teams")
-    private List<Team> teams = new ArrayList<Team>();
-    @Column(name ="provideID")
-    private Long provideID;
-    @Column(name ="toernamentID")
+    @Column(name ="providerID")
+    private Long providerID;
+    @Column(name ="tournamentID")
     private Long tournamentID;
 
 
@@ -31,18 +29,8 @@ public class Organisation {
     private Organisation(OrganisationBuilder organisationBuilder) {
             setId(organisationBuilder.id);
             setName(organisationBuilder.name);
-            this.teams.addAll(organisationBuilder.teams);
-            setProvideID(organisationBuilder.provideID);
+            setProvideID(organisationBuilder.providerID);
             setTournamentID(organisationBuilder.tournamentID);
-    }
-
-    public void addTeam(Team team){
-        if (team != null){
-            teams.add(team);
-        }
-        else {
-            throw new IllegalArgumentException("Can not add empty team!");
-        }
     }
 
     public Long getId() {
@@ -61,16 +49,12 @@ public class Organisation {
         this.name = name;
     }
 
-    public List<Team> getTeams() {
-        return teams;
-    }
-
     public Long getProvideID() {
-        return provideID;
+        return providerID;
     }
 
-    public void setProvideID(Long provideID) {
-        this.provideID = provideID;
+    public void setProvideID(Long providerID) {
+        this.providerID = providerID;
     }
 
     public Long getTournamentID() {
@@ -86,8 +70,7 @@ public class Organisation {
         return "Organisation{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", teams=" + teams +
-                ", provideID=" + provideID +
+                ", provideID=" + providerID +
                 ", tournamentID=" + tournamentID +
                 '}';
     }
@@ -95,8 +78,7 @@ public class Organisation {
     public static final class OrganisationBuilder {
         private Long id;
         private String name;
-        private List<Team> teams;
-        private Long provideID;
+        private Long providerID;
         private Long tournamentID;
 
         private OrganisationBuilder() {
@@ -109,8 +91,7 @@ public class Organisation {
         public OrganisationBuilder(Organisation copy){
             this.id = copy.id;
             this.name = copy.name;
-            this.teams.addAll(copy.getTeams());
-            this.provideID = copy.provideID;
+            this.providerID = copy.providerID;
             this.tournamentID= copy.tournamentID;
         }
 
@@ -124,13 +105,8 @@ public class Organisation {
             return this;
         }
 
-        public OrganisationBuilder withTeams(List<Team> teams) {
-            this.teams = teams;
-            return this;
-        }
-
-        public OrganisationBuilder withProvideID(Long provideID) {
-            this.provideID = provideID;
+        public OrganisationBuilder withProviderID(Long providerID) {
+            this.providerID = providerID;
             return this;
         }
 

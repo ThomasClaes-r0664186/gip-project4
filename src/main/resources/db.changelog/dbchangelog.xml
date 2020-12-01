@@ -3,4 +3,9 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <include file="db.changelog/migrations/1-CreateSchema.xml"/>
+    <include file="db.changelog/migrations/2-create-organisation.xml"/>
+    <include file="db.changelog/migrations/3-create-team.xml"/>
+    <include file="db.changelog/migrations/4-create-player.xml"/>
+    <include file="db.changelog/migrations/5-create-match.xml"/>
+    <include file="db.changelog/migrations/6-create-teamPlayer.xml"/>
 </databaseChangeLog>

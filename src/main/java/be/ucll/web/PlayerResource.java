@@ -27,9 +27,9 @@ public class PlayerResource {
     @ApiOperation("De Summoner/Speler van league of legends creëren) ")
     @PostMapping
     public Optional<Player> createPlayer(@ApiParam(value = "De gebruikersnaam van de league of legends speler", example = "7Stijn7", required = true) @RequestBody Player player){
-       if(summonerService.getSummoner(player.getName()).isPresent()){
-         Summoner summoner = summonerService.getSummoner(player.getName()).get();
-         return Optional.of(new Player(summoner.getName()));
+       if(summonerService.getSummoner(player.getLeagueName()).isPresent()){
+         Summoner summoner = summonerService.getSummoner(player.getLeagueName()).get();
+         return Optional.of(new Player.PlayerBuilder().leagueName(summoner.getName()).build());
        }
        return Optional.empty();
     }

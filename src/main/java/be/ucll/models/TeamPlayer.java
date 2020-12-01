@@ -6,17 +6,19 @@ import javax.persistence.*;
 
 //TODO: implement setter for TeamPLayer
 @Entity
-@Table(name= "TeamPlayer", schema= "liquibase" )
+@Table(name= "teamPlayer", schema= "liquibase" )
 public class TeamPlayer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="teamId")
+    @ManyToOne
+    @JoinColumn(name="team_Id")
     private Team team;
 
-    @Column(name="playerID")
+    @ManyToOne
+    @JoinColumn(name="player_Id")
     private Player player;
 
     @Column(name="isSelected")
@@ -28,6 +30,8 @@ public class TeamPlayer {
         setPlayer(builder.player);
         setSelected(builder.isSelected);
     }
+
+    public TeamPlayer (){}
 
     public Long getId() {
         return id;

@@ -40,7 +40,6 @@
 			<version>3.0.0</version>
 		</dependency>
 
-		<!-- insert postgresql dependency -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>

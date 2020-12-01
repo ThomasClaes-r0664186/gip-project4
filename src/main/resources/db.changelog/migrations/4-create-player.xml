@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="4" author="Thomas Claes">
+        <createTable tableName="player" schemaName="liquibase">
+            <column name="id" type="SERIAL" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+
+            <column name="accountId" type="varchar(200)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="summonerID" type="varchar(200)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="puuID" type="varchar(200)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="leagueName" type="varchar(40)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="firstName" type="varchar(40)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lastName" type="varchar(40)">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

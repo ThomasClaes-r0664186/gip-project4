@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="3" author="Thomas Claes">
+        <createTable tableName="team" schemaName="liquibase">
+            <column name="id" type="SERIAL" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="organisation_id" type="bigint"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_organisation_team"
+                                 baseTableName="team"
+                                 baseTableSchemaName="liquibase"
+                                 baseColumnNames="organisation_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="organisation"
+                                 referencedTableSchemaName="liquibase"/>
+    </changeSet>
+
+</databaseChangeLog>
