@@ -29,8 +29,13 @@ public class SummonerService {
      * @return De League of legends speler
      */
     public Optional<Summoner> getSummoner(String summonerName){
-        String name = URLEncoder.encode(summonerName, StandardCharsets.UTF_8);
-        return Optional.ofNullable(RESTTEMPLATE.getForObject(URL_SEARCH_BY_NAME + name + "?api_key=" + Constants.API_KEY, Summoner.class));
+        try {
+            String name = URLEncoder.encode(summonerName, StandardCharsets.UTF_8);
+            return Optional.ofNullable(RESTTEMPLATE.getForObject(URL_SEARCH_BY_NAME + name + "?api_key=" + Constants.API_KEY, Summoner.class));
+        }catch (Exception e){
+            System.out.println(e.toString());
+            return Optional.empty();
+        }
     }
 
 }
