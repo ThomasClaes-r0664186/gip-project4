@@ -1,38 +1,36 @@
 package be.ucll.models;
 
-import org.springframework.data.annotation.Id;
-
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
+//TODO setters not implemented in Player
 @Entity
-@Table(name = "Player", schema= "liquibase")
-
-///TODO setters not implemented in Player
+@Table(name = "player", schema= "liquibase")
 public class Player {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name = "match")
-    private final List<Match>matches = new ArrayList<Match>();
     @Column(name = "accountId")
     private String accountId;
-    @Column(name = "name")
-    private String name;
+    @Column(name = "leagueName")
+    private String leagueName;
+    @Column(name = "firstName")
+    private String firstName;
+    @Column(name = "lastName")
+    private String lastName;
 
 
     private Player(PlayerBuilder playerBuilder){
         setId(playerBuilder.id);
         setAccountId(playerBuilder.accountId);
-        this.matches.addAll(playerBuilder.matches);
-        setName(playerBuilder.name);
+        setLeagueName(playerBuilder.leagueName);
+        setFirstName(playerBuilder.firstName);
+        setLastName(playerBuilder.lastName);
     }
 
-    public Player(String name){
-        this.name = name;
+    public Player(){
+
     }
 
     public Long getId() {
@@ -43,9 +41,6 @@ public class Player {
         this.id = id;
     }
 
-    public List<Match> getMatches() {
-        return matches;
-    }
 
     public String getAccountId() {
         return accountId;
@@ -55,22 +50,38 @@ public class Player {
         this.accountId = accountId;
     }
 
-    public String getName() {
-        return name;
+    public String getLeagueName() {
+        return leagueName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLeagueName(String name) {
+        this.leagueName = name;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
     public static final class PlayerBuilder {
         private Long id;
-        private List<Match> matches;
         private String accountId;
-        private String name;
+        private String leagueName;
+        private String firstName;
+        private String lastName;
 
-        private PlayerBuilder() {
+        public PlayerBuilder() {
         }
 
         public static PlayerBuilder aPlayer() {
@@ -80,17 +91,13 @@ public class Player {
         public PlayerBuilder(Player copy){
             this.id = copy.id;
             this.accountId = copy.accountId;
-            this.name = copy.name;
-            this.matches.addAll(copy.getMatches());
+            this.leagueName = copy.leagueName;
+            this.firstName = copy.leagueName;
+            this.lastName = copy.lastName;
         }
 
         public PlayerBuilder id(Long id) {
             this.id = id;
-            return this;
-        }
-
-        public PlayerBuilder matches(List<Match> matches) {
-            this.matches = matches;
             return this;
         }
 
@@ -99,8 +106,18 @@ public class Player {
             return this;
         }
 
-        public PlayerBuilder name(String name) {
-            this.name = name;
+        public PlayerBuilder leagueName(String name) {
+            this.leagueName = name;
+            return this;
+        }
+
+        public PlayerBuilder firstName(String name) {
+            this.firstName = name;
+            return this;
+        }
+
+        public PlayerBuilder lastName(String name) {
+            this.lastName = name;
             return this;
         }
 

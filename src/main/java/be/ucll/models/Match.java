@@ -3,6 +3,7 @@ package be.ucll.models;
 import javax.persistence.*;
 import java.util.Date;
 
+//Todo setters for match
 @Entity
 @Table(name ="match", schema = "liquibase")
 public class Match {
@@ -14,10 +15,12 @@ public class Match {
     @Column(name = "date")
     private Date date;
 
-    @Column(name = "team1")
+    @ManyToOne
+    @JoinColumn(name = "team1_Id")
     private Team team1;
 
-    @Column(name = "team2")
+    @ManyToOne
+    @JoinColumn(name = "team2_Id")
     private Team team2;
 
     @Column(name = "winnerId")
@@ -28,8 +31,6 @@ public class Match {
 
     @Column(name = "tournamentCode")
     private String tournamentCode;
-
-    //todo: implement setters for Match.
 
     public Match(){}
 
