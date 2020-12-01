@@ -5,4 +5,7 @@
     <include file="db.changelog/migrations/1-CreateSchema.xml"/>
     <include file="db.changelog/migrations/2-create-organisation.xml"/>
     <include file="db.changelog/migrations/3-create-team.xml"/>
+    <include file="db.changelog/migrations/4-create-player.xml"/>
+    <include file="db.changelog/migrations/5-create-match.xml"/>
+    <include file="db.changelog/migrations/6-create-teamPlayer.xml"/>
 </databaseChangeLog>

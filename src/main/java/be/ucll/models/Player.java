@@ -11,6 +11,10 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @Column(name = "summonerID")
+    private String summonerID;
+    @Column(name = "puuID")
+    private String puuID;
     @Column(name = "accountId")
     private String accountId;
     @Column(name = "leagueName")
@@ -27,6 +31,8 @@ public class Player {
         setLeagueName(playerBuilder.leagueName);
         setFirstName(playerBuilder.firstName);
         setLastName(playerBuilder.lastName);
+        setPuuID(playerBuilder.puuID);
+        setSummonerID(playerBuilder.summonerID);
     }
 
     public Player(){
@@ -41,6 +47,21 @@ public class Player {
         this.id = id;
     }
 
+    public String getSummonerID() {
+        return summonerID;
+    }
+
+    public void setSummonerID(String summonerID) {
+        this.summonerID = summonerID;
+    }
+
+    public String getPuuID() {
+        return puuID;
+    }
+
+    public void setPuuID(String puuID) {
+        this.puuID = puuID;
+    }
 
     public String getAccountId() {
         return accountId;
@@ -80,6 +101,8 @@ public class Player {
         private String leagueName;
         private String firstName;
         private String lastName;
+        private String summonerID;
+        private String puuID;
 
         public PlayerBuilder() {
         }
@@ -94,6 +117,8 @@ public class Player {
             this.leagueName = copy.leagueName;
             this.firstName = copy.leagueName;
             this.lastName = copy.lastName;
+            this.summonerID = copy.summonerID;
+            this.puuID = copy.puuID;
         }
 
         public PlayerBuilder id(Long id) {
@@ -101,7 +126,7 @@ public class Player {
             return this;
         }
 
-        public PlayerBuilder id(String accountId) {
+        public PlayerBuilder accountId(String accountId) {
             this.accountId = accountId;
             return this;
         }
@@ -118,6 +143,16 @@ public class Player {
 
         public PlayerBuilder lastName(String name) {
             this.lastName = name;
+            return this;
+        }
+
+        public PlayerBuilder summonerID(String summonerID) {
+            this.summonerID = summonerID;
+            return this;
+        }
+
+        public PlayerBuilder puuID(String puuID) {
+            this.puuID = puuID;
             return this;
         }
 
