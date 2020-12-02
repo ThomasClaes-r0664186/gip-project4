@@ -17,9 +17,9 @@ public class Organisation {
     private Long id;
     @Column(name = "name")
     private String name;
-    @Column(name ="providerID")
+    @Column(name ="provider_id")
     private Long providerID;
-    @Column(name ="tournamentID")
+    @Column(name ="tournament_id")
     private Long tournamentID;
 
 
