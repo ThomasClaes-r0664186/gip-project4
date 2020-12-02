@@ -32,13 +32,22 @@ public class PlayerResource {
 
     @ApiOperation("De Summoner/Speler van league of legends creëren) ")
     @PostMapping("/create")
+    // De functie wordt aangeroepen door middel van een postrequest. met als input: JSON-object Player: { "leagueName" : "7Stijn7" }
     public ResponseEntity<PlayerDTO> createPlayer(@RequestBody Player player) throws UsernameNotValid, UsernameAlreadyExists {
+        // Daarna wordt er aan de playerRepository gevraagd of deze speler al gevonden is (op basis van de username), en al in onze databank zit.
+        // Zoja, Gooit het een exception: dat de speler al bestaat in ons systeem.
         if (playerRepository.findPlayerByLeagueNameIgnoreCase(player.getLeagueName()).isPresent()) throw new UsernameAlreadyExists(player.getLeagueName());
+        //Indien de 'Player' toch nog niet gevonden werd. Wordt de 'summonerService' aangeroepen. Deze service gaat de league of legends api raadplegen.
+        // En returnt 'De Summoner' indien het een bestaande username bij league of legends is.
         if(summonerService.getSummoner(player.getLeagueName()).isPresent()){
             Summoner summoner = summonerService.getSummoner(player.getLeagueName()).get();
+            // daarna wordt deze 'summoner' omgezet in een 'Player' die dan kan opgeslagen worden in onze databank.
             Player newPlayer = playerRepository.save(new Player.PlayerBuilder().accountId(summoner.getAccountId()).leagueName(summoner.getName()).build());
+            // Nu returnen we status: 201 created. Omdat onze player succesvol is aangemaakt.
+            // Ook geven we als respons-body een PlayerDTO mee. TODO: Een aparte playerDTO is in de toekomst misschien niet meer nodig omdat alle velden van player kunnen gebruikt worden.
             return ResponseEntity.status(HttpStatus.CREATED).body(new PlayerDTO(newPlayer.getId(), newPlayer.getAccountId(), newPlayer.getLeagueName()));
         }
+        // Indien ook de summonerService geen geldige summoner terug krijgt als respons. gooien we een exception dat de spelersnaam ongeldig is.
         throw new UsernameNotValid(player.getLeagueName());
     }
 }

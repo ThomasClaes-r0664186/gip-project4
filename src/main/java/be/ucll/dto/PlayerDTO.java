@@ -4,6 +4,8 @@ package be.ucll.dto;
 
 //TODO add firstname and lastname to playerDTO
 
+// Deze DTO werd oorsponkelijk gebruikt omdat sommige velden overbodig waren. Dit moet nog bekeken worden of deze DTO nog nuttig is.
+
 public class PlayerDTO {
     private Long id;
     private String accountId;

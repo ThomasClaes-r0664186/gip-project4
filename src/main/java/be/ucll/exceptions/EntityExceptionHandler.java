@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 //Todo change HttpStatus -> have to be more specific
 
+// afhandelen van de custom exceptions
+// deze exceptions moeten nog speciefieker gemaakt worden. bv. status: 409 i.p.v. bad_request
 @ControllerAdvice
 public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
 
