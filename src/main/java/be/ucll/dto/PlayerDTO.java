@@ -6,6 +6,8 @@ package be.ucll.dto;
 
 // Deze DTO werd oorsponkelijk gebruikt omdat sommige velden overbodig waren. Dit moet nog bekeken worden of deze DTO nog nuttig is.
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Column;
 
 public class PlayerDTO {
@@ -14,7 +16,7 @@ public class PlayerDTO {
     private String firstName;
     private String lastName;
 
-    public PlayerDTO( String leagueName, String firstName, String lastName) {
+    public PlayerDTO(String leagueName, String firstName, String lastName) {
         this.leagueName = leagueName;
         this.firstName = firstName;
         this.lastName = lastName;

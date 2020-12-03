@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.servlet.http.HttpServletResponse;
@@ -17,12 +18,21 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(UsernameNotValid.class)
     public ResponseEntity usernameNotValid(HttpServletResponse response, UsernameNotValid usernameNotValid) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(usernameNotValid.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(usernameNotValid.getMessage());
     }
 
     @ExceptionHandler(UsernameAlreadyExists.class)
     public ResponseEntity usernameAlreadyExists(HttpServletResponse response, UsernameAlreadyExists usernameAlreadyExists) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(usernameAlreadyExists.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(usernameAlreadyExists.getMessage());
     }
 
+    @ExceptionHandler(HttpClientErrorException.class)
+    public ResponseEntity summonerNotFound(HttpClientErrorException exception){
+        return ResponseEntity.status(exception.getStatusCode()).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(UsernameNotFound.class)
+    public ResponseEntity usernameNotFound(UsernameNotFound exception){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    }
 }
