@@ -85,11 +85,11 @@ public class PlayerResource {
                 player.setSummonerID(summoner.getId());
                 player.setPuuID(summoner.getPuuid());
             }
-            //controlleren of de gebruiker een andere voornaam wilt
+            //controleren of de gebruiker een andere voornaam wilt
             if( !player.getFirstName().equals(playerDTO.getFirstName())){
                 player.setFirstName(playerDTO.getFirstName());
             }
-            //controlleren of de gebruiker een andere achternaam wilt
+            //controleren of de gebruiker een andere achternaam wilt
             if( !player.getLastName().equals(playerDTO.getLastName())){
                 player.setLastName(playerDTO.getLastName());
             }
