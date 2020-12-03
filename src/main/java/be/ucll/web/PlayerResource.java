@@ -85,6 +85,15 @@ public class PlayerResource {
         throw new UsernameNotFound(leagueName);
     }
 
+    @GetMapping
+    public ResponseEntity<PlayerDTO> getPlayer(@RequestParam("leagueName") String leagueName) throws UsernameNotFound {
+        if(playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).isPresent()) {
+           Player player = playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).get();
+            return ResponseEntity.status(HttpStatus.OK).body((new PlayerDTO(player.getLeagueName(), player.getFirstName(), player.getLastName())));
+        }
+        throw new UsernameNotFound(leagueName);
+    }
+
     @DeleteMapping
     public ResponseEntity deletePlayer(@RequestParam("leagueName") String leagueName) throws UsernameNotFound {
         if(playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).isPresent()) {
