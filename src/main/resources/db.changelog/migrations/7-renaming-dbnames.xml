@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="7" author="Thomas Claes">
+
+        <!-- dropping foreign key constraints because the names of the tables and columns will change which will
+                cause an error if there is a foreign key pointing to it-->
+
+        <dropForeignKeyConstraint baseTableName="match"
+                                  baseTableSchemaName="liquibase"
+                                  constraintName="fk_team1_match"/>
+
+        <dropForeignKeyConstraint baseTableName="match"
+                                  baseTableSchemaName="liquibase"
+                                  constraintName="fk_team2_match"/>
+
+        <dropForeignKeyConstraint baseTableName="teamPlayer"
+                                  baseTableSchemaName="liquibase"
+                                  constraintName="fk_team_teamPlayer"/>
+
+        <dropForeignKeyConstraint baseTableName="teamPlayer"
+                                  baseTableSchemaName="liquibase"
+                                  constraintName="fk_player_teamPlayer"/>
+
+        <!-- change db names here -->
+
+        <!-- table organisation -->
+        <renameColumn newColumnName="provider_id"
+                      oldColumnName="providerID"
+                      schemaName="liquibase"
+                      tableName="organisation"/>
+
+        <renameColumn newColumnName="tournament_id"
+                      oldColumnName="tournamentID"
+                      schemaName="liquibase"
+                      tableName="organisation"/>
+
+
+        <!-- table player -->
+        <renameColumn newColumnName="account_id"
+                      oldColumnName="accountId"
+                      schemaName="liquibase"
+                      tableName="player"/>
+
+        <renameColumn newColumnName="summoner_id"
+                      oldColumnName="summonerID"
+                      schemaName="liquibase"
+                      tableName="player"/>
+
+        <renameColumn newColumnName="puu_id"
+                      oldColumnName="puuID"
+                      schemaName="liquibase"
+                      tableName="player"/>
+
+        <renameColumn newColumnName="league_name"
+                      oldColumnName="leagueName"
+                      schemaName="liquibase"
+                      tableName="player"/>
+
+        <renameColumn newColumnName="first_name"
+                      oldColumnName="firstName"
+                      schemaName="liquibase"
+                      tableName="player"/>
+
+        <renameColumn newColumnName="last_name"
+                      oldColumnName="lastName"
+                      schemaName="liquibase"
+                      tableName="player"/>
+
+
+        <!-- table match -->
+        <renameColumn newColumnName="team1_id"
+                      oldColumnName="team1_Id"
+                      schemaName="liquibase"
+                      tableName="match"/>
+
+        <renameColumn newColumnName="team2_id"
+                      oldColumnName="team2_Id"
+                      schemaName="liquibase"
+                      tableName="match"/>
+
+        <renameColumn newColumnName="winner_id"
+                      oldColumnName="winnerId"
+                      schemaName="liquibase"
+                      tableName="match"/>
+
+        <renameColumn newColumnName="match_id"
+                      oldColumnName="matchID"
+                      schemaName="liquibase"
+                      tableName="match"/>
+
+        <renameColumn newColumnName="tournament_code"
+                      oldColumnName="tournamentCode"
+                      schemaName="liquibase"
+                      tableName="match"/>
+
+
+        <!-- table teamPlayer -->
+        <renameColumn newColumnName="team_id"
+                      oldColumnName="team_Id"
+                      schemaName="liquibase"
+                      tableName="teamPlayer"/>
+
+        <renameColumn newColumnName="player_id"
+                      oldColumnName="player_Id"
+                      schemaName="liquibase"
+                      tableName="teamPlayer"/>
+
+        <renameColumn newColumnName="is_selected"
+                      oldColumnName="isSelected"
+                      schemaName="liquibase"
+                      tableName="teamPlayer"/>
+
+
+        <!-- renaming teamPlayer table -->
+        <renameTable schemaName="liquibase" oldTableName="teamPlayer" newTableName="team_player"/>
+
+
+        <!-- reAdding the foreign key constraints, now the names have changed we can re-apply the constraints
+                with the new names -->
+
+        <addForeignKeyConstraint constraintName="fk_team1_match"
+                                 baseTableName="match"
+                                 baseTableSchemaName="liquibase"
+                                 baseColumnNames="team1_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="team"
+                                 referencedTableSchemaName="liquibase"/>
+
+        <addForeignKeyConstraint constraintName="fk_team2_match"
+                                 baseTableName="match"
+                                 baseTableSchemaName="liquibase"
+                                 baseColumnNames="team2_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="team"
+                                 referencedTableSchemaName="liquibase"/>
+
+        <addForeignKeyConstraint constraintName="fk_team_teamplayer"
+                                 baseTableName="team_player"
+                                 baseTableSchemaName="liquibase"
+                                 baseColumnNames="team_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="team"
+                                 referencedTableSchemaName="liquibase"/>
+
+        <addForeignKeyConstraint constraintName="fk_player_teamplayer"
+                                 baseTableName="team_player"
+                                 baseTableSchemaName="liquibase"
+                                 baseColumnNames="player_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="player"
+                                 referencedTableSchemaName="liquibase"/>
+    </changeSet>
+
+</databaseChangeLog>

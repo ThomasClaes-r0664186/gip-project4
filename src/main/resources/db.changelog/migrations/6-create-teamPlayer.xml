@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="6" author="Thomas Claes">
+
+        <createTable tableName="teamPlayer" schemaName="liquibase">
+
+            <column name="id" type="SERIAL" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+
+            <column name="team_Id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="player_Id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="isSelected" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_team_teamPlayer"
+                                 baseTableName="teamPlayer"
+                                 baseTableSchemaName="liquibase"
+                                 baseColumnNames="team_Id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="team"
+                                 referencedTableSchemaName="liquibase"/>
+
+        <addForeignKeyConstraint constraintName="fk_player_teamPlayer"
+                                 baseTableName="teamPlayer"
+                                 baseTableSchemaName="liquibase"
+                                 baseColumnNames="player_Id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="player"
+                                 referencedTableSchemaName="liquibase"/>
+    </changeSet>
+
+</databaseChangeLog>

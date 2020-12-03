@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="5" author="Thomas Claes">
+        <createTable tableName="match" schemaName="liquibase">
+            <column name="id" type="SERIAL" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+
+            <column name="date" type="date">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="team1_Id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="team2_Id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="winnerId" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="matchID" type="varchar(200)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="tournamentCode" type="varchar(200)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_team1_match"
+                                 baseTableName="match"
+                                 baseTableSchemaName="liquibase"
+                                 baseColumnNames="team1_Id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="team"
+                                 referencedTableSchemaName="liquibase"/>
+
+        <addForeignKeyConstraint constraintName="fk_team2_match"
+                                 baseTableName="match"
+                                 baseTableSchemaName="liquibase"
+                                 baseColumnNames="team2_Id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="team"
+                                 referencedTableSchemaName="liquibase"/>
+
+    </changeSet>
+
+</databaseChangeLog>
