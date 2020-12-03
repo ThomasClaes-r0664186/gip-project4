@@ -87,8 +87,10 @@ public class PlayerResource {
 
     @GetMapping
     public ResponseEntity<PlayerDTO> getPlayer(@RequestParam("leagueName") String leagueName) throws UsernameNotFound {
+        //controleren of speler in onze db bestaat
         if(playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).isPresent()) {
-           Player player = playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).get();
+            //speler opvragen en teruggeven
+            Player player = playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).get();
             return ResponseEntity.status(HttpStatus.OK).body((new PlayerDTO(player.getLeagueName(), player.getFirstName(), player.getLastName())));
         }
         throw new UsernameNotFound(leagueName);
