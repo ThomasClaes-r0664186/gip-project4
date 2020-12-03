@@ -6,43 +6,42 @@ package be.ucll.dto;
 
 // Deze DTO werd oorsponkelijk gebruikt omdat sommige velden overbodig waren. Dit moet nog bekeken worden of deze DTO nog nuttig is.
 
+import javax.persistence.Column;
+
 public class PlayerDTO {
-    private Long id;
-    private String accountId;
-    private String name;
 
-    public PlayerDTO(Long id,String accountId, String name) {
-        this.accountId = accountId;
-        this.name = name;
-        this.id = id;
+    private String leagueName;
+    private String firstName;
+    private String lastName;
+
+    public PlayerDTO( String leagueName, String firstName, String lastName) {
+        this.leagueName = leagueName;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
-    public PlayerDTO(String accountId, String name) {
-        this.accountId = accountId;
-        this.name = name;
+
+    public String getLeagueName() {
+        return leagueName;
     }
 
-    public Long getId() {
-        return id;
+    public void setLeagueName(String leagueName) {
+        this.leagueName = leagueName;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public String getAccountId() {
-        return accountId;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
+    public String getLastName() {
+        return lastName;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }

@@ -4,6 +4,6 @@ package be.ucll.constants;
 public class Constants {
 
     // API key
-    public static final String API_KEY = "RGAPI-5d900b55-a599-4f2e-8e51-7da67501367a";
+    public static final String API_KEY = "RGAPI-d7660a82-bfe8-404d-9fef-5e38803daa5f";
 
 }
