@@ -11,17 +11,17 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name = "summonerID")
+    @Column(name = "summoner_id")
     private String summonerID;
-    @Column(name = "puuID")
+    @Column(name = "puu_id")
     private String puuID;
-    @Column(name = "accountId")
+    @Column(name = "account_id")
     private String accountId;
-    @Column(name = "leagueName")
+    @Column(name = "league_name")
     private String leagueName;
-    @Column(name = "firstName")
+    @Column(name = "first_name")
     private String firstName;
-    @Column(name = "lastName")
+    @Column(name = "last_name")
     private String lastName;
 
 

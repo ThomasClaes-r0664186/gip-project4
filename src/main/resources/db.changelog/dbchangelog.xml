@@ -8,4 +8,5 @@
     <include file="db.changelog/migrations/4-create-player.xml"/>
     <include file="db.changelog/migrations/5-create-match.xml"/>
     <include file="db.changelog/migrations/6-create-teamPlayer.xml"/>
+    <include file="db.changelog/migrations/7-renaming-dbnames.xml"/>
 </databaseChangeLog>

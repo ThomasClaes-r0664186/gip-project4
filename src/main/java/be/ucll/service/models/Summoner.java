@@ -1,6 +1,7 @@
 package be.ucll.service.models;
 
 //TODO summoner setters not yet implemented
+// Het summoner object: afkomstig van de league of legends api.
 public class Summoner {
 
     private String id;
@@ -66,4 +67,18 @@ public class Summoner {
     public void setSummonerLevel(String summonerLevel) {
         this.summonerLevel = summonerLevel;
     }
+
+    @Override
+    public String toString() {
+        return "Summoner{" +
+                "id='" + id + '\'' +
+                ", accountId='" + accountId + '\'' +
+                ", puuid='" + puuid + '\'' +
+                ", name='" + name + '\'' +
+                ", profileIconId='" + profileIconId + '\'' +
+                ", revisionDate='" + revisionDate + '\'' +
+                ", summonerLevel='" + summonerLevel + '\'' +
+                '}';
+    }
+
 }

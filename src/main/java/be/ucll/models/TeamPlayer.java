@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 //TODO: implement setter for TeamPLayer
 @Entity
-@Table(name= "teamPlayer", schema= "liquibase" )
+@Table(name= "team_player", schema= "liquibase" )
 public class TeamPlayer {
 
     @Id
@@ -14,14 +14,14 @@ public class TeamPlayer {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="team_Id")
+    @JoinColumn(name="team_id")
     private Team team;
 
     @ManyToOne
-    @JoinColumn(name="player_Id")
+    @JoinColumn(name="player_id")
     private Player player;
 
-    @Column(name="isSelected")
+    @Column(name="is_selected")
     private Boolean isSelected;
 
     public TeamPlayer(Builder builder){

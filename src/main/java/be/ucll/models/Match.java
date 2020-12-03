@@ -16,20 +16,20 @@ public class Match {
     private Date date;
 
     @ManyToOne
-    @JoinColumn(name = "team1_Id")
+    @JoinColumn(name = "team1_id")
     private Team team1;
 
     @ManyToOne
-    @JoinColumn(name = "team2_Id")
+    @JoinColumn(name = "team2_id")
     private Team team2;
 
-    @Column(name = "winnerId")
+    @Column(name = "winner_id")
     private Long winnerId;
 
-    @Column(name = "matchID")
+    @Column(name = "match_id")
     private Long matchID;
 
-    @Column(name = "tournamentCode")
+    @Column(name = "tournament_code")
     private String tournamentCode;
 
     public Match(){}
