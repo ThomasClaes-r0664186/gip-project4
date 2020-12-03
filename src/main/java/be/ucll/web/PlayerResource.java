@@ -85,6 +85,16 @@ public class PlayerResource {
         throw new UsernameNotFound(leagueName);
     }
 
+    @DeleteMapping
+    public ResponseEntity deletePlayer(@RequestParam("leagueName") String leagueName) throws UsernameNotFound {
+        if(playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).isPresent()) {
+            playerRepository.delete(playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).get());
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        throw new UsernameNotFound(leagueName);
+    }
+
+
     public boolean playerExists(String leagueName) throws UsernameAlreadyExists{
         if(playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).isPresent()){
             throw new UsernameAlreadyExists(leagueName);
@@ -93,4 +103,5 @@ public class PlayerResource {
             return false;
         }
     }
+
 }
