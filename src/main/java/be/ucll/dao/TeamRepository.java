@@ -1,10 +1,13 @@
 package be.ucll.dao;
 
+import be.ucll.models.Player;
 import be.ucll.models.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
-    //No extra's yet
+    Optional<Team> findTeamByNameIgnoreCase(String name);
 }
