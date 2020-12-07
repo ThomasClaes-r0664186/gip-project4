@@ -32,7 +32,6 @@ public class TeamResource {
         if (organisationRepository.findOrganisationByNameIgnoreCase(teamDTO.getOrganisationName()).isPresent()){
             Organisation organisation = organisationRepository.findOrganisationByNameIgnoreCase(teamDTO.getOrganisationName()).get();
             Team newTeam = teamRepository.save(new Team.TeamBuilder()
-                    .id(teamDTO.getId())
                     .name(teamDTO.getName())
                     .organisation(organisation)
                     .build());
