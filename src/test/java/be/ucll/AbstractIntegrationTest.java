@@ -1,8 +1,7 @@
-package com.example.demo;
+package be.ucll;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -14,7 +13,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 @SpringBootTest
 @Transactional
-@ActiveProfiles("unit-test")
+@ActiveProfiles("local")
 @ExtendWith(SpringExtension.class)
 public abstract class AbstractIntegrationTest {
 
