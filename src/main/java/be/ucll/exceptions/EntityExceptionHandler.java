@@ -35,6 +35,7 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity usernameNotFound(UsernameNotFound exception){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
+    
     @ExceptionHandler(TeamAlreadyExists.class)
     public ResponseEntity teamAlreadyExists(TeamAlreadyExists exception){
         return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
