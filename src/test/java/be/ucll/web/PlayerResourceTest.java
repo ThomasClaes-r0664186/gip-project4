@@ -199,6 +199,70 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	}
 
+	@Test
+	void updatePlayerLeagueNameNULL() throws Exception {
+		final String LEAGUE_NAME = "Ardes";
+		PlayerDTO playerDTO = new PlayerDTO(null, "Arno", "De Smet");
+
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player?leagueName=" + LEAGUE_NAME)
+				.content(toJson(playerDTO))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isForbidden())
+				.andReturn();
+
+		String responsMessage = mvcResult.getResponse().getContentAsString();
+		assertEquals("403 Forbidden: [{\"status\":{\"message\":\"Forbidden\",\"status_code\":403}}]", responsMessage );
+
+	}
+
+	@Test
+	void updatePlayerLeagueNameEmpty() throws Exception {
+		final String LEAGUE_NAME = "Ardes";
+		PlayerDTO playerDTO = new PlayerDTO("", "Arno", "De Smet");
+
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player?leagueName=" + LEAGUE_NAME)
+				.content(toJson(playerDTO))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isForbidden())
+				.andReturn();
+
+		String responsMessage = mvcResult.getResponse().getContentAsString();
+		assertEquals("403 Forbidden: [{\"status\":{\"message\":\"Forbidden\",\"status_code\":403}}]", responsMessage );
+
+	}
+
+	@Test
+	void updatePlayerLeagueNameNotExists() throws Exception {
+		final String LEAGUE_NAME = "Ardes";
+		PlayerDTO playerDTO = new PlayerDTO("*", "Arno", "De Smet");
+
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player?leagueName=" + LEAGUE_NAME)
+				.content(toJson(playerDTO))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound())
+				.andReturn();
+
+		String responsMessage = mvcResult.getResponse().getContentAsString();
+		assertEquals("404 Not Found: [{\"status\":{\"message\":\"Data not found - summoner not found\",\"status_code\":404}}]", responsMessage );
+
+	}
+
+	@Test
+	void updatePlayerLeagueNameAlreadyExists() throws Exception {
+		final String LEAGUE_NAME = "Ardes";
+		PlayerDTO playerDTO = new PlayerDTO("WannesV", "Arno", "De Smet");
+
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player?leagueName=" + LEAGUE_NAME)
+				.content(toJson(playerDTO))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isConflict())
+				.andReturn();
+
+		String responsMessage = mvcResult.getResponse().getContentAsString();
+		assertEquals("This user: " + playerDTO.getLeagueName() + " already exists!", responsMessage );
+
+	}
+
 
 	@After
 	public void after() throws UsernameNotFound {
