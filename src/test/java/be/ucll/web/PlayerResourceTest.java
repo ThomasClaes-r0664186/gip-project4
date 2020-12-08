@@ -1,7 +1,6 @@
 package be.ucll.web;
 
 import be.ucll.AbstractIntegrationTest;
-
 import be.ucll.dto.PlayerDTO;
 import be.ucll.exceptions.UsernameAlreadyExists;
 import be.ucll.exceptions.UsernameNotFound;
