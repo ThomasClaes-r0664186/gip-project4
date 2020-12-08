@@ -1,6 +1,7 @@
 package be.ucll.web;
 
 import be.ucll.AbstractIntegrationTest;
+import be.ucll.dao.PlayerRepository;
 import be.ucll.dto.PlayerDTO;
 import be.ucll.exceptions.UsernameAlreadyExists;
 import be.ucll.exceptions.UsernameNotFound;
@@ -31,13 +32,19 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	@Autowired
 	private PlayerResource playerResource;
 
+	@Autowired
+	private PlayerRepository playerRepository;
+
 	@BeforeEach
 	void setUp() throws UsernameNotValid, UsernameAlreadyExists {
 
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 
 		PlayerDTO playerWannesV = new PlayerDTO("WannesV", "Wannes", "Verschraegen");
+		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
+
 		playerResource.createPlayer(playerWannesV);
+		playerResource.createPlayer(playerArdes);
 
 	}
 
@@ -173,6 +180,29 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 		String responsMessage = mvcResult.getResponse().getContentAsString();
 		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
 	}
+
+
+
+
+	@Test
+	void updatePlayerOk() throws Exception {
+		final String LEAGUE_NAME = "Ardes";
+		PlayerDTO playerDTO = new PlayerDTO("Ardes", "Arno", "De Smet");
+
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player?leagueName=" + LEAGUE_NAME)
+				.content(toJson(playerDTO))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andReturn();
+
+		Player player = fromMvcResult(mvcResult, Player.class);
+
+		assertEquals(playerDTO.getLeagueName(), player.getLeagueName());
+		assertEquals(playerDTO.getFirstName(), player.getFirstName());
+		assertEquals(playerDTO.getLastName(), player.getLastName());
+
+	}
+
 
 	@After
 	public void after() throws UsernameNotFound {
