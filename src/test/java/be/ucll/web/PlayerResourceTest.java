@@ -39,9 +39,11 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 		PlayerDTO playerWannesV = new PlayerDTO("WannesV", "Wannes", "Verschraegen");
 		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
+		PlayerDTO playerAvaIanche = new PlayerDTO("AvaIanche", "Ava", "Ianche");
 
 		playerResource.createPlayer(playerWannesV);
 		playerResource.createPlayer(playerArdes);
+		playerResource.createPlayer(playerAvaIanche);
 
 	}
 
@@ -325,6 +327,20 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 		String responsMessage = mvcResult.getResponse().getContentAsString();
 		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
 
+	}
+
+	@Test
+	void getPlayerOk() throws Exception {
+		final String LEAGUE_NAME = "AvaIanche";
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player?leagueName=" + LEAGUE_NAME)
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andReturn();
+		Player getPlayer = fromMvcResult(mvcResult, Player.class);
+
+		assertEquals("AvaIanche", getPlayer.getLeagueName());
+		assertEquals("Ava", getPlayer.getFirstName());
+		assertEquals("Ianche", getPlayer.getLastName());
 	}
 
 	@After
