@@ -32,6 +32,12 @@ public class PlayerResource {
     @PostMapping
     // De functie wordt aangeroepen door middel van een postrequest. met als input: JSON-object Player: { "leagueName" : "7Stijn7" }
     public ResponseEntity<Player> createPlayer(@RequestBody PlayerDTO player) throws UsernameNotValid, UsernameAlreadyExists {
+
+        // check of alles ingevult is.
+        if (player.getLeagueName() == null || player.getLeagueName().length() == 0
+                || player.getFirstName() == null || player.getFirstName().length() == 0
+                || player.getLastName() == null || player.getLastName().length() == 0 ) throw new UsernameNotValid(player.getLeagueName());
+
         // Daarna wordt er aan de playerRepository gevraagd of deze speler al gevonden is (op basis van de username), en al in onze databank zit.
         // Zoja, Gooit het een exception: dat de speler al bestaat in ons systeem.
         playerExists(player.getLeagueName());
