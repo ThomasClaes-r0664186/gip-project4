@@ -263,6 +263,69 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	}
 
+	@Test
+	void updatePlayerFirstNameNULL() throws Exception {
+		final String LEAGUE_NAME = "Ardes";
+		PlayerDTO playerDTO = new PlayerDTO("Ardes", null, "De Smet");
+
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player?leagueName=" + LEAGUE_NAME)
+				.content(toJson(playerDTO))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isForbidden())
+				.andReturn();
+
+		String responsMessage = mvcResult.getResponse().getContentAsString();
+		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
+
+	}
+
+	@Test
+	void updatePlayerFirstNameEmpty() throws Exception {
+		final String LEAGUE_NAME = "Ardes";
+		PlayerDTO playerDTO = new PlayerDTO("Ardes", "", "De Smet");
+
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player?leagueName=" + LEAGUE_NAME)
+				.content(toJson(playerDTO))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isForbidden())
+				.andReturn();
+
+		String responsMessage = mvcResult.getResponse().getContentAsString();
+		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
+
+	}
+
+	@Test
+	void updatePlayerLastNameNULL() throws Exception {
+		final String LEAGUE_NAME = "Ardes";
+		PlayerDTO playerDTO = new PlayerDTO("Ardes", "Arno", null);
+
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player?leagueName=" + LEAGUE_NAME)
+				.content(toJson(playerDTO))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isForbidden())
+				.andReturn();
+
+		String responsMessage = mvcResult.getResponse().getContentAsString();
+		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
+
+	}
+
+	@Test
+	void updatePlayerLastNameEmpty() throws Exception {
+		final String LEAGUE_NAME = "Ardes";
+		PlayerDTO playerDTO = new PlayerDTO("Ardes", "Arno", "");
+
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player?leagueName=" + LEAGUE_NAME)
+				.content(toJson(playerDTO))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isForbidden())
+				.andReturn();
+
+		String responsMessage = mvcResult.getResponse().getContentAsString();
+		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
+
+	}
 
 	@After
 	public void after() throws UsernameNotFound {
