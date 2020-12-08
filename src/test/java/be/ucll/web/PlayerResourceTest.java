@@ -31,10 +31,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Autowired
 	private PlayerResource playerResource;
-
-	@Autowired
-	private PlayerRepository playerRepository;
-
+	
 	@BeforeEach
 	void setUp() throws UsernameNotValid, UsernameAlreadyExists {
 
@@ -181,7 +178,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
 	}
 
-	
+
 	@After
 	public void after() throws UsernameNotFound {
 		playerResource.deletePlayer("WannesV");
