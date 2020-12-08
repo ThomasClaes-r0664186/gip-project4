@@ -211,7 +211,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("403 Forbidden: [{\"status\":{\"message\":\"Forbidden\",\"status_code\":403}}]", responsMessage );
+		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
 
 	}
 
@@ -227,7 +227,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("403 Forbidden: [{\"status\":{\"message\":\"Forbidden\",\"status_code\":403}}]", responsMessage );
+		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
 
 	}
 
