@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 @RestController
-@RequestMapping("team")
+@RequestMapping("/team")
 public class TeamResource {
 
     private TeamRepository teamRepository;
@@ -51,14 +51,16 @@ public class TeamResource {
             //Wanneer dit team bestaat, gaan we die in een Team object steken.
             Team team =  teamRepository.findTeamByNameIgnoreCase(teamName).get();
 
-            //Dan kijken we of ze de league naam van de speler willen veranderen
+            //Dan kijken we of ze de team naam van de speler willen veranderen
             if (!team.getName().equals(teamDTO.getName())){
 
                 //we gaan controleren of de nieuwe team naam al in onze databank zit, indien dit het geval is, komt er
                 //een exception teamAlreadyExists
                 teamALreadyExists(teamDTO.getName());
             }
-            //controleren of de gebruiker een organisatie naam wilt
+            //controleren of de gebruiker een andere organisatie naam wilt
+            //TODO wanneer we de naam van de organisatie veranderen, moet deze org. dan al bestaan in de database?
+            // gelieve deze methode eens na te kijken. Wij zijn niet zelfzeker van onze code!
             if (organisationRepository.findOrganisationByNameIgnoreCase(teamDTO.getOrganisationName()).isPresent()){
                 try{
                     Organisation organisation = organisationRepository.findOrganisationByNameIgnoreCase(teamDTO.getOrganisationName()).get();

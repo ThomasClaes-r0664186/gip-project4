@@ -45,4 +45,8 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity organisationNotFound(OrganisationNotFound exception){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
+    @ExceptionHandler(TeamNotFound.class)
+    public ResponseEntity TeamNotFound(TeamNotFound exception){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    }
 }
