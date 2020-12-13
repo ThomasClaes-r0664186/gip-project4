@@ -22,6 +22,10 @@ public class PlayerDTO {
         this.lastName = lastName;
     }
 
+    public PlayerDTO() {
+
+    }
+
 
     public String getLeagueName() {
         return leagueName;
