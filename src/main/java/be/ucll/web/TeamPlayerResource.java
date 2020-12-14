@@ -5,7 +5,9 @@ import be.ucll.dao.TeamPlayerRepository;
 import be.ucll.dao.TeamRepository;
 import be.ucll.dto.PlayerDTO;
 import be.ucll.dto.TeamPlayerDTO;
+import be.ucll.exceptions.PlayerAlreadyInTeam;
 import be.ucll.exceptions.TeamNotFound;
+import be.ucll.exceptions.TooManyActivePlayers;
 import be.ucll.exceptions.UsernameNotFound;
 import be.ucll.models.Player;
 import be.ucll.models.Team;
@@ -33,7 +35,7 @@ public class TeamPlayerResource {
     }
 
     @PostMapping
-    public ResponseEntity<TeamPlayerDTO> addPlayerToTeam(@RequestParam("teamName") String teamName, @RequestParam("leagueName") String leagueName) throws TeamNotFound, UsernameNotFound {
+    public ResponseEntity<TeamPlayerDTO> addPlayerToTeam(@RequestParam("teamName") String teamName, @RequestParam("leagueName") String leagueName) throws TeamNotFound, UsernameNotFound, PlayerAlreadyInTeam, TooManyActivePlayers {
         // TODO: geen twee dezelfde spelers aan team toekennnen, Max 5 main spelers
         if (teamName.trim().isBlank()) {
             throw new TeamNotFound(teamName);
@@ -53,6 +55,10 @@ public class TeamPlayerResource {
 
         Team team = teamRepository.findTeamByNameIgnoreCase(teamName).get();
         Player player = playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).get();
+
+        if (teamPlayerRepository.findTeamPlayerByPlayer(player).isPresent()){
+            throw new PlayerAlreadyInTeam(leagueName);
+        }
 
         TeamPlayer teamPlayer = teamPlayerRepository.save(new TeamPlayer.Builder()
                 .team(team)
@@ -94,10 +100,22 @@ public class TeamPlayerResource {
     }
 
     @PutMapping
-    public ResponseEntity<TeamPlayerDTO> makePlayerReserve(@RequestParam("leagueName") String leagueName, @RequestParam("reserve") boolean isReserve) throws UsernameNotFound {
+    public ResponseEntity<TeamPlayerDTO> makePlayerReserve(@RequestParam("teamName") String teamName, @RequestParam("leagueName") String leagueName, @RequestParam("reserve") boolean isReserve) throws UsernameNotFound, TooManyActivePlayers, TeamNotFound {
+
+        if (teamName.trim().isBlank()) {
+            throw new TeamNotFound(teamName);
+        }
 
         if (leagueName.trim().isBlank()) {
             throw new UsernameNotFound(leagueName);
+        }
+
+        if (teamRepository.findTeamByNameIgnoreCase(teamName).isEmpty()){
+            throw new TeamNotFound(teamName);
+        }
+
+        if (teamPlayerRepository.findAllByIsSelectedIsTrue().size() > 5){
+            throw new TooManyActivePlayers(teamName);
         }
 
         if (playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).isEmpty()){

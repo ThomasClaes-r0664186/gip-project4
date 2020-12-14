@@ -51,5 +51,14 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
 
+    @ExceptionHandler(PlayerAlreadyInTeam.class)
+    public ResponseEntity playerAlreadyInTeam(PlayerAlreadyInTeam exception){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(TooManyActivePlayers.class)
+    public ResponseEntity tooManyActivePlayers(TooManyActivePlayers exception){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
+    }
 
 }

@@ -12,6 +12,7 @@ import java.util.Optional;
 @Repository
 public interface TeamPlayerRepository extends JpaRepository<TeamPlayer, Long> {
     List<Player> findPlayersByTeam(Team team);
+    List<TeamPlayer> findAllByIsSelectedIsTrue();
     Optional<TeamPlayer> findTeamPlayerByPlayer(Player player);
     //No extra's yet
 }
