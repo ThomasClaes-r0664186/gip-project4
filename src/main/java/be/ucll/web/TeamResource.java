@@ -26,7 +26,7 @@ public class TeamResource {
         this.organisationRepository = organisationRepository;
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<Team> createTeam(@RequestBody TeamDTO teamDTO) throws TeamAlreadyExists, OrganisationNotFound {
         if (teamRepository.findTeamByNameIgnoreCase(teamDTO.getName()).isPresent()) throw new TeamAlreadyExists(teamDTO.getName());
         if (organisationRepository.findOrganisationByNameIgnoreCase(teamDTO.getOrganisationName()).isPresent()){
