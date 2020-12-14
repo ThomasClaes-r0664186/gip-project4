@@ -38,11 +38,9 @@ class TeamResourceTest extends AbstractIntegrationTest {
     @Autowired
     private TeamRepository teamRepository;
 
-    @Autowired
-    private TeamResource teamResource;
 
     @BeforeEach
-    void setUp() throws TeamAlreadyExists, OrganisationNotFound {
+    void setUp(){
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 
         Organisation organisation = new Organisation.OrganisationBuilder()
@@ -60,13 +58,29 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
 
     }
-
-    @Test
-    void createTeam() throws Exception{
-
+    @AfterEach
+    void tearDown() {
     }
 
     @Test
+    void createTeamOk() throws Exception{
+        //Given
+        TeamDTO teamDTO = new TeamDTO("teamNaam", "firstOrganisation");
+
+        //When
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team")
+        .content(toJson(teamDTO))
+        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andReturn();
+        Team gemaaktTeam = fromMvcResult(mvcResult, Team.class);
+
+        //Then
+        assertEquals(gemaaktTeam.getName(), teamDTO.getName());
+        assertEquals(gemaaktTeam.getOrganisation().getName(), teamDTO.getOrganisationName());
+    }
+
+    @Test // bij deze test kijken we of het te maken team al bestaat op basis van naam
     void createTeamAlreadyExists() throws Exception {
         // given
         TeamDTO teamDTO = new TeamDTO("testTeam", "firstOrganisation");
@@ -83,13 +97,112 @@ class TeamResourceTest extends AbstractIntegrationTest {
         assertEquals("This team: " + teamDTO.getName() + " already exist!", responseMessage);
     }
 
-    @AfterEach
-    void tearDown() {
+    @Test // bij deze test kijken we na of de mee te geven teamnaam niet null is (teamDTO in requestbody)
+    void CreateTeamNameNotNull() throws Exception {
+        //Given
+        TeamDTO teamDTO = new TeamDTO(null, "firstOrganisation");
+
+        //When
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team")
+                .content(toJson(teamDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        //Then
+        String responseMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals("Team is null or empty!", responseMessage);
     }
 
+    @Test // bij deze test kijken we na of de mee te geven teamnaam niet leeg(een lege string) is (teamDTO in requestbody)
+    void CreateTeamNameNotEmpty() throws Exception {
+        //Given
+        TeamDTO teamDTO = new TeamDTO("", "firstOrganisation");
+
+        //When
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team")
+                .content(toJson(teamDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        //Then
+        String responseMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals("Team is null or empty!", responseMessage);
+    }
+
+    @Test // bij deze test kijken we na of de mee te geven organisationName(die in de DB aanwezig moet zijn) al bestaat
+    void CreateTeamOrganisationDoesNotExist() throws Exception {
+        //Given
+        TeamDTO teamDTO = new TeamDTO("test", "secondOrganisation");
+
+        //When
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team")
+                .content(toJson(teamDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        //Then
+        String responseMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals("This organisation: " + teamDTO.getOrganisationName() + " has not been found!", responseMessage);
+    }
+
+    @Test // bij deze test kijken we na of de mee te geven organisationName null is
+    void CreateTeamOrganisationIsNotNull() throws Exception {
+        //Given
+        TeamDTO teamDTO = new TeamDTO("test", null );
+
+        //When
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team")
+                .content(toJson(teamDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        //Then
+        String responseMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals("Organisation is null or empty!", responseMessage);
+    }
+
+    @Test // bij deze test kijken we na of de mee te geven organisationName(die in de DB aanwezig moet zijn) al bestaat
+    void CreateTeamOrganisationIsNotEmpty() throws Exception {
+        //Given
+        TeamDTO teamDTO = new TeamDTO("test", "" );
+
+        //When
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team")
+                .content(toJson(teamDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        //Then
+        String responseMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals("Organisation is null or empty!", responseMessage);
+    }
 
     @Test
-    void updateTeam() {
+    void updateTeamOk() throws Exception {
+        /*
+        //Given
+        TeamDTO teamDTO = new TeamDTO("team123", "firstOrganisation");
+
+        //When
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team")
+                .param("name", teamDTO.getName())
+                .param("")
+                .content(toJson(teamDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andReturn();
+        Team gemaaktTeam = fromMvcResult(mvcResult, Team.class);
+
+        //Then
+        assertEquals(gemaaktTeam.getName(), teamDTO.getName());
+        assertEquals(gemaaktTeam.getOrganisation().getName(), teamDTO.getOrganisationName());
+
+         */
     }
 
     @Test

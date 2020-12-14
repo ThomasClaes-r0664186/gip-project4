@@ -27,7 +27,9 @@ public class TeamResource {
     }
 
     @PostMapping("")
-    public ResponseEntity<Team> createTeam(@RequestBody TeamDTO teamDTO) throws TeamAlreadyExists, OrganisationNotFound {
+    public ResponseEntity<Team> createTeam(@RequestBody TeamDTO teamDTO) throws TeamAlreadyExists, OrganisationNotFound, TeamNameIsNullOrEmpty, TeamOrganisationIsNullOrEmpty {
+        if (teamDTO.getName() == null || teamDTO.getName().isEmpty()) throw new TeamNameIsNullOrEmpty();
+        if (teamDTO.getOrganisationName() == null || teamDTO.getOrganisationName().isEmpty()) throw new TeamOrganisationIsNullOrEmpty();
         if (teamRepository.findTeamByNameIgnoreCase(teamDTO.getName()).isPresent()) throw new TeamAlreadyExists(teamDTO.getName());
         if (organisationRepository.findOrganisationByNameIgnoreCase(teamDTO.getOrganisationName()).isPresent()){
             Organisation organisation = organisationRepository.findOrganisationByNameIgnoreCase(teamDTO.getOrganisationName()).get();
@@ -44,40 +46,33 @@ public class TeamResource {
     // team Updaten
     @PutMapping
     public TeamDTO updateTeam(@RequestParam("teamName") String teamName, @RequestBody TeamDTO teamDTO) throws HttpClientErrorException, TeamNotFound, TeamAlreadyExists, OrganisationNotFound {
-        //We gaan controleren of het team waarvan de teamName gegeven is, of deze wel bestaat indien deze niet bestaat,
+        //We gaan controleren of het team waarvan de teamName gegeven is, of deze wel bestaat, indien deze niet bestaat,
         // laten we zien dat de teamName niet gevonden is
         if (teamRepository.findTeamByNameIgnoreCase(teamName).isPresent()){
 
             //Wanneer dit team bestaat, gaan we die in een Team object steken.
             Team team =  teamRepository.findTeamByNameIgnoreCase(teamName).get();
 
-            //Dan kijken we of ze de team naam van de speler willen veranderen
+            //Dan kijken we of ze de team naam willen veranderen
             if (!team.getName().equals(teamDTO.getName())){
 
                 //we gaan controleren of de nieuwe team naam al in onze databank zit, indien dit het geval is, komt er
                 //een exception teamAlreadyExists
                 teamALreadyExists(teamDTO.getName());
+                team.setName(teamDTO.getName());
             }
             //controleren of de gebruiker een andere organisatie naam wilt
-            //TODO wanneer we de naam van de organisatie veranderen, moet deze org. dan al bestaan in de database?
-            // gelieve deze methode eens na te kijken. Wij zijn niet zelfzeker van onze code!
             if (organisationRepository.findOrganisationByNameIgnoreCase(teamDTO.getOrganisationName()).isPresent()){
-                try{
-                    Organisation organisation = organisationRepository.findOrganisationByNameIgnoreCase(teamDTO.getOrganisationName()).get();
-                    organisation.setName(teamDTO.getOrganisationName());
-                }
-                catch (Exception e){
-                    e.getMessage();
-                }
 
+                Organisation organisation = organisationRepository.findOrganisationByNameIgnoreCase(teamDTO.getOrganisationName()).get();
+                team.setOrganisation(organisation);
+            }else{
+                throw new OrganisationNotFound(teamDTO.getOrganisationName());
             }
-
-            //spele opslaan in db en de nieuwe speler tonen aan gebruiker.
-
+            //team opslaan in db
             teamRepository.save(team);
             return new TeamDTO(team.getName(), team.getOrganisation().getName());
         }
-
         //Exception om te tonen dat de speler waarvan je iets wilt aanpassen niet bestaat.
         throw new TeamNotFound(teamName);
     }
