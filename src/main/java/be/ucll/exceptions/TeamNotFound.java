@@ -6,4 +6,7 @@ public class TeamNotFound extends Exception{
         super("This team: " + teamName + " has not been found!");
     }
 
+    public TeamNotFound() {
+        super("Please specify a valid id!");
+    }
 }

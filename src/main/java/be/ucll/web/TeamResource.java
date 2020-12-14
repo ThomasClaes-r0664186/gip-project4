@@ -44,40 +44,36 @@ public class TeamResource {
     }
 
     // team Updaten
-    @PutMapping
-    public TeamDTO updateTeam(@RequestParam("teamName") String teamName, @RequestBody TeamDTO teamDTO) throws HttpClientErrorException, TeamNotFound, TeamAlreadyExists, OrganisationNotFound {
-        //We gaan controleren of het team waarvan de teamName gegeven is, of deze wel bestaat, indien deze niet bestaat,
-        // laten we zien dat de teamName niet gevonden is
-        if (teamRepository.findTeamByNameIgnoreCase(teamName).isPresent()){
-
-            //Wanneer dit team bestaat, gaan we die in een Team object steken.
-            Team team =  teamRepository.findTeamByNameIgnoreCase(teamName).get();
-
-            //Dan kijken we of ze de team naam willen veranderen
+    @PutMapping                         // localhost:8080/team?id=
+    public ResponseEntity<Team> updateTeam(@RequestParam("id") Long id, @RequestBody TeamDTO teamDTO) throws TeamNotFound, TeamNameIsNullOrEmpty, OrganisationNotFound, TeamAlreadyExists {
+        Team team;
+        if (id == 0) throw new TeamNotFound();
+        if (teamDTO.getName() == null || teamDTO.getName().isEmpty()) throw new TeamNameIsNullOrEmpty();
+        if (teamDTO.getOrganisationName() == null || teamDTO.getOrganisationName().isEmpty()) throw new OrganisationNotFound();
+        if (teamRepository.findById(id).isPresent()){
+             team = teamRepository.findById(id).get();
             if (!team.getName().equals(teamDTO.getName())){
-
-                //we gaan controleren of de nieuwe team naam al in onze databank zit, indien dit het geval is, komt er
-                //een exception teamAlreadyExists
                 teamALreadyExists(teamDTO.getName());
                 team.setName(teamDTO.getName());
             }
-            //controleren of de gebruiker een andere organisatie naam wilt
-            if (organisationRepository.findOrganisationByNameIgnoreCase(teamDTO.getOrganisationName()).isPresent()){
+        }else{
+            throw new TeamNotFound(teamDTO.getName());
+        }
 
+        if (!team.getOrganisation().getName().equals(teamDTO.getOrganisationName())){
+
+            if (organisationRepository.findOrganisationByNameIgnoreCase(teamDTO.getOrganisationName()).isPresent()){
                 Organisation organisation = organisationRepository.findOrganisationByNameIgnoreCase(teamDTO.getOrganisationName()).get();
                 team.setOrganisation(organisation);
             }else{
                 throw new OrganisationNotFound(teamDTO.getOrganisationName());
             }
-            //team opslaan in db
-            teamRepository.save(team);
-            return new TeamDTO(team.getName(), team.getOrganisation().getName());
         }
-        //Exception om te tonen dat de speler waarvan je iets wilt aanpassen niet bestaat.
-        throw new TeamNotFound(teamName);
+        teamRepository.save(team);
+        return ResponseEntity.status(HttpStatus.OK).body(team);
     }
 
-    @GetMapping
+    @GetMapping // teamname veranderen naar id
     public ResponseEntity<TeamDTO> getTeam(@RequestParam("teamName") String teamName) throws TeamNotFound {
         //controleren of team in onze db bestaat
         if(teamRepository.findTeamByNameIgnoreCase(teamName).isPresent()) {
@@ -88,8 +84,8 @@ public class TeamResource {
         throw new TeamNotFound(teamName);
     }
 
-    @DeleteMapping
-    public ResponseEntity deleteTeam(@RequestParam("teamName") String teamName) throws TeamNotFound {
+    @DeleteMapping // id veranderd
+    public ResponseEntity deleteTeam(@PathVariable("id") String teamName) throws TeamNotFound {
         //We gaan controleren of het team waarvan de teamName gegeven is, wel bestaat in onze db
         if(teamRepository.findTeamByNameIgnoreCase(teamName).isPresent()) {
 
