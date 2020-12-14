@@ -100,7 +100,7 @@ public class TeamPlayerResource {
     }
 
     @PutMapping
-    public ResponseEntity<TeamPlayerDTO> makePlayerReserve(@RequestParam("teamName") String teamName, @RequestParam("leagueName") String leagueName, @RequestParam("reserve") boolean isReserve) throws UsernameNotFound, TooManyActivePlayers, TeamNotFound {
+    public ResponseEntity<TeamPlayerDTO> makePlayerActive(@RequestParam("teamName") String teamName, @RequestParam("leagueName") String leagueName, @RequestParam("isActive") boolean isActive) throws UsernameNotFound, TooManyActivePlayers, TeamNotFound {
 
         if (teamName.trim().isBlank()) {
             throw new TeamNotFound(teamName);
@@ -110,13 +110,16 @@ public class TeamPlayerResource {
             throw new UsernameNotFound(leagueName);
         }
 
+        if (isActive){
+            if (teamPlayerRepository.findAllByIsSelectedIsTrue().size() >= 5){
+                throw new TooManyActivePlayers(teamName);
+            }
+        }
+
         if (teamRepository.findTeamByNameIgnoreCase(teamName).isEmpty()){
             throw new TeamNotFound(teamName);
         }
 
-        if (teamPlayerRepository.findAllByIsSelectedIsTrue().size() > 5){
-            throw new TooManyActivePlayers(teamName);
-        }
 
         if (playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).isEmpty()){
             throw new UsernameNotFound(leagueName);
@@ -129,7 +132,7 @@ public class TeamPlayerResource {
         }
 
         TeamPlayer teamPlayer = teamPlayerRepository.findTeamPlayerByPlayer(player).get();
-        teamPlayer.setSelected(isReserve);
+        teamPlayer.setSelected(isActive);
         teamPlayerRepository.save(teamPlayer);
 
         return ResponseEntity.status(HttpStatus.OK).body(new TeamPlayerDTO(teamPlayer.getId(), teamPlayer.getTeam().getName(), teamPlayer.getPlayer().getLeagueName()));

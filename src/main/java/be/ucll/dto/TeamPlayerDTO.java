@@ -5,7 +5,7 @@ public class TeamPlayerDTO {
     private Long id;
     private String teamName;
     private String playerName;
-    private boolean isReserve;
+    private boolean isActive;
 
     public TeamPlayerDTO() {
     }
@@ -16,11 +16,11 @@ public class TeamPlayerDTO {
         this.playerName = playerName;
     }
 
-    public TeamPlayerDTO(Long id, String teamName, String playerName, boolean isReserve) {
+    public TeamPlayerDTO(Long id, String teamName, String playerName, boolean isActive) {
         this.id = id;
         this.teamName = teamName;
         this.playerName = playerName;
-        this.isReserve = isReserve;
+        this.isActive = isActive;
     }
 
     public Long getId() {
@@ -47,11 +47,11 @@ public class TeamPlayerDTO {
         this.playerName = playerName;
     }
 
-    public boolean isReserve() {
-        return isReserve;
+    public boolean isActive() {
+        return isActive;
     }
 
-    public void setReserve(boolean reserve) {
-        this.isReserve = reserve;
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

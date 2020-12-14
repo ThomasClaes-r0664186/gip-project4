@@ -296,15 +296,34 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void makePlayerReserveNotMoreThan5ActivePlayersInTeam() throws Exception {
-        final String LEAGUE_NAME = "LOLname6";
+    void makePlayerReserveNotMoreThan5ActivePlayersInTeamOK() throws Exception {
+        final String LEAGUE_NAME = "LOLname5";
         final String TEAM_NAME = "TestTeam2";
-        final String IS_RESERVE = "true";
+        final String IS_ACTIVE = "false";
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/teamplayer")
                 .param("leagueName", LEAGUE_NAME)
                 .param("teamName", TEAM_NAME)
-                .param("reserve", IS_RESERVE))
+                .param("isActive", IS_ACTIVE))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        TeamPlayerDTO teamPlayer = fromMvcResult(mvcResult, TeamPlayerDTO.class);
+
+        assertEquals(false, teamPlayer.isActive());
+
+    }
+
+    @Test
+    void makePlayerReserveNotMoreThan5ActivePlayersInTeam() throws Exception {
+        final String LEAGUE_NAME = "LOLname6";
+        final String TEAM_NAME = "TestTeam2";
+        final String IS_ACTIVE = "true";
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/teamplayer")
+                .param("leagueName", LEAGUE_NAME)
+                .param("teamName", TEAM_NAME)
+                .param("isActive", IS_ACTIVE))
                 .andExpect(status().isConflict())
                 .andReturn();
 
