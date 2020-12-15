@@ -29,10 +29,15 @@ public class TeamResource {
     @PostMapping("")
     public ResponseEntity<Team> createTeam(@RequestBody TeamDTO teamDTO) throws TeamAlreadyExists, OrganisationNotFound, TeamNameIsNullOrEmpty, TeamOrganisationIsNullOrEmpty {
         if (teamDTO.getName() == null || teamDTO.getName().isEmpty()) throw new TeamNameIsNullOrEmpty();
-        if (teamDTO.getOrganisationName() == null || teamDTO.getOrganisationName().isEmpty()) throw new TeamOrganisationIsNullOrEmpty();
+
+        if (teamDTO.getOrganisationId() == null || teamDTO.getOrganisationId() <= 0) throw new TeamOrganisationIsNullOrEmpty();
+
         if (teamRepository.findTeamByNameIgnoreCase(teamDTO.getName()).isPresent()) throw new TeamAlreadyExists(teamDTO.getName());
-        if (organisationRepository.findOrganisationByNameIgnoreCase(teamDTO.getOrganisationName()).isPresent()){
-            Organisation organisation = organisationRepository.findOrganisationByNameIgnoreCase(teamDTO.getOrganisationName()).get();
+
+        if (organisationRepository.findById(teamDTO.getOrganisationId()).isPresent()){
+
+            Organisation organisation = organisationRepository.findById(teamDTO.getOrganisationId()).get();
+
             Team newTeam = teamRepository.save(new Team.TeamBuilder()
                     .name(teamDTO.getName())
                     .organisation(organisation)
@@ -40,7 +45,7 @@ public class TeamResource {
             return ResponseEntity.status(HttpStatus.CREATED).body(newTeam);
 
         }
-        throw new OrganisationNotFound(teamDTO.getOrganisationName());
+        throw new OrganisationNotFound();
     }
 
     // team Updaten
@@ -49,7 +54,7 @@ public class TeamResource {
         Team team;
         if (id <= 0) throw new TeamNotFound();
         if (teamDTO.getName() == null || teamDTO.getName().isEmpty()) throw new TeamNameIsNullOrEmpty();
-        if (teamDTO.getOrganisationName() == null || teamDTO.getOrganisationName().isEmpty()) throw new OrganisationNotFound();
+        if (teamDTO.getOrganisationId() == null || teamDTO.getOrganisationId() <= 0) throw new OrganisationNotFound();
         if (teamRepository.findById(id).isPresent()){
              team = teamRepository.findById(id).get();
             if (!team.getName().equals(teamDTO.getName())){
@@ -60,19 +65,19 @@ public class TeamResource {
             throw new TeamNotFound(teamDTO.getName());
         }
 
-        if (!team.getOrganisation().getName().equals(teamDTO.getOrganisationName())){
+        if (!team.getOrganisation().getId().equals(teamDTO.getOrganisationId())){
 
-            if (organisationRepository.findOrganisationByNameIgnoreCase(teamDTO.getOrganisationName()).isPresent()){
-                Organisation organisation = organisationRepository.findOrganisationByNameIgnoreCase(teamDTO.getOrganisationName()).get();
+            if (organisationRepository.findById(teamDTO.getOrganisationId()).isPresent()){
+                Organisation organisation = organisationRepository.findById(teamDTO.getOrganisationId()).get();
                 team.setOrganisation(organisation);
             }else{
-                throw new OrganisationNotFound(teamDTO.getOrganisationName());
+                throw new OrganisationNotFound();
             }
         }
         teamRepository.save(team);
         return ResponseEntity.status(HttpStatus.OK).body(team);
     }
-
+/*
     @GetMapping // teamname veranderen naar id
     public ResponseEntity<TeamDTO> getTeam(@RequestParam("teamName") String teamName) throws TeamNotFound {
         //controleren of team in onze db bestaat
@@ -97,6 +102,8 @@ public class TeamResource {
         //zo niet => exception
         throw new TeamNotFound(teamName);
     }
+
+     */
 
     private boolean teamALreadyExists(String teamName) throws TeamAlreadyExists{
         if (teamRepository.findTeamByNameIgnoreCase(teamName).isPresent()){

@@ -4,11 +4,8 @@ import be.ucll.AbstractIntegrationTest;
 import be.ucll.dao.OrganisationRepository;
 import be.ucll.dao.TeamRepository;
 import be.ucll.dto.TeamDTO;
-import be.ucll.exceptions.OrganisationNotFound;
-import be.ucll.exceptions.TeamAlreadyExists;
 import be.ucll.models.Organisation;
 import be.ucll.models.Team;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,8 +27,9 @@ class TeamResourceTest extends AbstractIntegrationTest {
     private WebApplicationContext wac;
 
     private MockMvc mockMvc;
-    private Long id;
-
+    private Long teamId;
+    private Long currentOrganisationId;
+    private Long newOrganisationId;
     @Autowired
     private OrganisationRepository organisationRepository;
 
@@ -43,18 +41,25 @@ class TeamResourceTest extends AbstractIntegrationTest {
     void setUp(){
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 
-        Organisation organisation = new Organisation.OrganisationBuilder()
+        Organisation currentOrganisation = new Organisation.OrganisationBuilder()
                 .name("firstOrganisation")
                 .providerID(1L)
                 .tournamentID(1L)
                 .build();
-        organisationRepository.save(organisation);
+        this.currentOrganisationId = organisationRepository.save(currentOrganisation).getId();
+
+        Organisation newOrganisation = new Organisation.OrganisationBuilder()
+                .name("secondOrganisation")
+                .providerID(2L)
+                .tournamentID(2L)
+                .build();
+        this.newOrganisationId = organisationRepository.save(newOrganisation).getId();
 
         Team testTeam = new Team.TeamBuilder()
                 .name("testTeam")
-                .organisation(organisation)
+                .organisation(newOrganisation)
                 .build();
-         this.id = teamRepository.save(testTeam).getId();
+         this.teamId = teamRepository.save(testTeam).getId();
 
 
     }
@@ -65,7 +70,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
     @Test
     void createTeamOk() throws Exception{
         //Given
-        TeamDTO teamDTO = new TeamDTO("teamNaam", "firstOrganisation");
+        TeamDTO teamDTO = new TeamDTO("teamNaam", currentOrganisationId);
 
         //When
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team")
@@ -76,14 +81,14 @@ class TeamResourceTest extends AbstractIntegrationTest {
         Team gemaaktTeam = fromMvcResult(mvcResult, Team.class);
 
         //Then
-        assertEquals(gemaaktTeam.getName(), teamDTO.getName());
-        assertEquals(gemaaktTeam.getOrganisation().getName(), teamDTO.getOrganisationName());
+        assertEquals( teamDTO.getName(), gemaaktTeam.getName());
+        assertEquals(currentOrganisationId, gemaaktTeam.getOrganisation().getId());
     }
 
     @Test // bij deze test kijken we of het te maken team al bestaat op basis van naam
     void createTeamAlreadyExists() throws Exception {
         // given
-        TeamDTO teamDTO = new TeamDTO("testTeam", "firstOrganisation");
+        TeamDTO teamDTO = new TeamDTO("testTeam", currentOrganisationId);
 
         // when
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team")
@@ -100,7 +105,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
     @Test // bij deze test kijken we na of de mee te geven teamnaam niet null is (teamDTO in requestbody)
     void CreateTeamNameNotNull() throws Exception {
         //Given
-        TeamDTO teamDTO = new TeamDTO(null, "firstOrganisation");
+        TeamDTO teamDTO = new TeamDTO(null, currentOrganisationId);
 
         //When
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team")
@@ -117,7 +122,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
     @Test // bij deze test kijken we na of de mee te geven teamnaam niet leeg(een lege string) is (teamDTO in requestbody)
     void CreateTeamNameNotEmpty() throws Exception {
         //Given
-        TeamDTO teamDTO = new TeamDTO("", "firstOrganisation");
+        TeamDTO teamDTO = new TeamDTO("", currentOrganisationId);
 
         //When
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team")
@@ -134,7 +139,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
     @Test // bij deze test kijken we na of de mee te geven organisationName(die in de DB aanwezig moet zijn) al bestaat
     void CreateTeamOrganisationDoesNotExist() throws Exception {
         //Given
-        TeamDTO teamDTO = new TeamDTO("test", "secondOrganisation");
+        TeamDTO teamDTO = new TeamDTO("test", 5L);
 
         //When
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team")
@@ -145,7 +150,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
         //Then
         String responseMessage = mvcResult.getResponse().getContentAsString();
-        assertEquals("This organisation: " + teamDTO.getOrganisationName() + " has not been found!", responseMessage);
+        assertEquals("Please specify a valid id!", responseMessage);
     }
 
     @Test // bij deze test kijken we na of de mee te geven organisationName null is
@@ -165,10 +170,10 @@ class TeamResourceTest extends AbstractIntegrationTest {
         assertEquals("Organisation is null or empty!", responseMessage);
     }
 
-    @Test // bij deze test kijken we na of de mee te geven organisationName(die in de DB aanwezig moet zijn) al bestaat
-    void CreateTeamOrganisationIsNotEmpty() throws Exception {
+    @Test // bij deze test kijken we na of de mee te geven organisationName null is
+    void CreateTeamOrganisationIsNegative() throws Exception {
         //Given
-        TeamDTO teamDTO = new TeamDTO("test", "" );
+        TeamDTO teamDTO = new TeamDTO("test", -5L );
 
         //When
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team")
@@ -182,25 +187,27 @@ class TeamResourceTest extends AbstractIntegrationTest {
         assertEquals("Organisation is null or empty!", responseMessage);
     }
 
+
     @Test
     void updateTeamOk() throws Exception {
         // we willen bij de update niet de organizationName veranderen, maar de organisatie in het algemeen.
         // deze organisatie moet al in de databank zitten
         // Given
-        TeamDTO teamDTO = new TeamDTO("veranderdTeam", "veranderdOrganization");
+        TeamDTO teamDTO = new TeamDTO("veranderdTeam", newOrganisationId);
 
         //when
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/team/" + id)
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/team/" + teamId)
                 .content(toJson(teamDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
+
         // we willen teamDTO mappen naar een team -->
         Team t = fromMvcResult(mvcResult, Team.class);
 
         //Then
         assertEquals("veranderdTeam", t.getName());
-        assertEquals("veranderdOrganization", t.getOrganisation().getName());
+        assertEquals(newOrganisationId, t.getOrganisation().getId());
     }
 
     @Test
@@ -210,4 +217,5 @@ class TeamResourceTest extends AbstractIntegrationTest {
     @Test
     void deleteTeam() {
     }
+
 }

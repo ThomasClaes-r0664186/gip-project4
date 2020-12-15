@@ -3,13 +3,12 @@ package be.ucll.dto;
 public class TeamDTO {
 
     private String name;
-    private String organisationName;
+    private Long organisationId;
 
-    public TeamDTO( String name, String organisationName) {
+    public TeamDTO(String name, Long organisationId) {
         this.name = name;
-        this.organisationName = organisationName;
+        this.organisationId = organisationId;
     }
-
 
     public String getName() {
         return name;
@@ -19,11 +18,11 @@ public class TeamDTO {
         this.name = name;
     }
 
-    public String getOrganisationName() {
-        return organisationName;
+    public Long getOrganisationId() {
+        return organisationId;
     }
 
-    public void setOrganisationName(String organisationName) {
-        this.organisationName = organisationName;
+    public void setOrganisationId(Long organisationId) {
+        this.organisationId = organisationId;
     }
 }
