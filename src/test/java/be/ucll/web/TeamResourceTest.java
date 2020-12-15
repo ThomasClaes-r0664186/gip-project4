@@ -30,7 +30,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
     private WebApplicationContext wac;
 
     private MockMvc mockMvc;
-
+    private Long id;
 
     @Autowired
     private OrganisationRepository organisationRepository;
@@ -54,7 +54,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
                 .name("testTeam")
                 .organisation(organisation)
                 .build();
-        teamRepository.save(testTeam);
+         this.id = teamRepository.save(testTeam).getId();
 
 
     }
@@ -184,25 +184,23 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateTeamOk() throws Exception {
-        /*
-        //Given
-        TeamDTO teamDTO = new TeamDTO("team123", "firstOrganisation");
+        // we willen bij de update niet de organizationName veranderen, maar de organisatie in het algemeen.
+        // deze organisatie moet al in de databank zitten
+        // Given
+        TeamDTO teamDTO = new TeamDTO("veranderdTeam", "veranderdOrganization");
 
-        //When
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team")
-                .param("name", teamDTO.getName())
-                .param("")
+        //when
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/team/" + id)
                 .content(toJson(teamDTO))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andReturn();
-        Team gemaaktTeam = fromMvcResult(mvcResult, Team.class);
+        // we willen teamDTO mappen naar een team -->
+        Team t = fromMvcResult(mvcResult, Team.class);
 
         //Then
-        assertEquals(gemaaktTeam.getName(), teamDTO.getName());
-        assertEquals(gemaaktTeam.getOrganisation().getName(), teamDTO.getOrganisationName());
-
-         */
+        assertEquals("veranderdTeam", t.getName());
+        assertEquals("veranderdOrganization", t.getOrganisation().getName());
     }
 
     @Test

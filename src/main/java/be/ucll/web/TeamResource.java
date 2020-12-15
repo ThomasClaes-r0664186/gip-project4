@@ -44,10 +44,10 @@ public class TeamResource {
     }
 
     // team Updaten
-    @PutMapping                         // localhost:8080/team?id=
-    public ResponseEntity<Team> updateTeam(@RequestParam("id") Long id, @RequestBody TeamDTO teamDTO) throws TeamNotFound, TeamNameIsNullOrEmpty, OrganisationNotFound, TeamAlreadyExists {
+    @PutMapping  ("/{id}")                         // localhost:8080/team?id=
+    public ResponseEntity<Team> updateTeam(@PathVariable("id") Long id, @RequestBody TeamDTO teamDTO) throws TeamNotFound, TeamNameIsNullOrEmpty, OrganisationNotFound, TeamAlreadyExists {
         Team team;
-        if (id == 0) throw new TeamNotFound();
+        if (id <= 0) throw new TeamNotFound();
         if (teamDTO.getName() == null || teamDTO.getName().isEmpty()) throw new TeamNameIsNullOrEmpty();
         if (teamDTO.getOrganisationName() == null || teamDTO.getOrganisationName().isEmpty()) throw new OrganisationNotFound();
         if (teamRepository.findById(id).isPresent()){
