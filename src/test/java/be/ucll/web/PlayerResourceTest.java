@@ -3,9 +3,7 @@ package be.ucll.web;
 import be.ucll.AbstractIntegrationTest;
 import be.ucll.dao.PlayerRepository;
 import be.ucll.dto.PlayerDTO;
-import be.ucll.exceptions.UsernameAlreadyExists;
-import be.ucll.exceptions.UsernameNotFound;
-import be.ucll.exceptions.UsernameNotValid;
+import be.ucll.exceptions.*;
 import be.ucll.models.Player;
 import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +37,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	private Long idPlayerAvaIanche;
 
 	@BeforeEach
-	void setUp() throws UsernameNotValid, UsernameAlreadyExists {
+	void setUp() throws UsernameAlreadyExists, NotFoundException, ParameterInvalidException {
 
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 
@@ -85,7 +83,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
+		assertEquals("One or more parameters are invalid!", responsMessage );
 	}
 
 	@Test
@@ -99,7 +97,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
+		assertEquals("One or more parameters are invalid!", responsMessage );
 	}
 
 	@Test
@@ -141,7 +139,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
+		assertEquals("One or more parameters are invalid!", responsMessage );
 	}
 
 	@Test
@@ -155,7 +153,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
+		assertEquals("One or more parameters are invalid!", responsMessage );
 	}
 
 	@Test
@@ -169,7 +167,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
+		assertEquals("One or more parameters are invalid!", responsMessage );
 	}
 
 	@Test
@@ -183,7 +181,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
+		assertEquals("One or more parameters are invalid!", responsMessage );
 	}
 
 
@@ -219,7 +217,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
+		assertEquals("One or more parameters are invalid!", responsMessage );
 
 	}
 
@@ -235,7 +233,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
+		assertEquals("One or more parameters are invalid!", responsMessage );
 
 	}
 
@@ -283,7 +281,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
+		assertEquals("One or more parameters are invalid!", responsMessage );
 
 	}
 
@@ -299,7 +297,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
+		assertEquals("One or more parameters are invalid!", responsMessage );
 
 	}
 
@@ -315,7 +313,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
+		assertEquals("One or more parameters are invalid!", responsMessage );
 
 	}
 
@@ -331,7 +329,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("This user: " + playerDTO.getLeagueName() + " is not valid!", responsMessage );
+		assertEquals("One or more parameters are invalid!", responsMessage );
 
 	}
 
@@ -350,7 +348,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	}
 
 	@After
-	public void after() throws UsernameNotFound {
+	public void after() throws NotFoundException {
 		playerResource.deletePlayer(idPlayerWannesV);
 	}
 
