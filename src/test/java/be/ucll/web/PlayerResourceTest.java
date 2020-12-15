@@ -336,8 +336,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	@Test
 	void getPlayerOk() throws Exception {
 		final String ID = idPlayerAvaIanche.toString();
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID)
-				.contentType(MediaType.APPLICATION_JSON))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID))
 				.andExpect(status().isOk())
 				.andReturn();
 		Player getPlayer = fromMvcResult(mvcResult, Player.class);
@@ -347,9 +346,62 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 		assertEquals("Ianche", getPlayer.getLastName());
 	}
 
-	@After
-	public void after() throws NotFoundException {
-		playerResource.deletePlayer(idPlayerWannesV);
+	@Test
+	void getPlayerIdIsNegative() throws Exception {
+		final String ID = "-1";
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID))
+				.andExpect(status().isForbidden())
+				.andReturn();
+
+		String responsMessage = mvcResult.getResponse().getContentAsString();
+		assertEquals("One or more parameters are invalid!", responsMessage );
 	}
+
+	@Test
+	void getPlayerIdIs0() throws Exception {
+		final String ID = "0";
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID))
+				.andExpect(status().isForbidden())
+				.andReturn();
+
+		String responsMessage = mvcResult.getResponse().getContentAsString();
+		assertEquals("One or more parameters are invalid!", responsMessage );
+	}
+
+	@Test
+	void deletePlayerOk() throws Exception {
+		final String ID = idPlayerAvaIanche.toString();
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID)
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNoContent())
+				.andReturn();
+
+		String responsMessage = mvcResult.getResponse().getContentAsString();
+		assertEquals("", responsMessage );
+	}
+
+	@Test
+	void deletePlayerIdIsNegative() throws Exception {
+		final String ID = "-1";
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID)
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isForbidden())
+				.andReturn();
+
+		String responsMessage = mvcResult.getResponse().getContentAsString();
+		assertEquals("One or more parameters are invalid!", responsMessage );
+	}
+
+	@Test
+	void deletePlayerIdIs0() throws Exception {
+		final String ID = "0";
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID))
+				.andExpect(status().isForbidden())
+				.andReturn();
+
+		String responsMessage = mvcResult.getResponse().getContentAsString();
+		assertEquals("One or more parameters are invalid!", responsMessage );
+	}
+
 
 }

@@ -69,7 +69,7 @@ public class PlayerResource {
         if (playerDTO.getLeagueName() == null || playerDTO.getLeagueName().trim().isEmpty()
                 || playerDTO.getFirstName() == null || playerDTO.getFirstName().trim().isEmpty()
                 || playerDTO.getLastName() == null || playerDTO.getLastName().trim().isEmpty()
-                || id == 0) throw new ParameterInvalidException();
+                || id <= 0) throw new ParameterInvalidException();
         //We gaan controleren of de speler waarvan de leagueName gegeven is, of deze wel bestaat indien deze niet bestaat,
         // laten we zien dat de username niet gevonden is
         if (playerRepository.findPlayerById(id).isPresent()){
@@ -115,7 +115,10 @@ public class PlayerResource {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<PlayerDTO> getPlayer(@PathVariable("id") Long id) throws NotFoundException {
+    public ResponseEntity<PlayerDTO> getPlayer(@PathVariable("id") Long id) throws NotFoundException, ParameterInvalidException {
+
+        if (id <= 0) throw new ParameterInvalidException();
+
         //controleren of speler in onze db bestaat
         if(playerRepository.findPlayerById(id).isPresent()) {
             //speler opvragen en teruggeven
@@ -126,7 +129,10 @@ public class PlayerResource {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity deletePlayer(@RequestParam("id") Long id) throws NotFoundException {
+    public ResponseEntity deletePlayer(@PathVariable("id") Long id) throws NotFoundException, ParameterInvalidException {
+
+        if (id <= 0) throw new ParameterInvalidException();
+
         //We gaan controleren of de speler waarvan de leagueName gegeven is, of deze wel bestaat in onze db
         if(playerRepository.findPlayerById(id).isPresent()) {
 
