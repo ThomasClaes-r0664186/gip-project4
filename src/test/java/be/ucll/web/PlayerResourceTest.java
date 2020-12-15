@@ -18,6 +18,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,6 +34,10 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	@Autowired
 	private PlayerResource playerResource;
 
+	private Long idPlayerWannesV;
+	private Long idPlayerArdes;
+	private Long idPlayerAvaIanche;
+
 	@BeforeEach
 	void setUp() throws UsernameNotValid, UsernameAlreadyExists {
 
@@ -41,9 +47,9 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
 		PlayerDTO playerAvaIanche = new PlayerDTO("AvaIanche", "Ava", "Ianche");
 
-		playerResource.createPlayer(playerWannesV);
-		playerResource.createPlayer(playerArdes);
-		playerResource.createPlayer(playerAvaIanche);
+		idPlayerWannesV = Objects.requireNonNull(playerResource.createPlayer(playerWannesV).getBody()).getId();
+		idPlayerArdes = Objects.requireNonNull(playerResource.createPlayer(playerArdes).getBody()).getId();
+		idPlayerAvaIanche = Objects.requireNonNull(playerResource.createPlayer(playerAvaIanche).getBody()).getId();
 
 	}
 
@@ -184,10 +190,10 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerOk() throws Exception {
-		final String LEAGUE_NAME = "Ardes";
+		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("Ardes", "Arno", "De Smet");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player?leagueName=" + LEAGUE_NAME)
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID)
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -203,10 +209,10 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerLeagueNameNULL() throws Exception {
-		final String LEAGUE_NAME = "Ardes";
+		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO(null, "Arno", "De Smet");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player?leagueName=" + LEAGUE_NAME)
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID)
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -219,10 +225,10 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerLeagueNameEmpty() throws Exception {
-		final String LEAGUE_NAME = "Ardes";
+		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("", "Arno", "De Smet");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player?leagueName=" + LEAGUE_NAME)
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID)
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -235,10 +241,10 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerLeagueNameNotExists() throws Exception {
-		final String LEAGUE_NAME = "Ardes";
+		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("*", "Arno", "De Smet");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player?leagueName=" + LEAGUE_NAME)
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID)
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
@@ -251,10 +257,10 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerLeagueNameAlreadyExists() throws Exception {
-		final String LEAGUE_NAME = "Ardes";
+		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("WannesV", "Arno", "De Smet");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player?leagueName=" + LEAGUE_NAME)
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID)
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isConflict())
@@ -267,10 +273,10 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerFirstNameNULL() throws Exception {
-		final String LEAGUE_NAME = "Ardes";
+		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("Ardes", null, "De Smet");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player?leagueName=" + LEAGUE_NAME)
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID)
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -283,10 +289,10 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerFirstNameEmpty() throws Exception {
-		final String LEAGUE_NAME = "Ardes";
+		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("Ardes", "", "De Smet");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player?leagueName=" + LEAGUE_NAME)
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID)
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -299,10 +305,10 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerLastNameNULL() throws Exception {
-		final String LEAGUE_NAME = "Ardes";
+		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("Ardes", "Arno", null);
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player?leagueName=" + LEAGUE_NAME)
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID)
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -315,10 +321,10 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerLastNameEmpty() throws Exception {
-		final String LEAGUE_NAME = "Ardes";
+		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("Ardes", "Arno", "");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player?leagueName=" + LEAGUE_NAME)
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID)
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -331,8 +337,8 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void getPlayerOk() throws Exception {
-		final String LEAGUE_NAME = "AvaIanche";
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player?leagueName=" + LEAGUE_NAME)
+		final String ID = idPlayerAvaIanche.toString();
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andReturn();
@@ -345,7 +351,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@After
 	public void after() throws UsernameNotFound {
-		playerResource.deletePlayer("WannesV");
+		playerResource.deletePlayer(idPlayerWannesV);
 	}
 
 }
