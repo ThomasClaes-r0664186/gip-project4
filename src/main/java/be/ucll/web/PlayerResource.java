@@ -64,7 +64,11 @@ public class PlayerResource {
 
     // player Updaten
     @PutMapping
-    public PlayerDTO updatePlayer(@RequestParam("leagueName") String leagueName, @RequestBody PlayerDTO playerDTO) throws HttpClientErrorException, UsernameNotFound, UsernameAlreadyExists{
+    public PlayerDTO updatePlayer(@RequestParam("leagueName") String leagueName, @RequestBody PlayerDTO playerDTO) throws HttpClientErrorException, UsernameNotFound, UsernameAlreadyExists, UsernameNotValid {
+        // check of alles ingevult is.
+        if (playerDTO.getLeagueName() == null || playerDTO.getLeagueName().length() == 0
+                || playerDTO.getFirstName() == null || playerDTO.getFirstName().length() == 0
+                || playerDTO.getLastName() == null || playerDTO.getLastName().length() == 0 ) throw new UsernameNotValid(playerDTO.getLeagueName());
         //We gaan controleren of de speler waarvan de leagueName gegeven is, of deze wel bestaat indien deze niet bestaat,
         // laten we zien dat de username niet gevonden is
         if (playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).isPresent()){
