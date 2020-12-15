@@ -64,9 +64,9 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 		Player createdPlayer = fromMvcResult(mvcResult, Player.class);
 
-		assertEquals("6eoeDFzmaqHUyG8JfAHRJ7tR3FVoOpaUcVY3_Dh8KeK8Lks", createdPlayer.getSummonerID());
-		assertEquals("YHVhodh86GLW8W2omXryMzlcWq9uz7Pw3ChmF_C6LY9KqdI", createdPlayer.getAccountId());
-		assertEquals("Om0LPHADz1kQKM5rGA41I8eFklXi3P0xE82Ag0MyKb6mzSMFxdkxSx5CL_52nx2YMyJqfW8X_X6aEw", createdPlayer.getPuuID());
+		assertEquals("1xXnvDRMw7EtYUfyqVVE4axhW-TywmiIfVVIZ72dOd92u08", createdPlayer.getSummonerID());
+		assertEquals("b8PgZkOcjRUx7oiHgkD_BhJJ7B3rIGOwMN_1crvtdep39KA", createdPlayer.getAccountId());
+		assertEquals("saaENlT6jyW8dyAS3nOyk8SRXQjXs7qubys0Pls06P9Dk8hVgGOVgntYxAQilz_OxlJbQBL-0Ay5rw", createdPlayer.getPuuID());
 		assertEquals(playerDTO.getLeagueName(), createdPlayer.getLeagueName());
 		assertEquals(playerDTO.getFirstName(), createdPlayer.getFirstName());
 		assertEquals(playerDTO.getLastName(), createdPlayer.getLastName());
