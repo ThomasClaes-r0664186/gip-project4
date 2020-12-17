@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -75,12 +76,7 @@ public class MatchResource {
     )
     @GetMapping("{matchId}")
     public ResponseEntity<Match> getMatch(@PathVariable("matchId") Long matchId) throws NotFoundException, ParameterInvalidException {
-        checkId(matchId);
-        Optional<Match> match = matchRepository.findMatchById(matchId);
-        if(match.isEmpty()){
-            throw new NotFoundException(matchId.toString());
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(match.get());
+        return ResponseEntity.status(HttpStatus.OK).body(getMatchFromId(matchId));
     }
 
     @Operation(
@@ -88,12 +84,8 @@ public class MatchResource {
             description = "Update an already created match"
     )
     @PutMapping("{matchId}")
-    public ResponseEntity<Match> updateMatch(@PathVariable("matchId") Long matchId,@RequestBody MatchDTO matchDTO) throws NotFoundException, ParameterInvalidException {
-        checkId(matchId);
-        Optional<Match> match = matchRepository.findMatchById(matchId);
-        if(match.isEmpty()){
-            throw new NotFoundException(matchId.toString());
-        }
+    public ResponseEntity<Match> updateMatch(@PathVariable("matchId") Long matchId,@RequestBody MatchDTO matchDTO) throws NotFoundException, ParameterInvalidException, AlreadyExistsException {
+        Match match = getMatchFromId(matchId);
         //check date
         Date newDate = parseDate(matchDTO.getDate());
         if(isDateExpired(newDate)){
@@ -104,11 +96,14 @@ public class MatchResource {
         if(team.isEmpty()){
             throw new NotFoundException(matchDTO.getTeamId().toString());
         }
+        if(matchRepository.findMatchByTeam1AndAndDate(team.get(),newDate).isPresent()){
+            throw new AlreadyExistsException("Team "+team.get().getName()+" on date "+matchDTO.getDate()+" ");
+        }
 
-        match.get().setDate(newDate);
-        match.get().setTeam1(team.get());
-        matchRepository.save(match.get());
-        return ResponseEntity.status(HttpStatus.OK).body(match.get());
+        match.setDate(newDate);
+        match.setTeam1(team.get());
+        matchRepository.save(match);
+        return ResponseEntity.status(HttpStatus.OK).body(match);
     }
 
     @Operation(
@@ -117,13 +112,22 @@ public class MatchResource {
     )
     @DeleteMapping("{matchId}")
     public ResponseEntity deleteMatch(@PathVariable("matchId") Long matchId) throws ParameterInvalidException, NotFoundException {
-        checkId(matchId);
-        Optional<Match> match = matchRepository.findMatchById(matchId);
-        if(match.isEmpty()){
-            throw new NotFoundException(matchId.toString());
+        matchRepository.delete(getMatchFromId(matchId));
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+    @Operation(
+            summary = "Set match as won",
+            description = "Updates the isWinner status for this match"
+    )
+    @PutMapping("{matchId}/isWinner/{isWinner}")
+    public ResponseEntity<Match> setWinnerValue(@PathVariable("matchId") Long matchId,@PathVariable("isWinner") Boolean isWinner) throws ParameterInvalidException, NotFoundException {
+        Match match = getMatchFromId(matchId);
+        if(!(isWinner instanceof Boolean)){
+            throw new ParameterInvalidException(isWinner.toString());
         }
-        matchRepository.delete(match.get());
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        match.setIsWinner(isWinner);
+        matchRepository.save(match);
+        return ResponseEntity.status(HttpStatus.OK).body(match);
     }
 
     private Date parseDate (String matchDate) throws ParameterInvalidException {
@@ -140,6 +144,17 @@ public class MatchResource {
     private void checkId(Long id) throws ParameterInvalidException {
         if (id <= 0)
             throw new ParameterInvalidException(id.toString());
+    }
+    private Match getMatchFromId(Long id) throws ParameterInvalidException, NotFoundException {
+        checkId(id);
+        Optional<Match> match = matchRepository.findMatchById(id);
+        System.out.println(match.toString());
+        System.out.println(id); 
+        if(match.isEmpty()){
+            throw new NotFoundException(id.toString());
+        }else{
+            return match.get();
+        }
     }
 }
 
