@@ -1,5 +1,6 @@
 package be.ucll.exceptions;
 
+import liquibase.pro.packaged.E;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -45,4 +46,20 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity organisationNotFound(OrganisationNotFound exception){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
+
+    @ExceptionHandler(MatchDateNotCorrect.class)
+    public ResponseEntity MatchDateNotCorrect(MatchDateNotCorrect exception){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(MatchTeamAlreadyAssigned.class)
+    public ResponseEntity MatchTeamAlreadyAssigned(MatchTeamAlreadyAssigned exception){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(TeamNotFound.class)
+    public ResponseEntity TeamNotFound(TeamNotFound exception){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    }
+
 }
