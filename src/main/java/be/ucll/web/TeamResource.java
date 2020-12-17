@@ -1,7 +1,9 @@
 package be.ucll.web;
 import be.ucll.dao.TeamRepository;
 import be.ucll.dto.TeamDTO;
-import be.ucll.models.Organisation;
+import be.ucll.exceptions.AlreadyExistsException;
+import be.ucll.exceptions.NotFoundException;
+import be.ucll.exceptions.ParameterInvalidException;
 import be.ucll.models.Team;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,33 +21,23 @@ public class TeamResource {
     }
 
     @PostMapping("")
-    public ResponseEntity<Team> createTeam(@RequestBody TeamDTO teamDTO) throws TeamAlreadyExists, OrganisationNotFound, TeamNameIsNullOrEmpty, TeamOrganisationIsNullOrEmpty {
-        if (teamDTO.getName() == null || teamDTO.getName().isEmpty()) throw new TeamNameIsNullOrEmpty();
+    public ResponseEntity<Team> createTeam(@RequestBody TeamDTO teamDTO) throws ParameterInvalidException, AlreadyExistsException {
+        if (teamDTO.getName() == null || teamDTO.getName().isEmpty()) throw new ParameterInvalidException();
 
-        if (teamDTO.getOrganisationId() == null || teamDTO.getOrganisationId() <= 0) throw new TeamOrganisationIsNullOrEmpty();
+        if (teamRepository.findTeamByNameIgnoreCase(teamDTO.getName()).isPresent()) throw new AlreadyExistsException(teamDTO.getName());
 
-        if (teamRepository.findTeamByNameIgnoreCase(teamDTO.getName()).isPresent()) throw new TeamAlreadyExists(teamDTO.getName());
-
-        if (organisationRepository.findById(teamDTO.getOrganisationId()).isPresent()){
-
-            Organisation organisation = organisationRepository.findById(teamDTO.getOrganisationId()).get();
-
-            Team newTeam = teamRepository.save(new Team.TeamBuilder()
-                    .name(teamDTO.getName())
-                    .build());
-            return ResponseEntity.status(HttpStatus.CREATED).body(newTeam);
-
-        }
-        throw new OrganisationNotFound();
+        Team newTeam = teamRepository.save(new Team.TeamBuilder()
+                .name(teamDTO.getName())
+                .build());
+        return ResponseEntity.status(HttpStatus.CREATED).body(newTeam);
     }
 
     // team Updaten
     @PutMapping  ("/{id}")                         // localhost:8080/team?id=
-    public ResponseEntity<Team> updateTeam(@PathVariable("id") Long id, @RequestBody TeamDTO teamDTO) throws TeamNotFound, TeamNameIsNullOrEmpty, OrganisationNotFound, TeamAlreadyExists {
+    public ResponseEntity<Team> updateTeam(@PathVariable("id") Long id, @RequestBody TeamDTO teamDTO) throws ParameterInvalidException, NotFoundException, AlreadyExistsException {
         Team team;
-        if (id <= 0) throw new TeamNotFound();
-        if (teamDTO.getName() == null || teamDTO.getName().isEmpty()) throw new TeamNameIsNullOrEmpty();
-        if (teamDTO.getOrganisationId() == null || teamDTO.getOrganisationId() <= 0) throw new OrganisationNotFound();
+        if (id <= 0) throw new ParameterInvalidException(id.toString());
+        if (teamDTO.getName() == null || teamDTO.getName().isEmpty()) throw new ParameterInvalidException(teamDTO.getName());
         if (teamRepository.findById(id).isPresent()){
              team = teamRepository.findById(id).get();
             if (!team.getName().equals(teamDTO.getName())){
@@ -53,18 +45,9 @@ public class TeamResource {
                 team.setName(teamDTO.getName());
             }
         }else{
-            throw new TeamNotFound(teamDTO.getName());
+            throw new NotFoundException(teamDTO.getName());
         }
 
-        if (!team.getOrganisation().getId().equals(teamDTO.getOrganisationId())){
-
-            if (organisationRepository.findById(teamDTO.getOrganisationId()).isPresent()){
-                Organisation organisation = organisationRepository.findById(teamDTO.getOrganisationId()).get();
-                team.setOrganisation(organisation);
-            }else{
-                throw new OrganisationNotFound();
-            }
-        }
         teamRepository.save(team);
         return ResponseEntity.status(HttpStatus.OK).body(team);
     }
@@ -97,9 +80,9 @@ public class TeamResource {
 
      */
 
-    private void teamALreadyExists(String teamName) throws TeamAlreadyExists{
+    private void teamALreadyExists(String teamName) throws AlreadyExistsException{
         if (teamRepository.findTeamByNameIgnoreCase(teamName).isPresent()){
-            throw new TeamAlreadyExists(teamName);
+            throw new AlreadyExistsException(teamName);
         }
     }
 

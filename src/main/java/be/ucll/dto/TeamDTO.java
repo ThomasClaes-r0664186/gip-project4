@@ -3,11 +3,9 @@ package be.ucll.dto;
 public class TeamDTO {
 
     private String name;
-    private Long organisationId;
 
-    public TeamDTO(String name, Long organisationId) {
+    public TeamDTO(String name) {
         this.name = name;
-        this.organisationId = organisationId;
     }
 
     public String getName() {
@@ -16,13 +14,5 @@ public class TeamDTO {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Long getOrganisationId() {
-        return organisationId;
-    }
-
-    public void setOrganisationId(Long organisationId) {
-        this.organisationId = organisationId;
     }
 }
