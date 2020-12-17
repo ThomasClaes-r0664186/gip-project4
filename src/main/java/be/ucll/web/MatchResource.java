@@ -142,14 +142,15 @@ public class MatchResource {
     }
 
     private void checkId(Long id) throws ParameterInvalidException {
+        if (id == null){
+            throw new NullPointerException();
+        }
         if (id <= 0)
             throw new ParameterInvalidException(id.toString());
     }
     private Match getMatchFromId(Long id) throws ParameterInvalidException, NotFoundException {
         checkId(id);
         Optional<Match> match = matchRepository.findMatchById(id);
-        System.out.println(match.toString());
-        System.out.println(id); 
         if(match.isEmpty()){
             throw new NotFoundException(id.toString());
         }else{

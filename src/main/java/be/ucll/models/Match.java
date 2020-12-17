@@ -129,7 +129,7 @@ public class Match {
                     ", date='" + date.toString() + '\'' +
                     ", team1Id='" + team1.toString() + '\'' +
                     ", isWinner='" + isWinner + '\'' +
-                    ", matchID='" + matchID.toString() + '\'' +
+                    ", matchID='" + ((matchID==null)?"":matchID.toString()) + '\'' +
                     '}';
     }
 }
