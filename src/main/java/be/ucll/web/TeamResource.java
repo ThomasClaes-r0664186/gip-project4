@@ -83,7 +83,7 @@ public class TeamResource {
             Team team = teamRepository.findById(id).get();
             return ResponseEntity.status(HttpStatus.OK).body(new TeamDTO(team.getName(), team.getOrganisation().getName()));
         }
-        throw new TeamNotFound(teamName);
+        throw new NotFoundException();
     }
 
     @DeleteMapping // id veranderd

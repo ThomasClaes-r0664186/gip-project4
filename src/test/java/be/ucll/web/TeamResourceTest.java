@@ -243,7 +243,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/team/" + teamId)
                 .content(toJson(teamDTO))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isForbidden())
                 .andReturn();
 
 
