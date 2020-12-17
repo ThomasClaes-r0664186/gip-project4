@@ -46,19 +46,21 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
 
-    @ExceptionHandler(TeamNotFound.class)
-    public ResponseEntity teamNotFound(TeamNotFound exception){
+    // deze exceptions gebruiken
+    // TODO: De anderen exceptions met deze vervangen
+
+    @ExceptionHandler(AlreadyExistsException.class)
+    public ResponseEntity alreadyExistsException(AlreadyExistsException exception){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity notFoundException(NotFoundException exception){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
 
-    @ExceptionHandler(PlayerAlreadyInTeam.class)
-    public ResponseEntity playerAlreadyInTeam(PlayerAlreadyInTeam exception){
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
+    @ExceptionHandler(ParameterInvalidException.class)
+    public ResponseEntity ParameterInvalidException(ParameterInvalidException exception){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
     }
-
-    @ExceptionHandler(TooManyActivePlayers.class)
-    public ResponseEntity tooManyActivePlayers(TooManyActivePlayers exception){
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
-    }
-
 }
