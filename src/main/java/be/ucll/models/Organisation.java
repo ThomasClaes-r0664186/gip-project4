@@ -81,7 +81,7 @@ public class Organisation {
         private Long providerID;
         private Long tournamentID;
 
-        private OrganisationBuilder() {
+        public OrganisationBuilder() {
         }
 
         public static OrganisationBuilder anOrganisation() {
@@ -95,22 +95,22 @@ public class Organisation {
             this.tournamentID= copy.tournamentID;
         }
 
-        public OrganisationBuilder withId(Long id) {
+        public OrganisationBuilder id(Long id) {
             this.id = id;
             return this;
         }
 
-        public OrganisationBuilder withName(String name) {
+        public OrganisationBuilder name(String name) {
             this.name = name;
             return this;
         }
 
-        public OrganisationBuilder withProviderID(Long providerID) {
+        public OrganisationBuilder providerID(Long providerID) {
             this.providerID = providerID;
             return this;
         }
 
-        public OrganisationBuilder withTournamentID(Long tournamentID) {
+        public OrganisationBuilder tournamentID(Long tournamentID) {
             this.tournamentID = tournamentID;
             return this;
         }

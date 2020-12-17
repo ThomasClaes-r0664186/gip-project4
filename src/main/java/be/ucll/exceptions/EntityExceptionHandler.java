@@ -47,6 +47,21 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
 
+    @ExceptionHandler(TeamNotFound.class)
+    public ResponseEntity TeamNotFound(TeamNotFound exception){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(TeamNameIsNullOrEmpty.class)
+    public ResponseEntity TeamNameIsNullOrEmpty(TeamNameIsNullOrEmpty exception){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(TeamOrganisationIsNullOrEmpty.class)
+    public ResponseEntity TeamOrganisationIsNullOrEmpty(TeamOrganisationIsNullOrEmpty exception){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
+    }
+
     // deze exceptions gebruiken
     // TODO: De anderen exceptions met deze vervangen
 
