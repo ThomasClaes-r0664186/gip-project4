@@ -38,13 +38,13 @@ public class MatchResource {
             description = "Using a teamname and a date (DD/MM/YYYY), create a new match"
     )
     @PostMapping
-    public ResponseEntity<Match> createMatch(@RequestBody MatchDTO matchDTO) throws MatchDateNotCorrect, MatchTeamAlreadyAssigned, TeamNotFound {
+    public ResponseEntity<Match> createMatch(@RequestBody MatchDTO matchDTO) throws ParameterInvalidException, AlreadyExistsException {
         //Parse datum
         Optional<Date> matchDate = null;
         try {
             matchDate = Optional.ofNullable(new SimpleDateFormat("dd/MM/yyyy").parse(matchDTO.getDate()));
         }catch(ParseException e){
-            throw new MatchDateNotCorrect();
+            throw new ParameterInvalidException(matchDTO.getDate());
         }
 
         //Team opzoeken
@@ -54,7 +54,7 @@ public class MatchResource {
 
             //Kijk dat de datum niet in het verleden is
             if(matchDate.get().before(new Date()) && !matchDate.get().equals(new Date())){
-                throw new MatchDateNotCorrect(matchDTO.getDate());
+                throw new ParameterInvalidException(matchDTO.getDate().toString());
             }
 
             //Geen match gevonden waar het team in zit en op dezelfde datum afspeelt
@@ -68,14 +68,10 @@ public class MatchResource {
                 );
                 return ResponseEntity.status(HttpStatus.CREATED).body(newMatch);
             }else{
-                throw new MatchTeamAlreadyAssigned(matchDTO.getDate());
+                throw new AlreadyExistsException(matchDTO.getDate());
             }
         }else{
-            if(team1.isEmpty()){
-                throw new TeamNotFound();
-            }else{
-                throw new RuntimeException("This exception shouldn't have happend");
-            }
+            throw new ParameterInvalidException();
         }
     }
 
@@ -84,10 +80,10 @@ public class MatchResource {
             description = "use a match id to retrieve the full match information"
     )
     @GetMapping
-    public ResponseEntity<Match> getMatch(@RequestParam("matchId") long matchId) throws MatchNotFound {
+    public ResponseEntity<Match> getMatch(@RequestParam("matchId") Long matchId) throws NotFoundException {
         Optional<Match> match = matchRepository.findMatchById(matchId);
         if(match.isEmpty()){
-            throw new MatchNotFound(matchId);
+            throw new NotFoundException(matchId.toString());
         }
         return ResponseEntity.status(HttpStatus.OK).body(match.get());
     }

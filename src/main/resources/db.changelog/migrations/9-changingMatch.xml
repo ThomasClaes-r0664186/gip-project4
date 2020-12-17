@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="9" author="Thomas Claes">
+        <!-- change match -->
+
+        <dropForeignKeyConstraint baseTableName="match"
+                                  baseTableSchemaName="liquibase"
+                                  constraintName="fk_team2_match"/>
+
+        <dropColumn tableName="match" schemaName="liquibase" columnName="team2_id"/>
+
+        <dropColumn tableName="match" schemaName="liquibase" columnName="tournament_code"/>
+
+        <modifyDataType
+                columnName="winner_id"
+                newDataType="BOOLEAN"
+                schemaName="liquibase"
+                tableName="match"/>
+
+        <renameColumn columnDataType="BOOLEAN"
+                      newColumnName="is_winner"
+                      oldColumnName="winner_id"
+                      remarks="A change in names"
+                      schemaName="liquibase"
+                      tableName="match"/>
+    </changeSet>
+
+</databaseChangeLog>

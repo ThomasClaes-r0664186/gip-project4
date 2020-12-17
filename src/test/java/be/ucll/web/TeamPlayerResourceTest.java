@@ -1,12 +1,10 @@
 package be.ucll.web;
 
 import be.ucll.AbstractIntegrationTest;
-import be.ucll.dao.OrganisationRepository;
 import be.ucll.dao.PlayerRepository;
 import be.ucll.dao.TeamPlayerRepository;
 import be.ucll.dao.TeamRepository;
 import be.ucll.dto.TeamPlayerDTO;
-import be.ucll.models.Organisation;
 import be.ucll.models.Player;
 import be.ucll.models.Team;
 
@@ -34,10 +32,6 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     private TeamRepository teamRepository;
 
     @Autowired
-    private OrganisationRepository organisationRepository;
-
-
-    @Autowired
     private PlayerRepository playerRepository;
 
     @Autowired
@@ -51,22 +45,15 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 
-        Organisation organisation = new Organisation();
-        organisation.setName("organisatie");
-        organisation.setProvideID(124585658L);
-        organisation.setTournamentID(144485558L);
-        organisationRepository.save(organisation);
 
 
         Team team = new Team.TeamBuilder()
                 .name("TestTeam")
-                .organisation(organisation)
                 .build();
         testTeamId = teamRepository.save(team).getId();
 
         Team team2 = new Team.TeamBuilder()
                 .name("TestTeam2")
-                .organisation(organisation)
                 .build();
         teamRepository.save(team2);
 

@@ -19,18 +19,11 @@ public class Match {
     @JoinColumn(name = "team1_id")
     private Team team1;
 
-    @ManyToOne
-    @JoinColumn(name = "team2_id")
-    private Team team2;
-
-    @Column(name = "winner_id")
-    private Long winnerId;
+    @Column(name = "is_winner")
+    private boolean isWinner;
 
     @Column(name = "match_id")
     private Long matchID;
-
-    @Column(name = "tournament_code")
-    private String tournamentCode;
 
     public Match(){}
 

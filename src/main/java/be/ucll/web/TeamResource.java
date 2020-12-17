@@ -1,8 +1,6 @@
 package be.ucll.web;
-import be.ucll.dao.OrganisationRepository;
 import be.ucll.dao.TeamRepository;
 import be.ucll.dto.TeamDTO;
-import be.ucll.exceptions.*;
 import be.ucll.models.Organisation;
 import be.ucll.models.Team;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +13,9 @@ import org.springframework.web.bind.annotation.*;
 public class TeamResource {
 
     private TeamRepository teamRepository;
-    private OrganisationRepository organisationRepository;
     @Autowired
-    public TeamResource(TeamRepository teamRepository, OrganisationRepository organisationRepository) {
+    public TeamResource(TeamRepository teamRepository) {
         this.teamRepository = teamRepository;
-        this.organisationRepository = organisationRepository;
     }
 
     @PostMapping("")
@@ -36,7 +32,6 @@ public class TeamResource {
 
             Team newTeam = teamRepository.save(new Team.TeamBuilder()
                     .name(teamDTO.getName())
-                    .organisation(organisation)
                     .build());
             return ResponseEntity.status(HttpStatus.CREATED).body(newTeam);
 

@@ -1,7 +1,6 @@
 package be.ucll.web;
 
 import be.ucll.AbstractIntegrationTest;
-import be.ucll.dao.OrganisationRepository;
 import be.ucll.dao.TeamRepository;
 import be.ucll.dto.TeamDTO;
 import be.ucll.models.Organisation;
@@ -28,10 +27,6 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
     private MockMvc mockMvc;
     private Long teamId;
-    private Long currentOrganisationId;
-    private Long newOrganisationId;
-    @Autowired
-    private OrganisationRepository organisationRepository;
 
     @Autowired
     private TeamRepository teamRepository;

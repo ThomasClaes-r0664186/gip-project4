@@ -17,49 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 @ControllerAdvice
 public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(UsernameNotValid.class)
-    public ResponseEntity usernameNotValid(HttpServletResponse response, UsernameNotValid usernameNotValid) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(usernameNotValid.getMessage());
-    }
-
-    @ExceptionHandler(UsernameAlreadyExists.class)
-    public ResponseEntity usernameAlreadyExists(HttpServletResponse response, UsernameAlreadyExists usernameAlreadyExists) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(usernameAlreadyExists.getMessage());
-    }
-
     @ExceptionHandler(HttpClientErrorException.class)
     public ResponseEntity summonerNotFound(HttpClientErrorException exception){
         return ResponseEntity.status(exception.getStatusCode()).body(exception.getMessage());
-    }
-
-    @ExceptionHandler(UsernameNotFound.class)
-    public ResponseEntity usernameNotFound(UsernameNotFound exception){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
-    }
-    
-    @ExceptionHandler(TeamAlreadyExists.class)
-    public ResponseEntity teamAlreadyExists(TeamAlreadyExists exception){
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
-    }
-
-    @ExceptionHandler(OrganisationNotFound.class)
-    public ResponseEntity organisationNotFound(OrganisationNotFound exception){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
-    }
-
-    @ExceptionHandler(TeamNotFound.class)
-    public ResponseEntity TeamNotFound(TeamNotFound exception){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
-    }
-
-    @ExceptionHandler(TeamNameIsNullOrEmpty.class)
-    public ResponseEntity TeamNameIsNullOrEmpty(TeamNameIsNullOrEmpty exception){
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
-    }
-
-    @ExceptionHandler(TeamOrganisationIsNullOrEmpty.class)
-    public ResponseEntity TeamOrganisationIsNullOrEmpty(TeamOrganisationIsNullOrEmpty exception){
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
     }
 
     // deze exceptions gebruiken
