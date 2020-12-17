@@ -40,12 +40,7 @@ public class MatchResource {
     @PostMapping
     public ResponseEntity<Match> createMatch(@RequestBody MatchDTO matchDTO) throws ParameterInvalidException, AlreadyExistsException {
         //Parse datum
-        Optional<Date> matchDate = null;
-        try {
-            matchDate = Optional.ofNullable(new SimpleDateFormat("dd/MM/yyyy").parse(matchDTO.getDate()));
-        }catch(ParseException e){
-            throw new ParameterInvalidException(matchDTO.getDate());
-        }
+        Optional<Date> matchDate = Optional.ofNullable(parseDate(matchDTO.getDate()));
 
         //Team opzoeken
         Optional<Team> team1 = teamRepository.findTeamById(matchDTO.getTeamId());
@@ -53,8 +48,8 @@ public class MatchResource {
         if(team1.isPresent() && matchDate.isPresent()){
 
             //Kijk dat de datum niet in het verleden is
-            if(matchDate.get().before(new Date()) && !matchDate.get().equals(new Date())){
-                throw new ParameterInvalidException(matchDTO.getDate().toString());
+            if(isDateExpired(matchDate.get())){
+                throw new ParameterInvalidException("Date has expired, "+matchDTO.getDate());
             }
 
             //Geen match gevonden waar het team in zit en op dezelfde datum afspeelt
@@ -86,6 +81,43 @@ public class MatchResource {
         }
         return ResponseEntity.status(HttpStatus.OK).body(match.get());
     }
+
+    @Operation(
+            summary = "Update match",
+            description = "Update an already created match"
+    )
+    @PutMapping
+    public ResponseEntity<Match> updateMatch(@RequestParam("matchId") Long matchId,@RequestBody MatchDTO matchDTO) throws NotFoundException, ParameterInvalidException {
+        Optional<Match> match = matchRepository.findMatchById(matchId);
+        if(match.isEmpty()){
+            throw new NotFoundException(matchId.toString());
+        }
+        //check date
+        Date newDate = parseDate(matchDTO.getDate());
+        if(isDateExpired(newDate)){
+            throw new ParameterInvalidException("Date has expired, "+matchDTO.getDate());
+        }
+        //check teamId
+        Optional<Team> team = teamRepository.findTeamById(matchDTO.getTeamId());
+        if(team.isEmpty()){
+            throw new NotFoundException(matchDTO.getTeamId().toString());
+        }
+
+        match.get().setDate(newDate);
+        match.get().setTeam1(team.get());
+    }
+
+    private Date parseDate (String matchDate) throws ParameterInvalidException {
+        try {
+            return new SimpleDateFormat("dd/MM/yyyy").parse(matchDate);
+        }catch(ParseException e){
+            throw new ParameterInvalidException(matchDate);
+        }
+    }
+    private Boolean isDateExpired (Date date){
+        return (date.before(new Date()) && !date.equals(new Date()));
+    }
+
 }
 
 
