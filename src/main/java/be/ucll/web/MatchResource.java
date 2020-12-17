@@ -63,7 +63,6 @@ public class MatchResource {
                     new Match.MatchBuilder()
                         .team1Id(team1.get())
                         .date(matchDate.get())
-                        .tournamentCode("No Tournament code")    //TODO
                         .build()
                 );
                 return ResponseEntity.status(HttpStatus.CREATED).body(newMatch);
