@@ -43,6 +43,8 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     @Autowired
     private TeamPlayerRepository teamPlayerRepository;
 
+    private Long testTeamId;
+    private Long testLOLnameId;
 
     @BeforeEach
     void setUp() {
@@ -60,7 +62,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
                 .name("TestTeam")
                 .organisation(organisation)
                 .build();
-        teamRepository.save(team);
+        testTeamId = teamRepository.save(team).getId();
 
         Team team2 = new Team.TeamBuilder()
                 .name("TestTeam2")
@@ -75,7 +77,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
                 .lastName("Verbieren")
                 .leagueName("LOLname")
                 .build();
-        playerRepository.save(player);
+        testLOLnameId = playerRepository.save(player).getId();
 
         Player player7Stijn7 = new Player.PlayerBuilder()
                 .firstName("Stijn")
@@ -190,19 +192,17 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
 
     @Test
     void addPlayerToTeamOk() throws Exception {
-        final String LEAGUE_NAME = "LOLname";
-        final String TEAM_NAME = "TestTeam";
+        final String ID_PLAYER = testLOLnameId.toString();
+        final String ID_TEAM = testTeamId.toString();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer")
-                .param("leagueName", LEAGUE_NAME)
-                .param("teamName", TEAM_NAME))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player" ))
                 .andExpect(status().isCreated())
                 .andReturn();
 
         TeamPlayerDTO teamPlayer = fromMvcResult(mvcResult, TeamPlayerDTO.class);
 
-        assertEquals(LEAGUE_NAME, teamPlayer.getPlayerName());
-        assertEquals(TEAM_NAME, teamPlayer.getTeamName());
+        assertEquals("LOLname", teamPlayer.getPlayerName());
+        assertEquals("TestTeam", teamPlayer.getTeamName());
 
     }
 
