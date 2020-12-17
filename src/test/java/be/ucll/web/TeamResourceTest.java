@@ -77,7 +77,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
         // then
         String responseMessage = mvcResult.getResponse().getContentAsString();
-        //assertEquals("This team: " + teamDTO.getName() + " already exist!", responseMessage);
+        assertEquals( teamDTO.getName() + " already exists!", responseMessage);
     }
 
     @Test // bij deze test kijken we na of de mee te geven teamnaam niet null is (teamDTO in requestbody)
@@ -94,7 +94,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
         //Then
         String responseMessage = mvcResult.getResponse().getContentAsString();
-        //assertEquals("Team is null or empty!", responseMessage);
+        assertEquals("This parameter may not be empty", responseMessage);
     }
 
     @Test // bij deze test kijken we na of de mee te geven teamnaam niet leeg(een lege string) is (teamDTO in requestbody)
@@ -111,15 +111,13 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
         //Then
         String responseMessage = mvcResult.getResponse().getContentAsString();
-        //assertEquals("Team is null or empty!", responseMessage);
+        assertEquals("This parameter may not be empty", responseMessage);
     }
 
 
 
     @Test
     void updateTeamOk() throws Exception {
-        // we willen bij de update niet de organizationName veranderen, maar de organisatie in het algemeen.
-        // deze organisatie moet al in de databank zitten
         // Given
         TeamDTO teamDTO = new TeamDTO("veranderdTeam");
 
@@ -139,8 +137,6 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateTeamNameIsNull() throws Exception {
-        // we willen bij de update niet de organizationName veranderen, maar de organisatie in het algemeen.
-        // deze organisatie moet al in de databank zitten
         // Given
         TeamDTO teamDTO = new TeamDTO(null);
 
@@ -154,14 +150,12 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
         //Then
         String responseMessage = mvcResult.getResponse().getContentAsString();
-        //assertEquals("Team is null or empty!", responseMessage);
+        assertEquals(teamDTO.getName() + " is not valid!", responseMessage);
 
     }
 
     @Test
     void updateTeamNameIsEmpty() throws Exception {
-        // we willen bij de update niet de organizationName veranderen, maar de organisatie in het algemeen.
-        // deze organisatie moet al in de databank zitten
         // Given
         TeamDTO teamDTO = new TeamDTO("");
 
@@ -169,24 +163,43 @@ class TeamResourceTest extends AbstractIntegrationTest {
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/team/" + teamId)
                 .content(toJson(teamDTO))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isForbidden())
                 .andReturn();
-
 
         //Then
         String responseMessage = mvcResult.getResponse().getContentAsString();
-        //assertEquals("Team is null or empty!", responseMessage);
+        assertEquals(teamDTO.getName() + " is not valid!", responseMessage);
 
     }
-
-
-
     @Test
-    void getTeam() {
-    }
+    void getTeamOk() throws Exception {
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/team/" + teamId))
+                .andExpect(status().isOk())
+                .andReturn();
+        Team getTeam = fromMvcResult(mvcResult, Team.class);
 
+        assertEquals("testTeam", getTeam.getName());
+    }
     @Test
-    void deleteTeam() {
-    }
+    void getTeamIdIsNegative() throws Exception {
 
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/team/" + -5L ))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals(-5L +" was not found!", responsMessage );
+    }
+    @Test
+    void getTeamIdIs0() throws Exception {
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/team/" + 0L ))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals(0L +" was not found!", responsMessage );
+    }
+    
+    
 }
