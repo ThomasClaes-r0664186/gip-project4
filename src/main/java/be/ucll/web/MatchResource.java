@@ -73,8 +73,9 @@ public class MatchResource {
             summary = "get match by id",
             description = "use a match id to retrieve the full match information"
     )
-    @GetMapping
-    public ResponseEntity<Match> getMatch(@RequestParam("matchId") Long matchId) throws NotFoundException {
+    @GetMapping("{matchId}")
+    public ResponseEntity<Match> getMatch(@PathVariable("matchId") Long matchId) throws NotFoundException, ParameterInvalidException {
+        checkId(matchId);
         Optional<Match> match = matchRepository.findMatchById(matchId);
         if(match.isEmpty()){
             throw new NotFoundException(matchId.toString());
@@ -86,8 +87,9 @@ public class MatchResource {
             summary = "Update match",
             description = "Update an already created match"
     )
-    @PutMapping
-    public ResponseEntity<Match> updateMatch(@RequestParam("matchId") Long matchId,@RequestBody MatchDTO matchDTO) throws NotFoundException, ParameterInvalidException {
+    @PutMapping("{matchId}")
+    public ResponseEntity<Match> updateMatch(@PathVariable("matchId") Long matchId,@RequestBody MatchDTO matchDTO) throws NotFoundException, ParameterInvalidException {
+        checkId(matchId);
         Optional<Match> match = matchRepository.findMatchById(matchId);
         if(match.isEmpty()){
             throw new NotFoundException(matchId.toString());
@@ -109,6 +111,21 @@ public class MatchResource {
         return ResponseEntity.status(HttpStatus.OK).body(match.get());
     }
 
+    @Operation(
+            summary = "Delete match",
+            description = "Delete a specific match by id"
+    )
+    @DeleteMapping("{matchId}")
+    public ResponseEntity deleteMatch(@PathVariable("matchId") Long matchId) throws ParameterInvalidException, NotFoundException {
+        checkId(matchId);
+        Optional<Match> match = matchRepository.findMatchById(matchId);
+        if(match.isEmpty()){
+            throw new NotFoundException(matchId.toString());
+        }
+        matchRepository.delete(match.get());
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
     private Date parseDate (String matchDate) throws ParameterInvalidException {
         try {
             return new SimpleDateFormat("dd/MM/yyyy").parse(matchDate);
@@ -120,6 +137,10 @@ public class MatchResource {
         return (date.before(new Date()) && !date.equals(new Date()));
     }
 
+    private void checkId(Long id) throws ParameterInvalidException {
+        if (id <= 0)
+            throw new ParameterInvalidException(id.toString());
+    }
 }
 
 
