@@ -1,10 +1,14 @@
 package be.ucll.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class TeamDTO {
 
     private String name;
 
-    public TeamDTO(String name) {
+    @JsonCreator
+    public TeamDTO(@JsonProperty(value = "name") String name) {
         this.name = name;
     }
 
@@ -15,4 +19,5 @@ public class TeamDTO {
     public void setName(String name) {
         this.name = name;
     }
+
 }

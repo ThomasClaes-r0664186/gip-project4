@@ -15,7 +15,16 @@
 
         <dropColumn tableName="match" schemaName="liquibase" columnName="tournament_code"/>
 
-        <modifyDataType
+        <dropColumn tableName="match" schemaName="liquibase" columnName="winner_id"/>
+
+        <addColumn tableName="match" schemaName="liquibase">
+            <column name="is_winner" type="BOOLEAN">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+
+        <!--<modifyDataType
                 columnName="winner_id"
                 newDataType="BOOLEAN"
                 schemaName="liquibase"
@@ -26,7 +35,7 @@
                       oldColumnName="winner_id"
                       remarks="A change in names"
                       schemaName="liquibase"
-                      tableName="match"/>
+                      tableName="match"/>-->
     </changeSet>
 
 </databaseChangeLog>

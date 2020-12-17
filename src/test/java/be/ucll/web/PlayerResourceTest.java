@@ -37,7 +37,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	private Long idPlayerAvaIanche;
 
 	@BeforeEach
-	void setUp() throws UsernameAlreadyExists, NotFoundException, ParameterInvalidException {
+	void setUp() throws NotFoundException, ParameterInvalidException, AlreadyExistsException {
 
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 
