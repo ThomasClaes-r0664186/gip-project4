@@ -47,24 +47,21 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
 
-    @ExceptionHandler(MatchDateNotCorrect.class)
-    public ResponseEntity MatchDateNotCorrect(MatchDateNotCorrect exception){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    // deze exceptions gebruiken
+    // TODO: De anderen exceptions met deze vervangen
+
+    @ExceptionHandler(AlreadyExistsException.class)
+    public ResponseEntity alreadyExistsException(AlreadyExistsException exception){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
     }
 
-    @ExceptionHandler(MatchTeamAlreadyAssigned.class)
-    public ResponseEntity MatchTeamAlreadyAssigned(MatchTeamAlreadyAssigned exception){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
-    }
-
-    @ExceptionHandler(TeamNotFound.class)
-    public ResponseEntity TeamNotFound(TeamNotFound exception){
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity notFoundException(NotFoundException exception){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
 
-    @ExceptionHandler(MatchNotFound.class)
-    public ResponseEntity MatchNotFound(MatchNotFound exception){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    @ExceptionHandler(ParameterInvalidException.class)
+    public ResponseEntity ParameterInvalidException(ParameterInvalidException exception){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
     }
-
 }

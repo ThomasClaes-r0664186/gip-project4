@@ -31,7 +31,13 @@ public class PlayerResource {
     @ApiOperation("De Summoner/Speler van league of legends creëren) ")
     @PostMapping
     // De functie wordt aangeroepen door middel van een postrequest. met als input: JSON-object Player: { "leagueName" : "7Stijn7" }
-    public ResponseEntity<Player> createPlayer(@RequestBody PlayerDTO player) throws UsernameNotValid, UsernameAlreadyExists {
+    public ResponseEntity<Player> createPlayer(@RequestBody PlayerDTO player) throws UsernameAlreadyExists, ParameterInvalidException, NotFoundException {
+
+        // check of alles ingevult is.
+        if (player.getLeagueName() == null || player.getLeagueName().trim().isEmpty()
+                || player.getFirstName() == null || player.getFirstName().trim().isEmpty()
+                || player.getLastName() == null || player.getLastName().trim().isEmpty()) throw new ParameterInvalidException();
+
         // Daarna wordt er aan de playerRepository gevraagd of deze speler al gevonden is (op basis van de username), en al in onze databank zit.
         // Zoja, Gooit het een exception: dat de speler al bestaat in ons systeem.
         playerExists(player.getLeagueName());
@@ -53,18 +59,23 @@ public class PlayerResource {
             return ResponseEntity.status(HttpStatus.CREATED).body(newPlayer);
         }
         // Indien ook de summonerService geen geldige summoner terug krijgt als respons. gooien we een exception dat de spelersnaam ongeldig is.
-        throw new UsernameNotValid(player.getLeagueName());
+        throw new NotFoundException();
     }
 
     // player Updaten
-    @PutMapping
-    public PlayerDTO updatePlayer(@RequestParam("leagueName") String leagueName, @RequestBody PlayerDTO playerDTO) throws HttpClientErrorException, UsernameNotFound, UsernameAlreadyExists{
+    @PutMapping("{id}")
+    public PlayerDTO updatePlayer(@PathVariable("id") Long id, @RequestBody PlayerDTO playerDTO) throws HttpClientErrorException, UsernameNotFound, UsernameAlreadyExists, ParameterInvalidException, NotFoundException {
+        // check of alles ingevult is.
+        if (playerDTO.getLeagueName() == null || playerDTO.getLeagueName().trim().isEmpty()
+                || playerDTO.getFirstName() == null || playerDTO.getFirstName().trim().isEmpty()
+                || playerDTO.getLastName() == null || playerDTO.getLastName().trim().isEmpty()
+                || id <= 0) throw new ParameterInvalidException();
         //We gaan controleren of de speler waarvan de leagueName gegeven is, of deze wel bestaat indien deze niet bestaat,
         // laten we zien dat de username niet gevonden is
-        if (playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).isPresent()){
+        if (playerRepository.findPlayerById(id).isPresent()){
 
             //Wanneer deze speler bestaat, gaan we die in een Player object steken.
-            Player player = playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).get();
+            Player player = playerRepository.findPlayerById(id).get();
 
             //Dan kijken we of ze de league naam van de speler willen veranderen
             if (!player.getLeagueName().equals(playerDTO.getLeagueName())){
@@ -100,32 +111,38 @@ public class PlayerResource {
         }
 
         //Exception om te tonen dat de speler waarvan je iets wilt aanpassen niet bestaat.
-        throw new UsernameNotFound(leagueName);
+        throw new NotFoundException();
     }
 
-    @GetMapping
-    public ResponseEntity<PlayerDTO> getPlayer(@RequestParam("leagueName") String leagueName) throws UsernameNotFound {
+    @GetMapping("{id}")
+    public ResponseEntity<PlayerDTO> getPlayer(@PathVariable("id") Long id) throws NotFoundException, ParameterInvalidException {
+
+        if (id <= 0) throw new ParameterInvalidException();
+
         //controleren of speler in onze db bestaat
-        if(playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).isPresent()) {
+        if(playerRepository.findPlayerById(id).isPresent()) {
             //speler opvragen en teruggeven
-            Player player = playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).get();
+            Player player = playerRepository.findPlayerById(id).get();
             return ResponseEntity.status(HttpStatus.OK).body((new PlayerDTO(player.getLeagueName(), player.getFirstName(), player.getLastName())));
         }
-        throw new UsernameNotFound(leagueName);
+        throw new NotFoundException();
     }
 
-    @DeleteMapping
-    public ResponseEntity deletePlayer(@RequestParam("leagueName") String leagueName) throws UsernameNotFound {
+    @DeleteMapping("{id}")
+    public ResponseEntity deletePlayer(@PathVariable("id") Long id) throws NotFoundException, ParameterInvalidException {
+
+        if (id <= 0) throw new ParameterInvalidException();
+
         //We gaan controleren of de speler waarvan de leagueName gegeven is, of deze wel bestaat in onze db
-        if(playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).isPresent()) {
+        if(playerRepository.findPlayerById(id).isPresent()) {
 
             //Zo ja, dan verwijderen we deze
-            playerRepository.delete(playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).get());
+            playerRepository.delete(playerRepository.findPlayerById(id).get());
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
         //zo niet => exception
-        throw new UsernameNotFound(leagueName);
+        throw new NotFoundException();
     }
 
     //Helper methode om te controleren of de league naam reeds in onze db steekt
