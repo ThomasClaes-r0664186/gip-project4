@@ -74,12 +74,13 @@ public class TeamResource {
         return ResponseEntity.status(HttpStatus.OK).body(team);
     }
 /*
-    @GetMapping // teamname veranderen naar id
-    public ResponseEntity<TeamDTO> getTeam(@RequestParam("teamName") String teamName) throws TeamNotFound {
+    @GetMapping("{id}") // teamname veranderen naar id
+    public ResponseEntity<TeamDTO> getTeam(@PathVariable("id") Long id)  throws TeamNotFound {
+        if (id <= 0) throw new TeamNotFound();
         //controleren of team in onze db bestaat
-        if(teamRepository.findTeamByNameIgnoreCase(teamName).isPresent()) {
+        if(teamRepository.findById(id).isPresent()) { 
             //team opvragen en teruggeven
-            Team team = teamRepository.findTeamByNameIgnoreCase(teamName).get();
+            Team team = teamRepository.findById(id).get();
             return ResponseEntity.status(HttpStatus.OK).body(new TeamDTO(team.getName(), team.getOrganisation().getName()));
         }
         throw new TeamNotFound(teamName);

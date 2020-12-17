@@ -120,7 +120,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
     }
 
     @Test // bij deze test kijken we na of de mee te geven teamnaam niet leeg(een lege string) is (teamDTO in requestbody)
-    void CreateTeamNameNotEmpty() throws Exception {
+    void CreateTeamNameEmpty() throws Exception {
         //Given
         TeamDTO teamDTO = new TeamDTO("", currentOrganisationId);
 
@@ -139,7 +139,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
     @Test // bij deze test kijken we na of de mee te geven organisationName(die in de DB aanwezig moet zijn) al bestaat
     void CreateTeamOrganisationDoesNotExist() throws Exception {
         //Given
-        TeamDTO teamDTO = new TeamDTO("test", 5L);
+        TeamDTO teamDTO = new TeamDTO("test", 50L);
 
         //When
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team")
@@ -154,7 +154,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
     }
 
     @Test // bij deze test kijken we na of de mee te geven organisationName null is
-    void CreateTeamOrganisationIsNotNull() throws Exception {
+    void CreateTeamOrganisationIsNull() throws Exception {
         //Given
         TeamDTO teamDTO = new TeamDTO("test", null );
 
@@ -230,6 +230,69 @@ class TeamResourceTest extends AbstractIntegrationTest {
         //Then
         assertEquals("testTeam", t.getName());
         assertEquals(newOrganisationId, t.getOrganisation().getId());
+    }
+
+    @Test
+    void updateTeamNameIsNull() throws Exception {
+        // we willen bij de update niet de organizationName veranderen, maar de organisatie in het algemeen.
+        // deze organisatie moet al in de databank zitten
+        // Given
+        TeamDTO teamDTO = new TeamDTO(null, currentOrganisationId);
+
+        //when
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/team/" + teamId)
+                .content(toJson(teamDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+
+        //Then
+        String responseMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals("Team is null or empty!", responseMessage);
+
+    }
+
+    @Test
+    void updateTeamNameIsEmpty() throws Exception {
+        // we willen bij de update niet de organizationName veranderen, maar de organisatie in het algemeen.
+        // deze organisatie moet al in de databank zitten
+        // Given
+        TeamDTO teamDTO = new TeamDTO("", currentOrganisationId);
+
+        //when
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/team/" + teamId)
+                .content(toJson(teamDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+
+        //Then
+        String responseMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals("Team is null or empty!", responseMessage);
+
+    }
+
+    @Test
+    void updateTeamOrganisationIsNull() throws Exception {
+        // we willen bij de update niet de organizationName veranderen, maar de organisatie in het algemeen.
+        // deze organisatie moet al in de databank zitten
+        // Given
+        TeamDTO teamDTO = new TeamDTO("", null);
+
+        //when
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/team/" + teamId)
+                .content(toJson(teamDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+
+        //Then
+        String responseMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals("Team is null or empty!", responseMessage);
+
     }
 
     @Test
