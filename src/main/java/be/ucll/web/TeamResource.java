@@ -1,18 +1,14 @@
 package be.ucll.web;
 import be.ucll.dao.OrganisationRepository;
 import be.ucll.dao.TeamRepository;
-import be.ucll.dto.PlayerDTO;
 import be.ucll.dto.TeamDTO;
 import be.ucll.exceptions.*;
 import be.ucll.models.Organisation;
-import be.ucll.models.Player;
 import be.ucll.models.Team;
-import be.ucll.service.models.Summoner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
 @RestController
 @RequestMapping("/team")
@@ -105,11 +101,9 @@ public class TeamResource {
 
      */
 
-    private boolean teamALreadyExists(String teamName) throws TeamAlreadyExists{
+    private void teamALreadyExists(String teamName) throws TeamAlreadyExists{
         if (teamRepository.findTeamByNameIgnoreCase(teamName).isPresent()){
             throw new TeamAlreadyExists(teamName);
-        }else{
-            return false;
         }
     }
 

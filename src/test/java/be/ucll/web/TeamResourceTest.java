@@ -57,7 +57,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
         Team testTeam = new Team.TeamBuilder()
                 .name("testTeam")
-                .organisation(newOrganisation)
+                .organisation(currentOrganisation)
                 .build();
          this.teamId = teamRepository.save(testTeam).getId();
 
@@ -189,11 +189,11 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
 
     @Test
-    void updateTeamOk() throws Exception {
+    void updateTeamNameOk() throws Exception {
         // we willen bij de update niet de organizationName veranderen, maar de organisatie in het algemeen.
         // deze organisatie moet al in de databank zitten
         // Given
-        TeamDTO teamDTO = new TeamDTO("veranderdTeam", newOrganisationId);
+        TeamDTO teamDTO = new TeamDTO("veranderdTeam", currentOrganisationId);
 
         //when
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/team/" + teamId)
@@ -207,6 +207,28 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
         //Then
         assertEquals("veranderdTeam", t.getName());
+        assertEquals(currentOrganisationId, t.getOrganisation().getId());
+    }
+
+    @Test
+    void updateTeamOrganisationOk() throws Exception {
+        // we willen bij de update niet de organizationName veranderen, maar de organisatie in het algemeen.
+        // deze organisatie moet al in de databank zitten
+        // Given
+        TeamDTO teamDTO = new TeamDTO("testTeam", newOrganisationId);
+
+        //when
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/team/" + teamId)
+                .content(toJson(teamDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // we willen teamDTO mappen naar een team -->
+        Team t = fromMvcResult(mvcResult, Team.class);
+
+        //Then
+        assertEquals("testTeam", t.getName());
         assertEquals(newOrganisationId, t.getOrganisation().getId());
     }
 
