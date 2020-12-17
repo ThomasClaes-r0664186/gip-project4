@@ -1,5 +1,6 @@
 package be.ucll;
 
+import be.ucll.dao.OrganisationRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
