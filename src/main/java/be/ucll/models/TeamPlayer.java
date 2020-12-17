@@ -71,11 +71,15 @@ public class TeamPlayer {
         private Player player;
         private Boolean isSelected;
 
-        private Builder(TeamPlayer copy) {
+        public Builder(TeamPlayer copy) {
             this.id = copy.getId();
             this.team = copy.getTeam();
             this.isSelected = copy.isSelected();
             this.player = copy.getPlayer();
+        }
+
+        public Builder() {
+
         }
 
         public Builder id(Long id) {
