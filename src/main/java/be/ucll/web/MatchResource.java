@@ -105,6 +105,8 @@ public class MatchResource {
 
         match.get().setDate(newDate);
         match.get().setTeam1(team.get());
+        matchRepository.save(match.get());
+        return ResponseEntity.status(HttpStatus.OK).body(match.get());
     }
 
     private Date parseDate (String matchDate) throws ParameterInvalidException {
