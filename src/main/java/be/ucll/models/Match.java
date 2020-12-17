@@ -38,10 +38,10 @@ public class Match {
         setId(builder.id);
         setDate(builder.date);
         setTeam1(builder.team1);
-        setTeam2(builder.team2);
+        //setTeam2(builder.team2);
         //setWinnerId(builder.winnerId);
         //setMatchId(builder.matchID);
-        //setTournamentCode(builder.tournamentCode);
+        setTournamentCode(builder.tournamentCode);
     }
     public Long getId(){
         return id;
@@ -116,9 +116,9 @@ public class Match {
             this.date = copy.date;
             this.team1 = copy.team1;
             //this.winnerId = copy.winnerId;
-            this.team2 = copy.team2;
+            //this.team2 = copy.team2;
             //this.matchID = copy.matchID;
-            //this.tournamentCode = copy.tournamentCode;
+            this.tournamentCode = copy.tournamentCode;
         }
 
         public MatchBuilder id(Long id) {
@@ -167,7 +167,7 @@ public class Match {
                     "id=" + id +
                     ", date='" + date.toString() + '\'' +
                     ", team1Id='" + team1.toString() + '\'' +
-                    ", team2Id='" + team2.toString() + '\'' +
+                    //", team2Id='" + team2.toString() + '\'' +
                     ", winnerId='" + winnerId.toString() + '\'' +
                     ", matchID='" + matchID.toString() + '\'' +
                     ", tournamentCode='" + tournamentCode + '\'' +

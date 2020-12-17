@@ -3,13 +3,13 @@ package be.ucll.web;
 import be.ucll.dao.MatchRepository;
 import be.ucll.dao.TeamRepository;
 import be.ucll.dto.MatchDTO;
-import be.ucll.exceptions.MatchDateNotCorrect;
-import be.ucll.exceptions.MatchTeamAlreadyAssigned;
-import be.ucll.exceptions.TeamNotFound;
-import be.ucll.exceptions.UsernameAlreadyExists;
+import be.ucll.exceptions.*;
 import be.ucll.models.Match;
 import be.ucll.models.Team;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import liquibase.pro.packaged.M;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +33,10 @@ public class MatchResource {
         this.teamRepository = teamRepository;
     }
 
-    @ApiOperation("Eeen match creëren")
+    @Operation(
+            summary = "Create new match",
+            description = "Using a teamname and a date (DD/MM/YYYY), create a new match"
+    )
     @PostMapping
     public ResponseEntity<Match> createMatch(@RequestBody MatchDTO matchDTO) throws MatchDateNotCorrect, MatchTeamAlreadyAssigned, TeamNotFound {
         //Parse datum
@@ -41,24 +44,26 @@ public class MatchResource {
         try {
             matchDate = Optional.ofNullable(new SimpleDateFormat("dd/MM/yyyy").parse(matchDTO.getDate()));
         }catch(ParseException e){
-            throw new MatchDateNotCorrect(e.getErrorOffset());
+            throw new MatchDateNotCorrect();
         }
 
-        //Teams opzoeken
-        Optional<Team> team1 = teamRepository.findTeamByNameIgnoreCase(matchDTO.getNameTeam1());
-        Optional<Team> team2 = teamRepository.findTeamByNameIgnoreCase(matchDTO.getNameTeam2());
+        //Team opzoeken
+        Optional<Team> team1 = teamRepository.findTeamById(matchDTO.getTeamId());
         //TeamName juist ingegeven en gevonden
-        if(team1.isPresent() && team2.isPresent() && matchDate.isPresent()){
-            //Geen match gevonden waar beide teams in zitten en op dezelfde datum afspeelt
-            if(     !matchRepository.findMatchByTeam1AndTeam2(team1.get(),team2.get()).isPresent()
-                ||  !matchRepository.findMatchByTeam1AndTeam2(team2.get(),team1.get()).isPresent()
-                ||  !matchRepository.findMatchByDate(matchDate.get()).isPresent()
-            ){
+        if(team1.isPresent() && matchDate.isPresent()){
+
+            //Kijk dat de datum niet in het verleden is
+            if(matchDate.get().before(new Date()) && !matchDate.get().equals(new Date())){
+                throw new MatchDateNotCorrect(matchDTO.getDate());
+            }
+
+            //Geen match gevonden waar het team in zit en op dezelfde datum afspeelt
+            if(!matchRepository.findMatchByTeam1AndAndDate(team1.get(),matchDate.get()).isPresent()){
                 Match newMatch = matchRepository.save(
                     new Match.MatchBuilder()
                         .team1Id(team1.get())
-                        .team2Id(team2.get())
                         .date(matchDate.get())
+                        .tournamentCode("No Tournament code")    //TODO
                         .build()
                 );
                 return ResponseEntity.status(HttpStatus.CREATED).body(newMatch);
@@ -67,15 +72,25 @@ public class MatchResource {
             }
         }else{
             if(team1.isEmpty()){
-                throw new TeamNotFound(matchDTO.getNameTeam1());
-            }else if(team2.isEmpty()){
-                throw new TeamNotFound(matchDTO.getNameTeam2());
+                throw new TeamNotFound();
             }else{
                 throw new RuntimeException("This exception shouldn't have happend");
             }
         }
     }
 
+    @Operation(
+            summary = "get match by id",
+            description = "use a match id to retrieve the full match information"
+    )
+    @GetMapping
+    public ResponseEntity<Match> getMatch(@RequestParam("matchId") long matchId) throws MatchNotFound {
+        Optional<Match> match = matchRepository.findMatchById(matchId);
+        if(match.isEmpty()){
+            throw new MatchNotFound(matchId);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(match.get());
+    }
 }
 
 

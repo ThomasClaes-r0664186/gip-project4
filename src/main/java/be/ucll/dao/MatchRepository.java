@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface MatchRepository extends JpaRepository<Match, Long> {
-    Optional<Match> findMatchByTeam1AndTeam2(Team team1, Team team2);
-    Optional<Match> findMatchByDate(Date date);
+    Optional<Match> findMatchByTeam1AndAndDate(Team team1,Date date);
+    Optional<Match> findMatchById(long id);
 }
