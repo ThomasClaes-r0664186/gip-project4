@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,8 +39,6 @@ class TeamResourceTest extends AbstractIntegrationTest {
                 .name("testTeam")
                 .build();
          this.teamId = teamRepository.save(testTeam).getId();
-
-
     }
     @AfterEach
     void tearDown() {
@@ -77,7 +75,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
         // then
         String responseMessage = mvcResult.getResponse().getContentAsString();
-        //assertEquals("This team: " + teamDTO.getName() + " already exist!", responseMessage);
+        assertEquals( teamDTO.getName() + " already exists!", responseMessage);
     }
 
     @Test // bij deze test kijken we na of de mee te geven teamnaam niet null is (teamDTO in requestbody)
@@ -94,7 +92,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
         //Then
         String responseMessage = mvcResult.getResponse().getContentAsString();
-        //assertEquals("Team is null or empty!", responseMessage);
+        assertEquals("This parameter may not be empty", responseMessage);
     }
 
     @Test // bij deze test kijken we na of de mee te geven teamnaam niet leeg(een lege string) is (teamDTO in requestbody)
@@ -111,15 +109,13 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
         //Then
         String responseMessage = mvcResult.getResponse().getContentAsString();
-        //assertEquals("Team is null or empty!", responseMessage);
+        assertEquals("This parameter may not be empty", responseMessage);
     }
 
 
 
     @Test
     void updateTeamOk() throws Exception {
-        // we willen bij de update niet de organizationName veranderen, maar de organisatie in het algemeen.
-        // deze organisatie moet al in de databank zitten
         // Given
         TeamDTO teamDTO = new TeamDTO("veranderdTeam");
 
@@ -139,8 +135,6 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateTeamNameIsNull() throws Exception {
-        // we willen bij de update niet de organizationName veranderen, maar de organisatie in het algemeen.
-        // deze organisatie moet al in de databank zitten
         // Given
         TeamDTO teamDTO = new TeamDTO(null);
 
@@ -154,14 +148,12 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
         //Then
         String responseMessage = mvcResult.getResponse().getContentAsString();
-        //assertEquals("Team is null or empty!", responseMessage);
+        assertEquals(teamDTO.getName() + " is not valid!", responseMessage);
 
     }
 
     @Test
     void updateTeamNameIsEmpty() throws Exception {
-        // we willen bij de update niet de organizationName veranderen, maar de organisatie in het algemeen.
-        // deze organisatie moet al in de databank zitten
         // Given
         TeamDTO teamDTO = new TeamDTO("");
 
@@ -169,24 +161,69 @@ class TeamResourceTest extends AbstractIntegrationTest {
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/team/" + teamId)
                 .content(toJson(teamDTO))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isForbidden())
                 .andReturn();
-
 
         //Then
         String responseMessage = mvcResult.getResponse().getContentAsString();
-        //assertEquals("Team is null or empty!", responseMessage);
+        assertEquals(teamDTO.getName() + " is not valid!", responseMessage);
 
     }
+    @Test
+    void getTeamOk() throws Exception {
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/team/" + teamId))
+                .andExpect(status().isOk())
+                .andReturn();
+        Team getTeam = fromMvcResult(mvcResult, Team.class);
 
+        assertEquals("testTeam", getTeam.getName());
+    }
+    @Test
+    void getTeamIdIsNegative() throws Exception {
 
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/team/" + -5L ))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals(-5L +" is not valid!", responsMessage );
+    }
+    @Test
+    void getTeamIdIs0() throws Exception {
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/team/" + 0L ))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals(0L +" is not valid!", responsMessage );
+    }
+    
+    @Test
+    void deleteTeamOk()throws Exception{
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/team/" + teamId))
+                .andExpect(status().isNoContent())
+                .andReturn();
+        try {
+            Team team = teamRepository.findTeamById(teamId).get();
+            fail(); // als er geen exception gegooid word dan faalt de test
+        }catch (Exception e){
+            assertTrue(true);
+        }
+
+        String responsMessage = mvcResult.getResponse().getErrorMessage();
+        assertNull(responsMessage);
+
+    }
 
     @Test
-    void getTeam() {
-    }
+    void deleteTeamId0()throws Exception{
+        String ID = "0";
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/team/" + ID))
+                .andExpect(status().isForbidden())
+                .andReturn();
 
-    @Test
-    void deleteTeam() {
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals(  "0 is not valid!", responsMessage);
     }
-
 }

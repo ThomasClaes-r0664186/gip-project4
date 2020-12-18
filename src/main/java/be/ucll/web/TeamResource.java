@@ -34,7 +34,7 @@ public class TeamResource {
 
     // team Updaten
     @PutMapping  ("/{id}")                         // localhost:8080/team?id=
-    public ResponseEntity<Team> updateTeam(@PathVariable("id") Long id, @RequestBody TeamDTO teamDTO) throws ParameterInvalidException, NotFoundException, AlreadyExistsException {
+        public ResponseEntity<Team> updateTeam(@PathVariable("id") Long id, @RequestBody TeamDTO teamDTO) throws ParameterInvalidException, NotFoundException, AlreadyExistsException {
         Team team;
         if (id <= 0) throw new ParameterInvalidException(id.toString());
         if (teamDTO.getName() == null || teamDTO.getName().isEmpty()) throw new ParameterInvalidException(teamDTO.getName());
@@ -51,34 +51,30 @@ public class TeamResource {
         teamRepository.save(team);
         return ResponseEntity.status(HttpStatus.OK).body(team);
     }
-/*
-    @GetMapping("{id}") // teamname veranderen naar id
-    public ResponseEntity<TeamDTO> getTeam(@PathVariable("id") Long id)  throws TeamNotFound {
-        if (id <= 0) throw new TeamNotFound();
-        //controleren of team in onze db bestaat
-        if(teamRepository.findById(id).isPresent()) { 
-            //team opvragen en teruggeven
-            Team team = teamRepository.findById(id).get();
-            return ResponseEntity.status(HttpStatus.OK).body(new TeamDTO(team.getName(), team.getOrganisation().getName()));
+     @GetMapping("/{id}") // teamname veranderen naar id
+        public ResponseEntity<TeamDTO> getTeam(@PathVariable("id") Long id) throws NotFoundException, ParameterInvalidException {
+            if (id <= 0) throw new ParameterInvalidException (id.toString());
+            //controleren of team in onze db bestaat
+            if(teamRepository.findById(id).isPresent()) {
+                //team opvragen en teruggeven
+                Team team = teamRepository.findById(id).get();
+                return ResponseEntity.status(HttpStatus.OK).body(new TeamDTO(team.getName()));
+            }
+            throw new NotFoundException(id.toString());
         }
-        throw new NotFoundException();
-    }
 
-    @DeleteMapping // id veranderd
-    public ResponseEntity deleteTeam(@PathVariable("id") String teamName) throws TeamNotFound {
-        //We gaan controleren of het team waarvan de teamName gegeven is, wel bestaat in onze db
-        if(teamRepository.findTeamByNameIgnoreCase(teamName).isPresent()) {
+    @DeleteMapping ("/{id}")// id veranderd
+    public ResponseEntity deleteTeam(@PathVariable("id") Long id) throws NotFoundException, ParameterInvalidException {
+        if (id <= 0) throw new ParameterInvalidException(id.toString());
 
-            //Zo ja, dan verwijderen we deze
-            teamRepository.delete(teamRepository.findTeamByNameIgnoreCase(teamName).get());
+        if(teamRepository.findById(id).isPresent()) {
+            Team t = teamRepository.findById(id).get();
+            teamRepository.delete(t);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
-        //zo niet => exception
-        throw new TeamNotFound(teamName);
+        throw new NotFoundException(id.toString());
     }
-
-     */
 
     private void teamALreadyExists(String teamName) throws AlreadyExistsException{
         if (teamRepository.findTeamByNameIgnoreCase(teamName).isPresent()){
