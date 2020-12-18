@@ -92,7 +92,7 @@ public class MatchResource {
             throw new ParameterInvalidException("Date has expired, "+matchDTO.getDate());
         }
         //check teamId
-        Optional<Team> team = teamRepository.findTeamById(matchDTO.getTeamId());
+        Optional<Team> team = teamRepository.findTeamById(matchDTO.getTeamId()); //possibly throws exception
         if(team.isEmpty()){
             throw new NotFoundException(matchDTO.getTeamId().toString());
         }
@@ -150,7 +150,7 @@ public class MatchResource {
     }
     private Match getMatchFromId(Long id) throws ParameterInvalidException, NotFoundException {
         checkId(id);
-        Optional<Match> match = matchRepository.findMatchById(id);
+        Optional<Match> match = matchRepository.findMatchById(id); //possibly throws exception
         if(match.isEmpty()){
             throw new NotFoundException(id.toString());
         }else{
