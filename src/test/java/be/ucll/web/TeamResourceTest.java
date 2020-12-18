@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,8 +39,6 @@ class TeamResourceTest extends AbstractIntegrationTest {
                 .name("testTeam")
                 .build();
          this.teamId = teamRepository.save(testTeam).getId();
-
-
     }
     @AfterEach
     void tearDown() {
@@ -184,22 +182,48 @@ class TeamResourceTest extends AbstractIntegrationTest {
     void getTeamIdIsNegative() throws Exception {
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/team/" + -5L ))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isForbidden())
                 .andReturn();
 
         String responsMessage = mvcResult.getResponse().getContentAsString();
-        assertEquals(-5L +" was not found!", responsMessage );
+        assertEquals(-5L +" is not valid!", responsMessage );
     }
     @Test
     void getTeamIdIs0() throws Exception {
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/team/" + 0L ))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isForbidden())
                 .andReturn();
 
         String responsMessage = mvcResult.getResponse().getContentAsString();
-        assertEquals(0L +" was not found!", responsMessage );
+        assertEquals(0L +" is not valid!", responsMessage );
     }
     
-    
+    @Test
+    void deleteTeamOk()throws Exception{
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/team/" + teamId))
+                .andExpect(status().isNoContent())
+                .andReturn();
+        try {
+            Team team = teamRepository.findTeamById(teamId).get();
+            fail(); // als er geen exception gegooid word dan faalt de test
+        }catch (Exception e){
+            assertTrue(true);
+        }
+
+        String responsMessage = mvcResult.getResponse().getErrorMessage();
+        assertNull(responsMessage);
+
+    }
+
+    @Test
+    void deleteTeamId0()throws Exception{
+        String ID = "0";
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/team/" + ID))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals(  "0 is not valid!", responsMessage);
+    }
 }

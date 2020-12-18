@@ -52,8 +52,8 @@ public class TeamResource {
         return ResponseEntity.status(HttpStatus.OK).body(team);
     }
      @GetMapping("/{id}") // teamname veranderen naar id
-        public ResponseEntity<TeamDTO> getTeam(@PathVariable("id") Long id)  throws NotFoundException {
-            if (id <= 0) throw new NotFoundException (id.toString());
+        public ResponseEntity<TeamDTO> getTeam(@PathVariable("id") Long id) throws NotFoundException, ParameterInvalidException {
+            if (id <= 0) throw new ParameterInvalidException (id.toString());
             //controleren of team in onze db bestaat
             if(teamRepository.findById(id).isPresent()) {
                 //team opvragen en teruggeven
@@ -66,7 +66,6 @@ public class TeamResource {
     @DeleteMapping ("/{id}")// id veranderd
     public ResponseEntity deleteTeam(@PathVariable("id") Long id) throws NotFoundException, ParameterInvalidException {
         if (id <= 0) throw new ParameterInvalidException(id.toString());
-        //controleren of team in onze db bestaat
 
         if(teamRepository.findById(id).isPresent()) {
             Team t = teamRepository.findById(id).get();
