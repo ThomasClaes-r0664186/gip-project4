@@ -369,6 +369,17 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	}
 
 	@Test
+	void getPlayerIdIsNotFound() throws Exception {
+		final String ID = "90000";
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID))
+				.andExpect(status().isNotFound())
+				.andReturn();
+
+		String responsMessage = mvcResult.getResponse().getContentAsString();
+		assertEquals(ID + " was not found!", responsMessage );
+	}
+
+	@Test
 	void deletePlayerOk() throws Exception {
 		final String ID = idPlayerAvaIanche.toString();
 		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID)
@@ -401,6 +412,17 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
 		assertEquals(ID + " is not valid!", responsMessage );
+	}
+
+	@Test
+	void deletePlayerIdIsNotFound() throws Exception {
+		final String ID = "90000";
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID))
+				.andExpect(status().isNotFound())
+				.andReturn();
+
+		String responsMessage = mvcResult.getResponse().getContentAsString();
+		assertEquals(ID + " was not found!", responsMessage );
 	}
 
 
