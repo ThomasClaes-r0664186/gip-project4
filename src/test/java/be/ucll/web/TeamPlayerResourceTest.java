@@ -12,6 +12,7 @@ import be.ucll.models.TeamPlayer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -343,7 +344,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player")
                 .param("isActive", IS_ACTIVE))
-                .andExpect(status().isConflict())
+                .andExpect(status().isForbidden())
                 .andReturn();
 
         String responsMessage = mvcResult.getResponse().getContentAsString();
@@ -363,5 +364,91 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
         String responsMessage = mvcResult.getResponse().getContentAsString();
         assertEquals(EXPECTED_RESPONS, responsMessage);
     }
+
+    @Test
+    void getPlayersFromTeamTeamId0() throws Exception {
+        final String ID_TEAM = "0";
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/teamplayer/" + ID_TEAM + "/team"))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals(ID_TEAM + " is not valid!", responsMessage);
+    }
+
+    @Test
+    void getPlayersFromTeamTeamIdNegative() throws Exception {
+        final String ID_TEAM = "-1";
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/teamplayer/" + ID_TEAM + "/team"))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals(ID_TEAM + " is not valid!", responsMessage);
+    }
+
+    @Test
+    void getPlayersFromTeamTeamIdNotFound() throws Exception {
+        final String ID_TEAM = "90000";
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/teamplayer/" + ID_TEAM + "/team"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals(ID_TEAM + " was not found!", responsMessage);
+    }
+
+    @Test
+    void deletePlayerFromTeamOk() throws Exception {
+        final String ID_TEAM = testLolname5.toString();
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/teamplayer/" + ID_TEAM + "/player")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals("", responsMessage );
+    }
+
+    @Test
+    void deletePlayerFromTeam0() throws Exception {
+        final String ID_TEAM = "0";
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/teamplayer/" + ID_TEAM + "/player")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals(ID_TEAM + " is not valid!", responsMessage );
+    }
+
+    @Test
+    void deletePlayerFromTeamNegative() throws Exception {
+        final String ID_TEAM = "-1";
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/teamplayer/" + ID_TEAM + "/player")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals(ID_TEAM + " is not valid!", responsMessage );
+    }
+
+    @Test
+    void deletePlayerFromTeamNotFound() throws Exception {
+        final String ID_TEAM = "90000";
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/teamplayer/" + ID_TEAM + "/player")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals( ID_TEAM + " was not found!", responsMessage );
+    }
+
+
 
 }

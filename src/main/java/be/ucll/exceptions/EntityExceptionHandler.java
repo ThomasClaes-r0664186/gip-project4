@@ -1,14 +1,11 @@
 package be.ucll.exceptions;
 
-import liquibase.pro.packaged.E;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import javax.servlet.http.HttpServletResponse;
 
 //Todo change HttpStatus -> have to be more specific
 
@@ -37,6 +34,11 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ParameterInvalidException.class)
     public ResponseEntity ParameterInvalidException(ParameterInvalidException exception){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(TooManyActivePlayersException.class)
+    public ResponseEntity ParameterInvalidException(TooManyActivePlayersException exception){
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
     }
 }

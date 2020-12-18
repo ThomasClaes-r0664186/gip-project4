@@ -8,7 +8,7 @@ import be.ucll.dto.TeamPlayerDTO;
 import be.ucll.exceptions.AlreadyExistsException;
 import be.ucll.exceptions.NotFoundException;
 import be.ucll.exceptions.ParameterInvalidException;
-import be.ucll.exceptions.TooManyActivePlayers;
+import be.ucll.exceptions.TooManyActivePlayersException;
 import be.ucll.models.Player;
 import be.ucll.models.Team;
 import be.ucll.models.TeamPlayer;
@@ -35,7 +35,7 @@ public class TeamPlayerResource {
     }
 
     @PostMapping("/{teamId}/team/{playerId}/player")
-    public ResponseEntity<TeamPlayerDTO> addPlayerToTeam(@PathVariable("teamId") Long teamId, @PathVariable("playerId") Long playerId) throws TooManyActivePlayers, NotFoundException, AlreadyExistsException, ParameterInvalidException {
+    public ResponseEntity<TeamPlayerDTO> addPlayerToTeam(@PathVariable("teamId") Long teamId, @PathVariable("playerId") Long playerId) throws TooManyActivePlayersException, NotFoundException, AlreadyExistsException, ParameterInvalidException {
         // TODO: geen twee dezelfde spelers aan team toekennnen, Max 5 main spelers
         if (teamId <= 0) throw new ParameterInvalidException(teamId.toString());
 
@@ -85,14 +85,14 @@ public class TeamPlayerResource {
     }
 
     @PutMapping("/{teamId}/team/{playerId}/player")
-    public ResponseEntity<TeamPlayerDTO> makePlayerActive(@PathVariable("teamId") Long teamId, @PathVariable("playerId") Long playerId, @RequestParam("isActive") boolean isActive) throws NotFoundException, TooManyActivePlayers, ParameterInvalidException {
+    public ResponseEntity<TeamPlayerDTO> makePlayerActive(@PathVariable("teamId") Long teamId, @PathVariable("playerId") Long playerId, @RequestParam("isActive") boolean isActive) throws NotFoundException, TooManyActivePlayersException, ParameterInvalidException {
 
         if (playerId <= 0) throw new ParameterInvalidException(playerId.toString());
 
         if (teamId <= 0) throw new ParameterInvalidException(teamId.toString());
 
         if (isActive){
-            if (teamPlayerRepository.findAllByIsSelectedIsTrue().size() >= 5) throw new TooManyActivePlayers(teamId.toString());
+            if (teamPlayerRepository.findAllByIsSelectedIsTrue().size() >= 5) throw new TooManyActivePlayersException(teamId.toString());
         }
 
         if (teamRepository.findTeamById(teamId).isEmpty()) throw new NotFoundException(teamId.toString());
