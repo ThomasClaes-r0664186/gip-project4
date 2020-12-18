@@ -40,6 +40,8 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     private Long testTeamId;
     private Long testLOLnameId;
 
+    private Long test7Stijn7Id;
+
     @BeforeEach
     void setUp() {
 
@@ -71,7 +73,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
                 .lastName("Verbieren")
                 .leagueName("7Stijn7")
                 .build();
-        playerRepository.save(player7Stijn7);
+        test7Stijn7Id = playerRepository.save(player7Stijn7).getId();
 
         Player player1 = new Player.PlayerBuilder()
                 .firstName("Stijn")
@@ -195,90 +197,92 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
 
 
     @Test
-    void addPlayerToTeamLeagueNameNULL() throws Exception {
-        final String LEAGUE_NAME = null;
-        final String TEAM_NAME = "TestTeam";
+    void addPlayerToTeamPlayerIdNULL() throws Exception {
+        final String ID_PLAYER = null;
+        final String ID_TEAM = testTeamId.toString();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer")
-                .param("leagueName", LEAGUE_NAME)
-                .param("teamName", TEAM_NAME))
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player"))
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
 
     @Test
-    void addPlayerToTeamTeamNameNULL() throws Exception {
-        final String LEAGUE_NAME = "LOLname";
-        final String TEAM_NAME = null;
+    void addPlayerToTeamTeamIdNULL() throws Exception {
+        final String ID_PLAYER = testLOLnameId.toString();
+        final String ID_TEAM = null;
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer")
-                .param("leagueName", LEAGUE_NAME)
-                .param("teamName", TEAM_NAME))
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player"))
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
 
     @Test
-    void addPlayerToTeamLeagueNameEmptyL() throws Exception {
-        final String LEAGUE_NAME = "";
-        final String TEAM_NAME = "TestTeam";
+    void addPlayerToTeamPlayerId0() throws Exception {
+        final String ID_PLAYER = "0";
+        final String ID_TEAM = testTeamId.toString();
 
-       MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer")
-                .param("leagueName", LEAGUE_NAME)
-                .param("teamName", TEAM_NAME))
+       MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player"))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
         String responsMessage = mvcResult.getResponse().getContentAsString();
-        assertEquals("This user: " + LEAGUE_NAME + " has not been found!", responsMessage);
+        assertEquals(ID_PLAYER + " is not valid!", responsMessage);
 
     }
 
     @Test
-    void addPlayerToTeamTeamNameEmpty() throws Exception {
-        final String LEAGUE_NAME = "LOLname";
-        final String TEAM_NAME = "";
+    void addPlayerToTeamTeamId0() throws Exception {
+        final String ID_PLAYER = testLOLnameId.toString();
+        final String ID_TEAM = "0";
 
-       MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer")
-                .param("leagueName", LEAGUE_NAME)
-                .param("teamName", TEAM_NAME))
+       MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player"))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
         String responsMessage = mvcResult.getResponse().getContentAsString();
-        assertEquals("This team: " + TEAM_NAME + " has not been found!", responsMessage);
+        assertEquals(ID_TEAM + " is not valid!", responsMessage);
 
     }
 
     @Test
-    void addPlayerToTeamLeageNameNotFound() throws Exception {
-        final String LEAGUE_NAME = "LOLname123";
-        final String TEAM_NAME = "TestTeam";
+    void addPlayerToTeamTeamIdNotFound() throws Exception {
+        final String ID_PLAYER = testLOLnameId.toString();
+        final String ID_TEAM = "9000";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer")
-                .param("leagueName", LEAGUE_NAME)
-                .param("teamName", TEAM_NAME))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player"))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
         String responsMessage = mvcResult.getResponse().getContentAsString();
-        assertEquals("This user: " + LEAGUE_NAME + " has not been found!", responsMessage);
+        assertEquals(ID_TEAM + " was not found!", responsMessage);
+
+    }
+
+    @Test
+    void addPlayerToTeamPlayerIdNotFound() throws Exception {
+        final String ID_PLAYER = "9000";
+        final String ID_TEAM = testTeamId.toString();
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals(ID_PLAYER + " was not found!", responsMessage);
 
     }
 
     @Test
     void addPlayerToTeamPlayerAlreadyInTeam() throws Exception {
-        final String LEAGUE_NAME = "7Stijn7";
-        final String TEAM_NAME = "TestTeam";
+        final String ID_PLAYER = test7Stijn7Id.toString();
+        final String ID_TEAM = testTeamId.toString();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer")
-                .param("leagueName", LEAGUE_NAME)
-                .param("teamName", TEAM_NAME))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player"))
                 .andExpect(status().isConflict())
                 .andReturn();
 
         String responsMessage = mvcResult.getResponse().getContentAsString();
-        assertEquals("This user: " + LEAGUE_NAME + " is already in this team", responsMessage);
+        assertEquals(ID_PLAYER + " already exists!", responsMessage);
 
     }
 
