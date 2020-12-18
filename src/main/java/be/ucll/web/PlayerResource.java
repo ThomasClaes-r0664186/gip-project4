@@ -36,7 +36,7 @@ public class PlayerResource {
         // check of alles ingevult is.
         if (player.getLeagueName() == null || player.getLeagueName().trim().isEmpty()
                 || player.getFirstName() == null || player.getFirstName().trim().isEmpty()
-                || player.getLastName() == null || player.getLastName().trim().isEmpty()) throw new ParameterInvalidException(player.getLastName());
+                || player.getLastName() == null || player.getLastName().trim().isEmpty()) throw new ParameterInvalidException();
 
         // Daarna wordt er aan de playerRepository gevraagd of deze speler al gevonden is (op basis van de username), en al in onze databank zit.
         // Zoja, Gooit het een exception: dat de speler al bestaat in ons systeem.
@@ -68,8 +68,8 @@ public class PlayerResource {
         // check of alles ingevult is.
         if (playerDTO.getLeagueName() == null || playerDTO.getLeagueName().trim().isEmpty()
                 || playerDTO.getFirstName() == null || playerDTO.getFirstName().trim().isEmpty()
-                || playerDTO.getLastName() == null || playerDTO.getLastName().trim().isEmpty()
-                || id <= 0) throw new ParameterInvalidException(id.toString());
+                || playerDTO.getLastName() == null || playerDTO.getLastName().trim().isEmpty()) throw new ParameterInvalidException();
+        if (id <= 0) throw new ParameterInvalidException(id.toString());
         //We gaan controleren of de speler waarvan de leagueName gegeven is, of deze wel bestaat indien deze niet bestaat,
         // laten we zien dat de username niet gevonden is
         if (playerRepository.findPlayerById(id).isPresent()){
