@@ -83,7 +83,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("One or more parameters are invalid!", responsMessage );
+		assertEquals("This parameter may not be empty", responsMessage );
 	}
 
 	@Test
@@ -97,7 +97,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("One or more parameters are invalid!", responsMessage );
+		assertEquals("This parameter may not be empty", responsMessage );
 	}
 
 	@Test
@@ -125,7 +125,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("This user: " + playerDTO.getLeagueName() + " already exists!", responsMessage );
+		assertEquals(playerDTO.getLeagueName() + " already exists!", responsMessage );
 	}
 
 	@Test
@@ -139,7 +139,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("One or more parameters are invalid!", responsMessage );
+		assertEquals("This parameter may not be empty", responsMessage );
 	}
 
 	@Test
@@ -153,7 +153,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("One or more parameters are invalid!", responsMessage );
+		assertEquals("This parameter may not be empty", responsMessage );
 	}
 
 	@Test
@@ -167,7 +167,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("One or more parameters are invalid!", responsMessage );
+		assertEquals("This parameter may not be empty", responsMessage );
 	}
 
 	@Test
@@ -181,7 +181,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("One or more parameters are invalid!", responsMessage );
+		assertEquals("This parameter may not be empty", responsMessage );
 	}
 
 
@@ -217,7 +217,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("One or more parameters are invalid!", responsMessage );
+		assertEquals("This parameter may not be empty", responsMessage );
 
 	}
 
@@ -233,7 +233,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("One or more parameters are invalid!", responsMessage );
+		assertEquals("This parameter may not be empty", responsMessage );
 
 	}
 
@@ -265,7 +265,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("This user: " + playerDTO.getLeagueName() + " already exists!", responsMessage );
+		assertEquals(playerDTO.getLeagueName() + " already exists!", responsMessage );
 
 	}
 
@@ -281,7 +281,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("One or more parameters are invalid!", responsMessage );
+		assertEquals("This parameter may not be empty", responsMessage );
 
 	}
 
@@ -297,7 +297,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("One or more parameters are invalid!", responsMessage );
+		assertEquals("This parameter may not be empty", responsMessage );
 
 	}
 
@@ -313,7 +313,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("One or more parameters are invalid!", responsMessage );
+		assertEquals("This parameter may not be empty", responsMessage );
 
 	}
 
@@ -329,7 +329,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("One or more parameters are invalid!", responsMessage );
+		assertEquals("This parameter may not be empty", responsMessage );
 
 	}
 
@@ -354,7 +354,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("One or more parameters are invalid!", responsMessage );
+		assertEquals(ID + " is not valid!", responsMessage );
 	}
 
 	@Test
@@ -365,7 +365,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("One or more parameters are invalid!", responsMessage );
+		assertEquals(ID + " is not valid!", responsMessage );
 	}
 
 	@Test
@@ -389,7 +389,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("One or more parameters are invalid!", responsMessage );
+		assertEquals(ID + " is not valid!", responsMessage );
 	}
 
 	@Test
@@ -400,7 +400,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
-		assertEquals("One or more parameters are invalid!", responsMessage );
+		assertEquals(ID + " is not valid!", responsMessage );
 	}
 
 
