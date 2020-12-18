@@ -7,6 +7,7 @@ import be.ucll.dto.PlayerDTO;
 import be.ucll.dto.TeamPlayerDTO;
 import be.ucll.exceptions.AlreadyExistsException;
 import be.ucll.exceptions.NotFoundException;
+import be.ucll.exceptions.ParameterInvalidException;
 import be.ucll.exceptions.TooManyActivePlayers;
 import be.ucll.models.Player;
 import be.ucll.models.Team;
@@ -33,31 +34,21 @@ public class TeamPlayerResource {
         this.teamPlayerRepository = teamPlayerRepository;
     }
 
-    @PostMapping
-    public ResponseEntity<TeamPlayerDTO> addPlayerToTeam(@RequestParam("teamName") String teamName, @RequestParam("leagueName") String leagueName) throws TooManyActivePlayers, NotFoundException, AlreadyExistsException {
+    @PostMapping("/{teamId}/team/{playerId}/player")
+    public ResponseEntity<TeamPlayerDTO> addPlayerToTeam(@PathVariable("teamId") Long teamId, @PathVariable("playerId") Long playerId) throws TooManyActivePlayers, NotFoundException, AlreadyExistsException, ParameterInvalidException {
         // TODO: geen twee dezelfde spelers aan team toekennnen, Max 5 main spelers
-        if (teamName.trim().isBlank()) {
-            throw new NotFoundException(teamName);
-        }
+        if (teamId <= 0) throw new ParameterInvalidException(teamId.toString());
 
-        if (leagueName.trim().isBlank()) {
-            throw new NotFoundException(leagueName);
-        }
+        if (playerId <= 0) throw new ParameterInvalidException(playerId.toString());
 
-        if (teamRepository.findTeamByNameIgnoreCase(teamName).isEmpty()){
-            throw new NotFoundException(teamName);
-        }
+        if (teamRepository.findTeamById(teamId).isEmpty()) throw new NotFoundException(teamId.toString());
 
-        if (playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).isEmpty()){
-            throw new NotFoundException(leagueName);
-        }
+        if (playerRepository.findPlayerById(playerId).isEmpty()) throw new NotFoundException(playerId.toString());
 
-        Team team = teamRepository.findTeamByNameIgnoreCase(teamName).get();
-        Player player = playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).get();
+        Team team = teamRepository.findTeamById(teamId).get();
+        Player player = playerRepository.findPlayerById(playerId).get();
 
-        if (teamPlayerRepository.findTeamPlayerByPlayer(player).isPresent()){
-            throw new AlreadyExistsException(leagueName);
-        }
+        if (teamPlayerRepository.findTeamPlayerByPlayer(player).isPresent()) throw new AlreadyExistsException(playerId.toString());
 
         TeamPlayer teamPlayer = teamPlayerRepository.save(new TeamPlayer.Builder()
                 .team(team)
@@ -66,30 +57,25 @@ public class TeamPlayerResource {
                 .build());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new TeamPlayerDTO(teamPlayer.getId(), teamPlayer.getTeam().getName(), teamPlayer.getPlayer().getLeagueName()));
-
     }
 
 
-    @GetMapping
-    public ResponseEntity<List<PlayerDTO>> getPlayersFromTeam(@RequestParam("teamName") String teamName) throws NotFoundException {
+    @GetMapping("/{teamId}/team")
+    public ResponseEntity<List<PlayerDTO>> getPlayersFromTeam(@PathVariable("teamId") Long teamId) throws NotFoundException, ParameterInvalidException {
 
-        if (teamName.trim().isBlank()) {
-            throw new NotFoundException(teamName);
-        }
+        if (teamId <= 0) throw new ParameterInvalidException(teamId.toString());
 
-        if (teamRepository.findTeamByNameIgnoreCase(teamName).isEmpty()){
-            throw new NotFoundException(teamName);
-        }
+        if (teamRepository.findTeamById(teamId).isEmpty()) throw new NotFoundException(teamId.toString());
 
-        Team team = teamRepository.findTeamByNameIgnoreCase(teamName).get();
-        List<Player> players = teamPlayerRepository.findPlayersByTeam(team);
+        Team team = teamRepository.findTeamById(teamId).get();
+        List<TeamPlayer> players = teamPlayerRepository.findPlayersByTeam(team);
 
         List<PlayerDTO> playersNames = players.stream()
                 .map(player -> {
                     PlayerDTO playerDTO = new PlayerDTO();
-                    playerDTO.setLeagueName(player.getLeagueName());
-                    playerDTO.setFirstName(player.getFirstName());
-                    playerDTO.setLastName(player.getLastName());
+                    playerDTO.setLeagueName(player.getPlayer().getLeagueName());
+                    playerDTO.setFirstName(player.getPlayer().getFirstName());
+                    playerDTO.setLastName(player.getPlayer().getLastName());
                     return playerDTO;
                 })
                 .collect(toList());
@@ -98,37 +84,24 @@ public class TeamPlayerResource {
 
     }
 
-    @PutMapping
-    public ResponseEntity<TeamPlayerDTO> makePlayerActive(@RequestParam("teamName") String teamName, @RequestParam("leagueName") String leagueName, @RequestParam("isActive") boolean isActive) throws NotFoundException, TooManyActivePlayers {
+    @PutMapping("/{teamId}/team/{playerId}/player")
+    public ResponseEntity<TeamPlayerDTO> makePlayerActive(@PathVariable("teamId") Long teamId, @PathVariable("playerId") Long playerId, @RequestParam("isActive") boolean isActive) throws NotFoundException, TooManyActivePlayers, ParameterInvalidException {
 
-        if (teamName.trim().isBlank()) {
-            throw new NotFoundException(teamName);
-        }
+        if (playerId <= 0) throw new ParameterInvalidException(playerId.toString());
 
-        if (leagueName.trim().isBlank()) {
-            throw new NotFoundException(leagueName);
-        }
+        if (teamId <= 0) throw new ParameterInvalidException(teamId.toString());
 
         if (isActive){
-            if (teamPlayerRepository.findAllByIsSelectedIsTrue().size() >= 5){
-                throw new TooManyActivePlayers(teamName);
-            }
+            if (teamPlayerRepository.findAllByIsSelectedIsTrue().size() >= 5) throw new TooManyActivePlayers(teamId.toString());
         }
 
-        if (teamRepository.findTeamByNameIgnoreCase(teamName).isEmpty()){
-            throw new NotFoundException(teamName);
-        }
+        if (teamRepository.findTeamById(teamId).isEmpty()) throw new NotFoundException(teamId.toString());
 
+        if (playerRepository.findPlayerById(playerId).isEmpty()) throw new NotFoundException(playerId.toString());
 
-        if (playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).isEmpty()){
-            throw new NotFoundException(leagueName);
-        }
+        Player player = playerRepository.findPlayerById(playerId).get();
 
-        Player player = playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).get();
-
-        if (teamPlayerRepository.findTeamPlayerByPlayer(player).isEmpty()) {
-            throw new NotFoundException(leagueName);
-        }
+        if (teamPlayerRepository.findTeamPlayerByPlayer(player).isEmpty()) throw new NotFoundException(playerId.toString());
 
         TeamPlayer teamPlayer = teamPlayerRepository.findTeamPlayerByPlayer(player).get();
         teamPlayer.setSelected(isActive);
@@ -139,27 +112,20 @@ public class TeamPlayerResource {
     }
 
 
-    @DeleteMapping
-    public ResponseEntity deletePlayerFromTeam(@RequestParam("leagueName") String leagueName) throws NotFoundException {
+    @DeleteMapping("/{playerId}/player")
+    public ResponseEntity deletePlayerFromTeam(@PathVariable("playerId") Long playerId) throws NotFoundException, ParameterInvalidException {
 
-        if (leagueName.trim().isBlank()) {
-            throw new NotFoundException(leagueName);
-        }
+        if (playerId <= 0) throw new ParameterInvalidException(playerId.toString());
 
-        if (playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).isEmpty()){
-            throw new NotFoundException(leagueName);
-        }
+        if (playerRepository.findPlayerById(playerId).isEmpty()) throw new NotFoundException(playerId.toString());
 
-        Player player = playerRepository.findPlayerByLeagueNameIgnoreCase(leagueName).get();
+        Player player = playerRepository.findPlayerById(playerId).get();
 
-        if (teamPlayerRepository.findTeamPlayerByPlayer(player).isEmpty()){
-            throw new NotFoundException(leagueName);
-        }
+        if (teamPlayerRepository.findTeamPlayerByPlayer(player).isEmpty()) throw new NotFoundException(playerId.toString());
 
         TeamPlayer teamPlayer = teamPlayerRepository.findTeamPlayerByPlayer(player).get();
         teamPlayerRepository.delete(teamPlayer);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-
     }
 }

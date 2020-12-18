@@ -38,9 +38,13 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     private TeamPlayerRepository teamPlayerRepository;
 
     private Long testTeamId;
-    private Long testLOLnameId;
+    private Long testTeam2Id;
 
+
+    private Long testLOLnameId;
     private Long test7Stijn7Id;
+    private Long testLolname5;
+    private Long testLolname6;
 
     @BeforeEach
     void setUp() {
@@ -57,7 +61,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
         Team team2 = new Team.TeamBuilder()
                 .name("TestTeam2")
                 .build();
-        teamRepository.save(team2);
+        testTeam2Id = teamRepository.save(team2).getId();
 
 
 
@@ -108,14 +112,14 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
                 .lastName("Verbieren")
                 .leagueName("LOLname5")
                 .build();
-        playerRepository.save(player5);
+        testLolname5 = playerRepository.save(player5).getId();
 
         Player player6 = new Player.PlayerBuilder()
                 .firstName("Stijn")
                 .lastName("Verbieren")
                 .leagueName("LOLname6")
                 .build();
-        playerRepository.save(player6);
+        testLolname6 = playerRepository.save(player6).getId();
 
 
 
@@ -222,7 +226,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
         final String ID_TEAM = testTeamId.toString();
 
        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player"))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isForbidden())
                 .andReturn();
 
         String responsMessage = mvcResult.getResponse().getContentAsString();
@@ -236,7 +240,35 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
         final String ID_TEAM = "0";
 
        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player"))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals(ID_TEAM + " is not valid!", responsMessage);
+
+    }
+
+    @Test
+    void addPlayerToTeamPlayerIdNegative() throws Exception {
+        final String ID_PLAYER = "-1";
+        final String ID_TEAM = testTeamId.toString();
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player"))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals(ID_PLAYER + " is not valid!", responsMessage);
+
+    }
+
+    @Test
+    void addPlayerToTeamTeamIdNegative() throws Exception {
+        final String ID_PLAYER = testLOLnameId.toString();
+        final String ID_TEAM = "-1";
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player"))
+                .andExpect(status().isForbidden())
                 .andReturn();
 
         String responsMessage = mvcResult.getResponse().getContentAsString();
@@ -288,13 +320,11 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
 
     @Test
     void makePlayerReserveNotMoreThan5ActivePlayersInTeamOK() throws Exception {
-        final String LEAGUE_NAME = "LOLname5";
-        final String TEAM_NAME = "TestTeam2";
+        final String ID_PLAYER = testLolname5.toString();
+        final String ID_TEAM = testTeam2Id.toString();
         final String IS_ACTIVE = "false";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/teamplayer")
-                .param("leagueName", LEAGUE_NAME)
-                .param("teamName", TEAM_NAME)
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player")
                 .param("isActive", IS_ACTIVE))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -307,21 +337,31 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
 
     @Test
     void makePlayerReserveNotMoreThan5ActivePlayersInTeam() throws Exception {
-        final String LEAGUE_NAME = "LOLname6";
-        final String TEAM_NAME = "TestTeam2";
+        final String ID_PLAYER = testLolname6.toString();
+        final String ID_TEAM = testTeam2Id.toString();
         final String IS_ACTIVE = "true";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/teamplayer")
-                .param("leagueName", LEAGUE_NAME)
-                .param("teamName", TEAM_NAME)
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player")
                 .param("isActive", IS_ACTIVE))
                 .andExpect(status().isConflict())
                 .andReturn();
 
         String responsMessage = mvcResult.getResponse().getContentAsString();
-        assertEquals("This team: " + TEAM_NAME + " this team has enough active players", responsMessage);
+        assertEquals("This team: " + ID_TEAM + " this team has enough active players", responsMessage);
 
     }
 
+    @Test
+    void getPlayersFromTeamOk() throws Exception {
+        final String ID_TEAM = testTeamId.toString();
+        final String EXPECTED_RESPONS = "[{\"leagueName\":\"7Stijn7\",\"firstName\":\"Stijn\",\"lastName\":\"Verbieren\"},{\"leagueName\":\"LOLname1\",\"firstName\":\"Stijn\",\"lastName\":\"Verbieren\"}]";
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/teamplayer/" + ID_TEAM + "/team"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals(EXPECTED_RESPONS, responsMessage);
+    }
 
 }
