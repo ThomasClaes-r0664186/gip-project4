@@ -7,22 +7,22 @@ import java.util.List;
 
 public class Team {
 
-    public Boolean firstDragon;
-    public List<Ban> bans = null;
-    public Boolean firstInhibitor;
-    public String win;
-    public Boolean firstRiftHerald;
-    public Boolean firstBaron;
-    public Long baronKills;
-    public Long riftHeraldKills;
-    public Boolean firstBlood;
-    public Long teamId;
-    public Boolean firstTower;
-    public Long vilemawKills;
-    public Long inhibitorKills;
-    public Long towerKills;
-    public Long dominionVictoryScore;
-    public Long dragonKills;
+    private Boolean firstDragon;
+    private List<Ban> bans = null;
+    private Boolean firstInhibitor;
+    private String win;
+    private Boolean firstRiftHerald;
+    private Boolean firstBaron;
+    private Long baronKills;
+    private Long riftHeraldKills;
+    private Boolean firstBlood;
+    private Long teamId;
+    private Boolean firstTower;
+    private Long vilemawKills;
+    private Long inhibitorKills;
+    private Long towerKills;
+    private Long dominionVictoryScore;
+    private Long dragonKills;
 
     /**
      *

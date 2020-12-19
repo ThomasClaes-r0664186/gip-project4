@@ -14,5 +14,10 @@ public class Types {
             Fail,Win
         }
     }
+    public static class Participant{
+        public enum HighestAchievedSeasonTier {
+            CHALLENGER, MASTER, DIAMOND, PLATINUM, GOLD, SILVER, BRONZE, UNRANKED
+        }
+    }
 
 }
