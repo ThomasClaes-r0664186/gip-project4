@@ -10,6 +10,12 @@ public class Mastery {
         setMasteryId(masteryId);
     }
 
+    public Mastery(){
+        /**Lege contstructor voor error van JSON=>DTO te vermijden**/
+    }
+
+    //Getters en setters
+
     public Long getRank() {
         return rank;
     }

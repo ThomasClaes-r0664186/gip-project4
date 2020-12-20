@@ -135,6 +135,12 @@ public class Stats {
         setTimeCCingOthers(timeCCingOthers);
     }
 
+    public Stats(){
+        /**Lege contstructor voor error van JSON=>DTO te vermijden**/
+    }
+
+    //Getters en setters
+
     public Long getNeutralMinionsKilledTeamJungle() {
         return neutralMinionsKilledTeamJungle;
     }

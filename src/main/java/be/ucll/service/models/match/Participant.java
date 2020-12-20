@@ -44,6 +44,12 @@ public class Participant {
         setMasteries(masteries);
     }
 
+    public Participant(){
+        /**Lege contstructor voor error van JSON=>DTO te vermijden**/
+    }
+
+    //Getters en setters
+
     public List<Mastery> getMasteries() {
         return masteries;
     }

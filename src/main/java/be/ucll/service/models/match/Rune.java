@@ -14,6 +14,12 @@ public class Rune {
         this.rank = rank;
     }
 
+    public Rune(){
+        /**Lege contstructor voor error van JSON=>DTO te vermijden**/
+    }
+
+    //Getters en setters
+
     public Long getRuneId() {
         return runeId;
     }

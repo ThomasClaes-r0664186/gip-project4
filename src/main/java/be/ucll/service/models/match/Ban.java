@@ -16,6 +16,11 @@ public class Ban {
         setChampionId(championId);
     }
 
+    public Ban(){
+        /**Lege contstructor voor error van JSON=>DTO te vermijden**/
+    }
+
+    //Getters en setters
     public Long getPickTurn() {
         return pickTurn;
     }

@@ -58,7 +58,9 @@ public class Match {
      * @param gameDuration Match duration in seconds.
      * @param gameCreation Designates the timestamp when champion select ended and the loading screen appeared, NOT when the game timer was at 0:00.
      */
-    public Match(/*Vul hier je properties dat je nodig hebt*/) {
+    public Match(Long gameId  /*Vul hier je properties dat je nodig hebt*/) {
+        setGameId(gameId);
+
         /*Zet hier de setters voor de propeties die je hierboven hebt gezet.*/
     }
 
@@ -70,6 +72,12 @@ public class Match {
      *      setGameId(gameId);
      * }
      */
+
+    public Match(){
+        /**Lege contstructor voor error van JSON=>DTO te vermijden**/
+    }
+
+    //Getters en setters
 
     public Long getSeasonId() {
         return seasonId;

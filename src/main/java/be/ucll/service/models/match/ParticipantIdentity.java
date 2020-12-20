@@ -16,6 +16,12 @@ public class ParticipantIdentity {
         setParticipantId(participantId);
     }
 
+    public ParticipantIdentity(){
+        /**Lege contstructor voor error van JSON=>DTO te vermijden**/
+    }
+
+    //Getters en setters
+
     public Player getPlayer() {
         return player;
     }

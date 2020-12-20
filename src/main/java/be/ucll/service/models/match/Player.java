@@ -34,6 +34,12 @@ public class Player {
         setAccountId(accountId);
     }
 
+    public Player(){
+        /**Lege contstructor voor error van JSON=>DTO te vermijden**/
+    }
+
+    //Getters en setters
+
     public String getCurrentPlatformId() {
         return currentPlatformId;
     }

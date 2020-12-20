@@ -62,6 +62,12 @@ public class Team {
         setDragonKills(dragonKills);
     }
 
+    public Team(){
+        /**Lege contstructor voor error van JSON=>DTO te vermijden**/
+    }
+
+    //Getters en setters
+
     public Boolean getFirstDragon() {
         return firstDragon;
     }

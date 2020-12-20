@@ -47,6 +47,12 @@ public class Timeline {
         setDamageTakenDiffPerMinDeltas(damageTakenDiffPerMinDeltas);
     }
 
+    public Timeline(){
+        /**Lege contstructor voor error van JSON=>DTO te vermijden**/
+    }
+
+    //Getters en setters
+
     public String getLane() {
         return lane;
     }
