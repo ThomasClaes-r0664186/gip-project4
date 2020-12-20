@@ -848,7 +848,7 @@ public class Match {
     }
 
     public String getSeason() {
-        return season;
+        return seasonName;
     }
 
     public String getMapDescription() {
