@@ -11,4 +11,5 @@
     <include file="db.changelog/migrations/7-renaming-dbnames.xml"/>
     <include file="db.changelog/migrations/8-deletingOrganisation.xml"/>
     <include file="db.changelog/migrations/9-changingMatch.xml"/>
+    <include file="db.changelog/migrations/10-changingMatchAgain.xml"/>
 </databaseChangeLog>
