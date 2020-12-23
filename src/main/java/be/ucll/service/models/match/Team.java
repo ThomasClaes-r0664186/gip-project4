@@ -97,12 +97,7 @@ public class Team {
     }
 
     public void setWin(String win) throws ParameterInvalidException {
-        List wins = Arrays.asList(Types.Team.Win.values());
-        if(wins.contains(Types.Timeline.Roles.valueOf(win))){
-            this.win = win;
-        }else{
-            throw new ParameterInvalidException(win);
-        }
+        this.win = win;
     }
 
     public Boolean getFirstRiftHerald() {

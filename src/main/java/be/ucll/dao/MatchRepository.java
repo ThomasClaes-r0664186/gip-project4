@@ -12,5 +12,8 @@ import java.util.Optional;
 @Repository
 public interface MatchRepository extends JpaRepository<Match, Long> {
     Optional<Match> findMatchByTeam1AndAndDate(Team team1,Date date);
-    Optional<Match> findMatchById(long id);
+    Optional<Match> findMatchById(Long id);
+
+    //Optional<Match> findMatchBymatchID(Long id);
+    Optional<Match> findMatchByMatchID(Long id);
 }

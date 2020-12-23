@@ -5,13 +5,12 @@ import be.ucll.dto.MatchHistoryDTO;
 import be.ucll.models.Match;
 import be.ucll.service.MatchHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +26,7 @@ public class MatchHistoryResource {
     public MatchHistoryResource(MatchHistoryService matchHistoryService, MatchRepository matchRepository) {
         this.matchHistoryService = matchHistoryService;
         this.matchRepository = matchRepository;
+
     }
 
 
@@ -44,22 +44,51 @@ public class MatchHistoryResource {
          */
     @GetMapping
     public ResponseEntity<List<MatchHistoryDTO>> getMatchHistory(){
-        List<Match> matchesInDb = matchRepository.findAll();
+        List<Long> matchIdFromDb = matchRepository.findAll().stream()
+                .map(Match::getMatchId).collect(Collectors.toList());
 
+
+        List<be.ucll.service.models.Match> matches = matchHistoryService.getMatches(matchIdFromDb);
+
+        List<MatchHistoryDTO> history = matches.stream().map(x -> {
+            MatchHistoryDTO matchHistoryDTO = new MatchHistoryDTO();
+            matchHistoryDTO.setTeamId(matchRepository.findMatchByMatchID(x.getGameId()).get().getTeam1().getId());
+            matchHistoryDTO.setMatchDate(matchRepository.findMatchByMatchID(x.getGameId()).get().getDate().toString());
+
+            matchHistoryDTO.setWon1(x.getTeams().get(0).getWin());
+
+            return matchHistoryDTO;
+        }).collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.OK).body(history);
+/*
         List<Long> matchIdFromDb = matchesInDb.stream()
                 .map(Match::getMatchId)
                 .collect(Collectors.toList());
 
-        //List<be.ucll.service.models.Match> matchesLeagueResponse = matchHistoryService.getMatches(matchIdFromDb);
+        AtomicInteger participantIndex = new AtomicInteger();
+        List<MatchHistoryDTO> matchHistoryDTOS = matchesInDb.stream()
 
-        matchesInDb.stream()
                 .map(x -> {
                     MatchHistoryDTO matchHistoryDTO = new MatchHistoryDTO();
                     matchHistoryDTO.setMatchDate(x.getDate().toString());
                     matchHistoryDTO.setTeamId(x.getTeam1().getId());
-                    matchHistoryDTO.setWon(matchHistoryService.getMatch(x.getMatchId()).get().getTeams().get(0).getWin());
-                })
-        /*
+                    matchHistoryDTO.setWon1(matchHistoryService.getMatch(x.getMatchId()).get().getTeams().get(0).getWin());
+
+                     if (participantIndex.get() <=5) {
+                         matchHistoryDTO.setKillsTeam1(matchHistoryService.getMatch(x.getMatchId()).get().getParticipants().get(participantIndex.get()).getStats().getKills());
+                         matchHistoryDTO.setDeathsTeam1(matchHistoryService.getMatch(x.getMatchId()).get().getParticipants().get(participantIndex.get()).getStats().getDeaths());
+                         matchHistoryDTO.setAssistsTeam1(matchHistoryService.getMatch(x.getMatchId()).get().getParticipants().get(participantIndex.get()).getStats().getAssists());
+                     }else {
+                         matchHistoryDTO.setKillsTeam2(matchHistoryService.getMatch(x.getMatchId()).get().getParticipants().get(participantIndex.get()).getStats().getKills());
+                         matchHistoryDTO.setDeathsTeam2(matchHistoryService.getMatch(x.getMatchId()).get().getParticipants().get(participantIndex.get()).getStats().getDeaths());
+                         matchHistoryDTO.setAssistsTeam2(matchHistoryService.getMatch(x.getMatchId()).get().getParticipants().get(participantIndex.get()).getStats().getAssists());
+                     }
+                    participantIndex.getAndIncrement();
+
+                     return matchHistoryDTO;
+                }).collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.OK).body(matchHistoryDTOS);
+
         matchesLeagueResponse.stream()
                 .map(x -> {
                     MatchHistoryDTO matchHistoryDTO = new MatchHistoryDTO();
@@ -75,6 +104,7 @@ public class MatchHistoryResource {
                 })
 
          */
+
     }
 
     private List<be.ucll.service.models.Match> getMatchHistoryFromLol(List<Long> matchIds){

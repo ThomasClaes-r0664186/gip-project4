@@ -127,11 +127,6 @@ public class Participant {
     }
 
     public void setHighestAchievedSeasonTier(String highestAchievedSeasonTier) throws ParameterInvalidException {
-        List tiers = Arrays.asList(Types.Participant.HighestAchievedSeasonTier.values());
-        if(tiers.contains(Types.Timeline.Roles.valueOf(highestAchievedSeasonTier))){
-            this.highestAchievedSeasonTier = highestAchievedSeasonTier;
-        }else{
-            throw new ParameterInvalidException(highestAchievedSeasonTier);
-        }
+        this.highestAchievedSeasonTier = highestAchievedSeasonTier;
     }
 }

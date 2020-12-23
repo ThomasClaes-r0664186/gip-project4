@@ -1,34 +1,20 @@
 package be.ucll.dto;
 
-import be.ucll.models.Player;
-
 import java.util.List;
 
 public class MatchHistoryDTO {
 
     private Long teamId;
-    private String won;
-    private Integer killsTeam1;
-    private Integer deathsTeam1;
-    private Integer assistsTeam1;
-    private Integer killsTeam2;
-    private Integer deathsTeam2;
-    private Integer assistsTeam2;
+    private String won1;
+    private Long killsTeam1;
+    private Long deathsTeam1;
+    private Long assistsTeam1;
+    private Long killsTeam2;
+    private Long deathsTeam2;
+    private Long assistsTeam2;
     private String matchDate;
     private List<PlayerStatsDTO> playerStatsDTOS;
 
-    public MatchHistoryDTO(Long teamId, String won, Integer killsTeam1, Integer deathsTeam1, Integer assistsTeam1, Integer killsTeam2, Integer deathsTeam2, Integer assistsTeam2, String matchDate, List<PlayerStatsDTO> playerStatsDTOS) {
-        this.teamId = teamId;
-        this.won = won;
-        this.killsTeam1 = killsTeam1;
-        this.deathsTeam1 = deathsTeam1;
-        this.assistsTeam1 = assistsTeam1;
-        this.killsTeam2 = killsTeam2;
-        this.deathsTeam2 = deathsTeam2;
-        this.assistsTeam2 = assistsTeam2;
-        this.matchDate = matchDate;
-        this.playerStatsDTOS = playerStatsDTOS;
-    }
 
     public MatchHistoryDTO() {
     }
@@ -41,59 +27,61 @@ public class MatchHistoryDTO {
         this.teamId = teamId;
     }
 
-    public String getWon() {
-        return won;
+    public String getWon1() {
+        return won1;
     }
 
-    public void setWon(String won) {
-        this.won = won;
+    public void setWon1(String won1) {
+        this.won1 = won1;
     }
 
-    public Integer getKillsTeam1() {
+
+
+    public Long getKillsTeam1() {
         return killsTeam1;
     }
 
-    public void setKillsTeam1(Integer killsTeam1) {
+    public void setKillsTeam1(Long killsTeam1) {
         this.killsTeam1 = killsTeam1;
     }
 
-    public Integer getDeathsTeam1() {
+    public Long getDeathsTeam1() {
         return deathsTeam1;
     }
 
-    public void setDeathsTeam1(Integer deathsTeam1) {
+    public void setDeathsTeam1(Long deathsTeam1) {
         this.deathsTeam1 = deathsTeam1;
     }
 
-    public Integer getAssistsTeam1() {
+    public Long getAssistsTeam1() {
         return assistsTeam1;
     }
 
-    public void setAssistsTeam1(Integer assistsTeam1) {
+    public void setAssistsTeam1(Long assistsTeam1) {
         this.assistsTeam1 = assistsTeam1;
     }
 
-    public Integer getKillsTeam2() {
+    public Long getKillsTeam2() {
         return killsTeam2;
     }
 
-    public void setKillsTeam2(Integer killsTeam2) {
+    public void setKillsTeam2(Long killsTeam2) {
         this.killsTeam2 = killsTeam2;
     }
 
-    public Integer getDeathsTeam2() {
+    public Long getDeathsTeam2() {
         return deathsTeam2;
     }
 
-    public void setDeathsTeam2(Integer deathsTeam2) {
+    public void setDeathsTeam2(Long deathsTeam2) {
         this.deathsTeam2 = deathsTeam2;
     }
 
-    public Integer getAssistsTeam2() {
+    public Long getAssistsTeam2() {
         return assistsTeam2;
     }
 
-    public void setAssistsTeam2(Integer assistsTeam2) {
+    public void setAssistsTeam2(Long assistsTeam2) {
         this.assistsTeam2 = assistsTeam2;
     }
 
