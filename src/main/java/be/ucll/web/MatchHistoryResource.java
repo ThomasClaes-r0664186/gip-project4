@@ -3,6 +3,7 @@ package be.ucll.web;
 import be.ucll.dao.MatchRepository;
 import be.ucll.dto.MatchHistoryDTO;
 import be.ucll.models.Match;
+import be.ucll.models.Player;
 import be.ucll.service.MatchHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,66 +45,31 @@ public class MatchHistoryResource {
          */
     @GetMapping
     public ResponseEntity<List<MatchHistoryDTO>> getMatchHistory(){
+
         List<Long> matchIdFromDb = matchRepository.findAll().stream()
                 .map(Match::getMatchId).collect(Collectors.toList());
 
 
         List<be.ucll.service.models.Match> matches = matchHistoryService.getMatches(matchIdFromDb);
 
+        //matches.stream().filter(x -> x.getTeams().stream().filter(e -> e.getTeamId() == 100))
+
+
         List<MatchHistoryDTO> history = matches.stream().map(x -> {
+
             MatchHistoryDTO matchHistoryDTO = new MatchHistoryDTO();
             matchHistoryDTO.setTeamId(matchRepository.findMatchByMatchID(x.getGameId()).get().getTeam1().getId());
             matchHistoryDTO.setMatchDate(matchRepository.findMatchByMatchID(x.getGameId()).get().getDate().toString());
 
-            matchHistoryDTO.setWon1(x.getTeams().get(0).getWin());
+            // we nemen 1 partici. van team 100 (via lol naam of id)
+            // dan kijken we of deze in onze databank zit --> zo ja: team 100 = ons team, zo niet team 100 ander team
+            // als het ons team is: getwin van team 100,
+
+
 
             return matchHistoryDTO;
         }).collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK).body(history);
-/*
-        List<Long> matchIdFromDb = matchesInDb.stream()
-                .map(Match::getMatchId)
-                .collect(Collectors.toList());
-
-        AtomicInteger participantIndex = new AtomicInteger();
-        List<MatchHistoryDTO> matchHistoryDTOS = matchesInDb.stream()
-
-                .map(x -> {
-                    MatchHistoryDTO matchHistoryDTO = new MatchHistoryDTO();
-                    matchHistoryDTO.setMatchDate(x.getDate().toString());
-                    matchHistoryDTO.setTeamId(x.getTeam1().getId());
-                    matchHistoryDTO.setWon1(matchHistoryService.getMatch(x.getMatchId()).get().getTeams().get(0).getWin());
-
-                     if (participantIndex.get() <=5) {
-                         matchHistoryDTO.setKillsTeam1(matchHistoryService.getMatch(x.getMatchId()).get().getParticipants().get(participantIndex.get()).getStats().getKills());
-                         matchHistoryDTO.setDeathsTeam1(matchHistoryService.getMatch(x.getMatchId()).get().getParticipants().get(participantIndex.get()).getStats().getDeaths());
-                         matchHistoryDTO.setAssistsTeam1(matchHistoryService.getMatch(x.getMatchId()).get().getParticipants().get(participantIndex.get()).getStats().getAssists());
-                     }else {
-                         matchHistoryDTO.setKillsTeam2(matchHistoryService.getMatch(x.getMatchId()).get().getParticipants().get(participantIndex.get()).getStats().getKills());
-                         matchHistoryDTO.setDeathsTeam2(matchHistoryService.getMatch(x.getMatchId()).get().getParticipants().get(participantIndex.get()).getStats().getDeaths());
-                         matchHistoryDTO.setAssistsTeam2(matchHistoryService.getMatch(x.getMatchId()).get().getParticipants().get(participantIndex.get()).getStats().getAssists());
-                     }
-                    participantIndex.getAndIncrement();
-
-                     return matchHistoryDTO;
-                }).collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.OK).body(matchHistoryDTOS);
-
-        matchesLeagueResponse.stream()
-                .map(x -> {
-                    MatchHistoryDTO matchHistoryDTO = new MatchHistoryDTO();
-                    matchHistoryDTO.setMatchDate();
-                })
-
-        List<MatchHistoryDTO> allMatches = matchesInDb
-                .stream()
-                .map(x -> {
-                    MatchHistoryDTO matchHistoryDTO = new MatchHistoryDTO();
-                    matchHistoryDTO.setMatchDate(x.getDate().toString());
-                    matchHistoryDTO.setDeaths();
-                })
-
-         */
 
     }
 

@@ -35,9 +35,13 @@ public class MatchHistoryService {
 
     }
     public List<Match> getMatches(List<Long> matchId){
+        int counter =10;
+        if (matchId.size()< 10){
+            counter = matchId.size();
+        }
         List<Match> matches = new ArrayList<>();
         URLEncoder.encode(matchId.toString(), StandardCharsets.UTF_8);
-        for (int i =0; i < 3; i++){
+        for (int i =0; i < counter; i++){
              matches.add((RESTTEMPLATE.getForObject(URL_SEARCH_BY_MATCH_ID + matchId.get(i) + "?api_key=" + applicationConfiguration.getApiKey(), Match.class)));
         }
         return matches;
