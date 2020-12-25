@@ -13,7 +13,8 @@ public class MatchHistoryDTO {
     private Long deathsTeam2;
     private Long assistsTeam2;
     private String matchDate;
-    private List<PlayerStatsDTO> playerStatsDTOS;
+    private List<PlayerStatsDTO> playersTeam1;
+    private List<String> playersTeam2;
 
 
     public MatchHistoryDTO() {
@@ -34,8 +35,6 @@ public class MatchHistoryDTO {
     public void setWon1(String won1) {
         this.won1 = won1;
     }
-
-
 
     public Long getKillsTeam1() {
         return killsTeam1;
@@ -93,12 +92,20 @@ public class MatchHistoryDTO {
         this.matchDate = matchDate;
     }
 
-    public List<PlayerStatsDTO> getPlayerStatsDTOS() {
-        return playerStatsDTOS;
+    public List<PlayerStatsDTO> getPlayersTeam1() {
+        return playersTeam1;
     }
 
-    public void setPlayerStatsDTOS(List<PlayerStatsDTO> playerStatsDTOS) {
-        this.playerStatsDTOS = playerStatsDTOS;
+    public void setPlayersTeam1(List<PlayerStatsDTO> playersTeam1) {
+        this.playersTeam1 = playersTeam1;
+    }
+
+    public List<String> getPlayersTeam2() {
+        return playersTeam2;
+    }
+
+    public void setPlayersTeam2(List<String> playersTeam2) {
+        this.playersTeam2 = playersTeam2;
     }
 }
 

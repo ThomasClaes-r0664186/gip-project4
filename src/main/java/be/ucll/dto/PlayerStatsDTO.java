@@ -11,6 +11,9 @@ public class PlayerStatsDTO {
         this.playerId = playerId;
     }
 
+    public PlayerStatsDTO() {
+    }
+
     public String getSummonerName() {
         return summonerName;
     }
