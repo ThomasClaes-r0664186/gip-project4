@@ -64,6 +64,8 @@ public class MatchHistoryResource {
         // dan kijken we of deze in onze databank zit --> zo ja: team 100 = ons team, zo niet team 100 ander team
         // als het ons team is: getwin van team 100,
 
+        if (teamId < 0) throw new ParameterInvalidException(teamId.toString());
+        
         String pattern = "dd-MM-yyyy";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         Date dateFilter = simpleDateFormat.parse("01-01-2000");
