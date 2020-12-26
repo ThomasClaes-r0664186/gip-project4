@@ -58,12 +58,7 @@ public class Timeline {
     }
 
     public void setLane(String lane) throws ParameterInvalidException {
-        List lanes = Arrays.asList(Types.Timeline.Lanes.values());
-        if(lanes.contains(Types.Timeline.Roles.valueOf(lane))){
-            this.role = role;
-        }else{
-            throw new ParameterInvalidException(lane);
-        }
+        this.lane = lane;
     }
 
     public Long getParticipantId() {
@@ -103,12 +98,7 @@ public class Timeline {
     }
 
     public void setRole(String role) throws ParameterInvalidException {
-        List roles = Arrays.asList(Types.Timeline.Roles.values());
-        if(roles.contains(Types.Timeline.Roles.valueOf(role))){
-            this.role = role;
-        }else{
-            throw new ParameterInvalidException(role);
-        }
+        this.role = role;
     }
 
     public Map<String, Double> getDamageTakenPerMinDeltas() {
