@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -53,13 +54,14 @@ public class MatchHistoryResource {
 
              */
     @GetMapping
-    public ResponseEntity<List<MatchHistoryDTO>> getMatchHistory() throws NotFoundException {
+    public ResponseEntity<List<MatchHistoryDTO>> getMatchHistory(@RequestParam(value = "teamId", defaultValue = "0") Long teamId) throws NotFoundException {
 
         // we nemen 1 partici. van team 100 (via lol naam of id)
         // dan kijken we of deze in onze databank zit --> zo ja: team 100 = ons team, zo niet team 100 ander team
         // als het ons team is: getwin van team 100,
 
         List<Long> machIds = matchRepository.findAll().stream()
+                .filter(teamId.equals(0L) ? m -> m.getTeam1().getId() > 0 : m -> m.getTeam1().getId().equals(teamId))
                 .map(m -> m.getMatchId())
                 .collect(Collectors.toList());
 
@@ -222,7 +224,7 @@ public class MatchHistoryResource {
         if (isWeAreTeam100){
             /*MatchHistoryDTO matchHistoryDTO = new MatchHistoryDTO();*/
             matchHistoryDTO.setTeamId(team1.getId());
-            matchHistoryDTO.setWon1(team200.getWin());
+            matchHistoryDTO.setWon1(team100.getWin());
             matchHistoryDTO.setMatchDate(match1.getDate().toString());
 
             matchHistoryDTO.setKillsTeam1(totalKillsTeam100);
