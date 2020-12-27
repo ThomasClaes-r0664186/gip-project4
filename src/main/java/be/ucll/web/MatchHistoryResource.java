@@ -306,19 +306,257 @@ public class MatchHistoryResource {
     @GetMapping("/{playerid}/player")
     public ResponseEntity <List<IndividuallyPlayerDTO>> getIndividuallyMatchHistory(@PathVariable("playerid") Long playerid) throws NotFoundException {
 
-        IndividuallyPlayerDTO individuallyPlayerDTO= new IndividuallyPlayerDTO();
         if(playerRepository.findPlayerById(playerid).isEmpty()) throw new NotFoundException(playerid.toString());
         be.ucll.models.Player individuallyPlayer = playerRepository.findPlayerById(playerid).get();
-        List<TeamPlayer> teamPlayers = teamPlayerRepository.findTeamPlayersByPlayer(individuallyPlayer);
-        List<be.ucll.models.Team> teams = new ArrayList<>();
-        for (TeamPlayer t:teamPlayers) {
-        t.getPlayer().getLeagueName().equals(individuallyPlayer.getLeagueName());
+
+        List<TeamPlayer> teamPlayers = teamPlayerRepository.findTeamsByPlayer(individuallyPlayer);
+
+        List<be.ucll.models.Team> teamsFromPlayer = teamPlayers.stream()
+                .filter(t -> t.getPlayer().getId().equals(playerid))
+                .map(p -> p.getTeam())
+                .collect(Collectors.toList());
+
+        List<Long> matchIdsFromPlayer = teamsFromPlayer.stream()
+                .map(m -> matchRepository.findMatchByTeam1(m).get().getMatchId())
+                .collect(Collectors.toList());
+
+        List<be.ucll.service.models.Match> matchesFromLol = getMatchHistoriesFromLol(matchIdsFromPlayer);
 
 
+        List<IndividuallyPlayerDTO> individuallyPlayerDTOList = new ArrayList<>();
+
+        for (be.ucll.service.models.Match m : matchesFromLol) {
+            individuallyPlayerDTOList.add(createIndividuallyDTO(m, individuallyPlayer));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(individuallyPlayerDTOList);
+    }
+
+
+    private IndividuallyPlayerDTO createIndividuallyDTO(be.ucll.service.models.Match match, be.ucll.models.Player player2) throws NotFoundException {
+
+
+
+        Team team100 = match.getTeams().stream()
+                .filter(t -> t.getTeamId() == 100)
+                .findFirst().orElseThrow();
+
+        Team team200 = match.getTeams().stream()
+                .filter(t -> t.getTeamId() == 200)
+                .findFirst().orElseThrow();
+
+        List<Participant> participantsTeam100 = match.getParticipants().stream()
+                .filter(t -> t.getTeamId() == 100)
+                .collect(Collectors.toList());
+
+        List<Participant> participantsTeam200 = match.getParticipants().stream()
+                .filter(t -> t.getTeamId() == 200)
+                .collect(Collectors.toList());
+
+
+        boolean isTeam100Win = team100.getWin().equals("Win");
+
+        boolean isTeam200Win = team200.getWin().equals("Win");
+
+
+        List<Long> allParticipantsIdsTeam100 = participantsTeam100.stream()
+                .map(p -> p.getParticipantId())
+                .collect(Collectors.toList());
+
+        List<Long> allParticipantsIdsTeam200 = participantsTeam200.stream()
+                .map(p -> p.getParticipantId())
+                .collect(Collectors.toList());
+
+
+        List<ParticipantIdentity> participantIdentitiesTeam100 = new ArrayList<>();
+        for (ParticipantIdentity p : match.getParticipantIdentities()) {
+            for (Long id : allParticipantsIdsTeam100) {
+                if (p.getParticipantId().equals(id)) {
+                    participantIdentitiesTeam100.add(p);
+                }
+            }
+        }
+
+        List<ParticipantIdentity> participantIdentitiesTeam200 = new ArrayList<>();
+        for (ParticipantIdentity p : match.getParticipantIdentities()) {
+            for (Long id : allParticipantsIdsTeam200) {
+                if (p.getParticipantId().equals(id)) {
+                    participantIdentitiesTeam200.add(p);
+                }
+            }
         }
 
 
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        List<Player> allPlayersTeam100 = participantIdentitiesTeam100.stream()
+                .map(p -> p.getPlayer())
+                .collect(Collectors.toList());
+
+        List<Player> allPlayersTeam200 = participantIdentitiesTeam200.stream()
+                .map(p -> p.getPlayer())
+                .collect(Collectors.toList());
+
+
+        List<Long> allKillsTeam100 = participantsTeam100.stream()
+                .map(p -> p.getStats().getKills())
+                .collect(Collectors.toList());
+
+
+
+        List<Long> allKillsTeam200 = participantsTeam200.stream()
+                .map(p -> p.getStats().getKills())
+                .collect(Collectors.toList());
+
+
+
+        List<Long> allDeathsTeam100 = participantsTeam100.stream()
+                .map(p -> p.getStats().getDeaths())
+                .collect(Collectors.toList());
+
+
+        List<Long> allDeathsTeam200 = participantsTeam200.stream()
+                .map(p -> p.getStats().getDeaths())
+                .collect(Collectors.toList());
+
+
+
+        List<Long> allAssistsTeam100 = participantsTeam100.stream()
+                .map(p -> p.getStats().getAssists())
+                .collect(Collectors.toList());
+
+
+
+        List<Long> allAssistsTeam200 = participantsTeam200.stream()
+                .map(p -> p.getStats().getAssists())
+                .collect(Collectors.toList());
+
+
+
+        if (matchRepository.findMatchByMatchID(match.getGameId()).isEmpty())
+            throw new NotFoundException(match.getGameId().toString());
+
+        Match match1 = matchRepository.findMatchByMatchID(match.getGameId()).get();
+
+        be.ucll.models.Team team1 = match1.getTeam1();
+
+        List<TeamPlayer> teamPlayers = teamPlayerRepository.findPlayersByTeam(team1);
+
+        Optional<be.ucll.models.Player> playerFromDb = teamPlayers.stream()
+                .map(tp -> tp.getPlayer())
+                .findAny();
+
+        if (playerFromDb.isEmpty()) throw new NotFoundException("player");
+
+        boolean isWeAreTeam100 = false;
+
+        for (Player p : allPlayersTeam100) {
+            if (playerFromDb.get().getLeagueName().equals(p.getSummonerName())) {
+                isWeAreTeam100 = true;
+            }
+        }
+
+        IndividuallyPlayerDTO individuallyPlayerDTO = new IndividuallyPlayerDTO();
+
+        individuallyPlayerDTO.setMatchId(match1.getId());
+        individuallyPlayerDTO.setMatchDate(match1.getDate().toString());
+
+
+        if (isWeAreTeam100) {
+
+            individuallyPlayerDTO.setWon(team100.getWin());
+
+            Optional<Long> participantIdPlayer = participantIdentitiesTeam100.stream()
+                    .filter(p -> p.getPlayer().getSummonerName().equals(player2.getLeagueName()))
+                    .map(p -> p.getParticipantId())
+                    .findFirst();
+
+            Optional<Long> killsPlayer = participantsTeam100.stream()
+                    .filter(p -> p.getParticipantId().equals(participantIdPlayer.get()))
+                    .map(p -> p.getStats().getKills())
+                    .findFirst();
+
+            Optional<Long> assistsPlayer = participantsTeam100.stream()
+                    .filter(p -> p.getParticipantId().equals(participantIdPlayer.get()))
+                    .map(p -> p.getStats().getAssists())
+                    .findFirst();
+
+            Optional<Long> deathsPlayer = participantsTeam100.stream()
+                    .filter(p -> p.getParticipantId().equals(participantIdPlayer.get()))
+                    .map(p -> p.getStats().getDeaths())
+                    .findFirst();
+
+            individuallyPlayerDTO.setKills(killsPlayer.get());
+            individuallyPlayerDTO.setAssists(assistsPlayer.get());
+            individuallyPlayerDTO.setDeaths(deathsPlayer.get());
+
+            List<PlayerStatsDTO> playersTeam1 = allPlayersTeam100.stream()
+                    .map(p -> {
+                        be.ucll.models.Player player = playerRepository.findPlayerByLeagueNameIgnoreCase(p.getSummonerName()).get();
+                        PlayerStatsDTO playerStatsDTO = new PlayerStatsDTO();
+                        playerStatsDTO.setPlayerId(player.getId());
+                        playerStatsDTO.setSummonerName(p.getSummonerName());
+
+                        return playerStatsDTO;
+                    }).collect(Collectors.toList());
+
+            individuallyPlayerDTO.setPlayersTeam1(playersTeam1);
+
+            List<String> usersTeamEnemy = allPlayersTeam200.stream()
+                    .map(p -> p.getSummonerName())
+                    .collect(Collectors.toList());
+
+            individuallyPlayerDTO.setPlayersTeam2(usersTeamEnemy);
+
+        } else {
+
+            individuallyPlayerDTO.setWon(team200.getWin());
+
+            Optional<Long> participantIdPlayer = participantIdentitiesTeam200.stream()
+                    .filter(p -> p.getPlayer().getSummonerName().equals(player2.getLeagueName()))
+                    .map(p -> p.getParticipantId())
+                    .findFirst();
+
+            Optional<Long> killsPlayer = participantsTeam200.stream()
+                    .filter(p -> p.getParticipantId().equals(participantIdPlayer.get()))
+                    .map(p -> p.getStats().getKills())
+                    .findFirst();
+
+            Optional<Long> assistsPlayer = participantsTeam200.stream()
+                    .filter(p -> p.getParticipantId().equals(participantIdPlayer.get()))
+                    .map(p -> p.getStats().getAssists())
+                    .findFirst();
+
+            Optional<Long> deathsPlayer = participantsTeam200.stream()
+                    .filter(p -> p.getParticipantId().equals(participantIdPlayer.get()))
+                    .map(p -> p.getStats().getDeaths())
+                    .findFirst();
+
+            individuallyPlayerDTO.setKills(killsPlayer.get());
+            individuallyPlayerDTO.setAssists(assistsPlayer.get());
+            individuallyPlayerDTO.setDeaths(deathsPlayer.get());
+
+            List<PlayerStatsDTO> playersTeam1 = allPlayersTeam200.stream()
+                    .map(p -> {
+                        be.ucll.models.Player player = playerRepository.findPlayerByLeagueNameIgnoreCase(p.getSummonerName()).get();
+                        PlayerStatsDTO playerStatsDTO = new PlayerStatsDTO();
+                        playerStatsDTO.setPlayerId(player.getId());
+                        playerStatsDTO.setSummonerName(p.getSummonerName());
+
+                        return playerStatsDTO;
+                    }).collect(Collectors.toList());
+
+            individuallyPlayerDTO.setPlayersTeam1(playersTeam1);
+
+
+            List<String> usersTeamEnemy = allPlayersTeam100.stream()
+                    .map(p -> p.getSummonerName())
+                    .collect(Collectors.toList());
+
+            individuallyPlayerDTO.setPlayersTeam2(usersTeamEnemy);
+        }
+
+
+        return individuallyPlayerDTO;
     }
+
 
 }

@@ -2,9 +2,7 @@ package be.ucll.service;
 
 import be.ucll.config.ApplicationConfiguration;
 
-import be.ucll.dto.MatchHistoryDTO;
 import be.ucll.service.models.Match;
-import be.ucll.service.models.Summoner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -34,6 +32,8 @@ public class MatchHistoryService {
         return Optional.ofNullable(RESTTEMPLATE.getForObject(URL_SEARCH_BY_MATCH_ID + matchId + "?api_key=" + applicationConfiguration.getApiKey(), Match.class));
 
     }
+
+
     public List<Match> getMatches(List<Long> matchId){
         int counter =10;
         if (matchId.size()< 10){

@@ -16,4 +16,6 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
 
     //Optional<Match> findMatchBymatchID(Long id);
     Optional<Match> findMatchByMatchID(Long id);
+
+    Optional<Match> findMatchByTeam1(Team team);
 }
