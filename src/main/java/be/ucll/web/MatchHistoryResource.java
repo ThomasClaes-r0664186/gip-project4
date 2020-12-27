@@ -3,6 +3,8 @@ package be.ucll.web;
 import be.ucll.dao.MatchRepository;
 import be.ucll.dao.PlayerRepository;
 import be.ucll.dao.TeamPlayerRepository;
+import be.ucll.dao.TeamRepository;
+import be.ucll.dto.IndividuallyPlayerDTO;
 import be.ucll.dto.MatchHistoryDTO;
 import be.ucll.dto.PlayerStatsDTO;
 import be.ucll.exceptions.NotFoundException;
@@ -17,10 +19,7 @@ import be.ucll.service.models.match.Team;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,13 +37,15 @@ public class MatchHistoryResource {
     MatchRepository matchRepository;
     TeamPlayerRepository teamPlayerRepository;
     PlayerRepository playerRepository;
+    TeamRepository teamRepository;
 
     @Autowired
-    public MatchHistoryResource(MatchHistoryService matchHistoryService, MatchRepository matchRepository, TeamPlayerRepository teamPlayerRepository, PlayerRepository playerRepository) {
+    public MatchHistoryResource(MatchHistoryService matchHistoryService, MatchRepository matchRepository, TeamPlayerRepository teamPlayerRepository, PlayerRepository playerRepository,  TeamRepository teamRepository) {
         this.matchHistoryService = matchHistoryService;
         this.matchRepository = matchRepository;
         this.teamPlayerRepository = teamPlayerRepository;
         this.playerRepository = playerRepository;
+        this.teamRepository = teamRepository;
     }
 
     /*
@@ -302,6 +303,22 @@ public class MatchHistoryResource {
         return matchHistoryDTO;
 
     }
+    @GetMapping("/{playerid}/player")
+    public ResponseEntity <List<IndividuallyPlayerDTO>> getIndividuallyMatchHistory(@PathVariable("playerid") Long playerid) throws NotFoundException {
 
+        IndividuallyPlayerDTO individuallyPlayerDTO= new IndividuallyPlayerDTO();
+        if(playerRepository.findPlayerById(playerid).isEmpty()) throw new NotFoundException(playerid.toString());
+        be.ucll.models.Player individuallyPlayer = playerRepository.findPlayerById(playerid).get();
+        List<TeamPlayer> teamPlayers = teamPlayerRepository.findTeamPlayersByPlayer(individuallyPlayer);
+        List<be.ucll.models.Team> teams = new ArrayList<>();
+        for (TeamPlayer t:teamPlayers) {
+        t.getPlayer().getLeagueName().equals(individuallyPlayer.getLeagueName());
+
+
+        }
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
 
 }
