@@ -5,6 +5,7 @@ import be.ucll.dao.MatchRepository;
 import be.ucll.dao.PlayerRepository;
 import be.ucll.dao.TeamPlayerRepository;
 import be.ucll.dao.TeamRepository;
+import be.ucll.dto.MatchHistoryDTO;
 import be.ucll.models.Match;
 import be.ucll.models.Player;
 import be.ucll.models.Team;
@@ -17,11 +18,14 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.type.TypeReference;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -263,6 +267,40 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
 
         String responsMessage = mvcResult.getResponse().getContentAsString();
         assertEquals(EXPECTED_RESPONS, responsMessage);
+
+    }
+
+    @Test
+    void getMatchHistoryFilterDateOk() throws Exception {
+        final String DATE = "20-12-2020";
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
+                .param("date", DATE))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        ObjectMapper mapper = new ObjectMapper();
+
+// this uses a TypeReference to inform Jackson about the Lists's generic type
+        List<MatchHistoryDTO> actual = mapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<MatchHistoryDTO>>() {});
+
+        assertEquals("Sun Dec 20 00:00:00 CET 2020", actual.get(0).getMatchDate());
+
+    }
+
+    @Test
+    void getMatchHistoryFilterTeamIdOk() throws Exception {
+        final String TEAM = testTeamId.toString();
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
+                .param("teamId", TEAM))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        ObjectMapper mapper = new ObjectMapper();
+        List<MatchHistoryDTO> actual = mapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<MatchHistoryDTO>>() {});
+
+        assertEquals(testTeamId, actual.get(0).getTeamId());
 
     }
 
