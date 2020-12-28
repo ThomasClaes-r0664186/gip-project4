@@ -85,7 +85,7 @@ public class MatchHistoryResource {
 
 
     @GetMapping("/{playerid}/player")
-    public ResponseEntity<List<IndividuallyPlayerDTO>> getIndividuallyMatchHistory(@PathVariable("playerid") Long playerid) throws NotFoundException {
+    public ResponseEntity<List<IndividuallyPlayerDTO>> getIndividuallyMatchHistory(@PathVariable("playerid") Long playerid, @RequestParam(value = "matchId", defaultValue = "0") Long matchId) throws NotFoundException {
 
         if (playerRepository.findPlayerById(playerid).isEmpty()) throw new NotFoundException(playerid.toString());
         be.ucll.models.Player individuallyPlayer = playerRepository.findPlayerById(playerid).get();
@@ -98,6 +98,7 @@ public class MatchHistoryResource {
                 .collect(Collectors.toList());
 
         List<Long> matchIdsFromPlayer = teamsFromPlayer.stream()
+                .filter(matchId.equals(0L) ? t -> matchRepository.findMatchByTeam1(t).get().getId() > 0 : t -> matchRepository.findMatchByTeam1(t).get().getId().equals(matchId))
                 .map(m -> matchRepository.findMatchByTeam1(m).get().getMatchId())
                 .collect(Collectors.toList());
 
