@@ -12,6 +12,8 @@ import be.ucll.exceptions.ParameterInvalidException;
 import be.ucll.models.Match;
 import be.ucll.models.TeamPlayer;
 import be.ucll.service.MatchHistoryService;
+import be.ucll.service.models.individuallyMatch.IndividuallyMatch;
+import be.ucll.service.models.individuallyMatch.ParticipantFrames;
 import be.ucll.service.models.match.Participant;
 import be.ucll.service.models.match.ParticipantIdentity;
 import be.ucll.service.models.match.Player;
@@ -396,41 +398,6 @@ public class MatchHistoryResource {
                 .collect(Collectors.toList());
 
 
-        List<Long> allKillsTeam100 = participantsTeam100.stream()
-                .map(p -> p.getStats().getKills())
-                .collect(Collectors.toList());
-
-
-
-        List<Long> allKillsTeam200 = participantsTeam200.stream()
-                .map(p -> p.getStats().getKills())
-                .collect(Collectors.toList());
-
-
-
-        List<Long> allDeathsTeam100 = participantsTeam100.stream()
-                .map(p -> p.getStats().getDeaths())
-                .collect(Collectors.toList());
-
-
-        List<Long> allDeathsTeam200 = participantsTeam200.stream()
-                .map(p -> p.getStats().getDeaths())
-                .collect(Collectors.toList());
-
-
-
-        List<Long> allAssistsTeam100 = participantsTeam100.stream()
-                .map(p -> p.getStats().getAssists())
-                .collect(Collectors.toList());
-
-
-
-        List<Long> allAssistsTeam200 = participantsTeam200.stream()
-                .map(p -> p.getStats().getAssists())
-                .collect(Collectors.toList());
-
-
-
         if (matchRepository.findMatchByMatchID(match.getGameId()).isEmpty())
             throw new NotFoundException(match.getGameId().toString());
 
@@ -484,9 +451,54 @@ public class MatchHistoryResource {
                     .map(p -> p.getStats().getDeaths())
                     .findFirst();
 
+
+            IndividuallyMatch individuallyMatch = matchHistoryService.getExtraMatchinfo(match.getGameId()).get();
+
+            ParticipantFrames participantFrame = individuallyMatch.getFrames().get(individuallyMatch.getFrames().size() -1).getParticipantFrames();
+
+            Long currentGold;
+
+            switch (participantIdPlayer.get().intValue()){
+                case 1:
+                    currentGold = participantFrame.getOne().getCurrentGold();
+                    break;
+                case 2:
+                    currentGold = participantFrame.getTwo().getCurrentGold();
+                    break;
+                case 3:
+                    currentGold = participantFrame.getThree().getCurrentGold();
+                    break;
+                case 4:
+                    currentGold = participantFrame.getFour().getCurrentGold();
+                    break;
+                case 5:
+                    currentGold = participantFrame.getFive().getCurrentGold();
+                    break;
+                case 6:
+                    currentGold = participantFrame.getSix().getCurrentGold();
+                    break;
+                case 7:
+                    currentGold = participantFrame.getSeven().getCurrentGold();
+                    break;
+                case 8:
+                    currentGold = participantFrame.getEight().getCurrentGold();
+                    break;
+                case 9:
+                    currentGold = participantFrame.getNine().getCurrentGold();
+                    break;
+                case 10:
+                    currentGold = participantFrame.getTen().getCurrentGold();
+                    break;
+                default: currentGold = 0L;
+            }
+
+
+
+
             individuallyPlayerDTO.setKills(killsPlayer.get());
             individuallyPlayerDTO.setAssists(assistsPlayer.get());
             individuallyPlayerDTO.setDeaths(deathsPlayer.get());
+            individuallyPlayerDTO.setCurrentGold(currentGold);
 
             List<PlayerStatsDTO> playersTeam1 = allPlayersTeam100.stream()
                     .map(p -> {
@@ -530,9 +542,52 @@ public class MatchHistoryResource {
                     .map(p -> p.getStats().getDeaths())
                     .findFirst();
 
+
+            IndividuallyMatch individuallyMatch = matchHistoryService.getExtraMatchinfo(match.getGameId()).get();
+
+            ParticipantFrames participantFrame = individuallyMatch.getFrames().get(individuallyMatch.getFrames().size() -1).getParticipantFrames();
+
+            Long currentGold;
+
+            switch (participantIdPlayer.get().intValue()){
+                case 1:
+                    currentGold = participantFrame.getOne().getCurrentGold();
+                    break;
+                case 2:
+                    currentGold = participantFrame.getTwo().getCurrentGold();
+                    break;
+                case 3:
+                    currentGold = participantFrame.getThree().getCurrentGold();
+                    break;
+                case 4:
+                    currentGold = participantFrame.getFour().getCurrentGold();
+                    break;
+                case 5:
+                    currentGold = participantFrame.getFive().getCurrentGold();
+                    break;
+                case 6:
+                    currentGold = participantFrame.getSix().getCurrentGold();
+                    break;
+                case 7:
+                    currentGold = participantFrame.getSeven().getCurrentGold();
+                    break;
+                case 8:
+                    currentGold = participantFrame.getEight().getCurrentGold();
+                    break;
+                case 9:
+                    currentGold = participantFrame.getNine().getCurrentGold();
+                    break;
+                case 10:
+                    currentGold = participantFrame.getTen().getCurrentGold();
+                    break;
+                default: currentGold = 0L;
+            }
+
+
             individuallyPlayerDTO.setKills(killsPlayer.get());
             individuallyPlayerDTO.setAssists(assistsPlayer.get());
             individuallyPlayerDTO.setDeaths(deathsPlayer.get());
+            individuallyPlayerDTO.setCurrentGold(currentGold);
 
             List<PlayerStatsDTO> playersTeam1 = allPlayersTeam200.stream()
                     .map(p -> {
@@ -557,6 +612,119 @@ public class MatchHistoryResource {
 
         return individuallyPlayerDTO;
     }
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+    private Team getTeam100(Match match){
+
+    }
+
+    private Team getTeam200(Match match){
+
+    }
+
+    private List<Participant> getParticipantsTeam100(Match match){
+
+    }
+
+    private List<Participant> getParticipantsTeam200(Match match){
+
+    }
+
+    private List<Long> getAllParticipantsIdsTeam100(List<Participant> participantsTeam100){
+
+    }
+
+
+    private List<Long> getAllParticipantsIdsTeam200(List<Participant> participantsTeam200){
+
+    }
+
+    private List<ParticipantIdentity> getParticipantIdentitiesTeam100(Match match, List<Long> allParticipantsIdsTeam100){
+
+    }
+
+    private List<ParticipantIdentity> getParticipantIdentitiesTeam200(Match match, List<Long> allParticipantsIdsTeam200){
+
+    }
+
+    private List<Player> getAllPlayersTeam100(List<ParticipantIdentity> participantIdentitiesTeam100){
+
+    }
+
+    private boolean isWeAreTeam100(Match match){
+
+    }
+
+    private IndividuallyPlayerDTO createIndividuallyPlayerDTO(boolean weAreTeam100){
+
+    }
+
+    private Optional<Long> getParticipantIdPlayerTeam100(Player player, List<ParticipantIdentity> participantIdentitiesTeam100){
+
+    }
+
+    private Optional<Long> getParticipantIdPlayerTeam200(Player player, List<ParticipantIdentity> participantIdentitiesTeam200){
+
+    }
+
+    private Optional<Long> getKillsPlayerTeam100(Long participantIdPlayer, List<Participant> participantsTeam100){
+
+    }
+
+    private Optional<Long> getassistsPlayerTeam100(Long participantIdPlayer, List<Participant> participantsTeam100){
+
+    }
+
+    private Optional<Long> getdeathsPlayerTeam100(Long participantIdPlayer, List<Participant> participantsTeam100){
+
+    }
+
+    private Optional<Long> getKillsPlayerTeam200(Long participantIdPlayer, List<Participant> participantsTeam200){
+
+    }
+
+    private Optional<Long> getassistsPlayerTeam200(Long participantIdPlayer, List<Participant> participantsTeam200){
+
+    }
+
+    private Optional<Long> getdeathsPlayerTeam200(Long participantIdPlayer, List<Participant> participantsTeam200){
+
+    }
+
+    private Long getCurrentGold(Match match, Long participantIdPlayer){
+
+    }
+
+    private List<PlayerStatsDTO> getPlayersTeam1WeAreTeam100(List<Player> allPlayersTeam100){
+
+    }
+
+    private List<PlayerStatsDTO> getPlayersTeam1WeAreTeam200(List<Player> allPlayersTeam200){
+
+    }
+
+    private List<String> getUsersTeamEnemyWeAreTeam100(List<Player> allPlayersTeam100){
+
+    }
+
+    private List<String> getUsersTeamEnemyWeAreTeam200(List<Player> allPlayersTeam200){
+
+    }
+
+
+
+
 
 
 }

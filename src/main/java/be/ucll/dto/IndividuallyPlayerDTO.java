@@ -9,6 +9,7 @@ public class IndividuallyPlayerDTO {
     private Long kills;
     private Long deaths;
     private Long assists;
+    private Long currentGold;
     private List<PlayerStatsDTO> playersTeam1;
     private List<String> playersTeam2;
 
@@ -75,5 +76,12 @@ public class IndividuallyPlayerDTO {
     public void setPlayersTeam2(List<String> playersTeam2) {
         this.playersTeam2 = playersTeam2;
     }
-    
+
+    public Long getCurrentGold() {
+        return currentGold;
+    }
+
+    public void setCurrentGold(Long currentGold) {
+        this.currentGold = currentGold;
+    }
 }

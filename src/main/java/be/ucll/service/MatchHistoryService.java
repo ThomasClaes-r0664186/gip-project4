@@ -3,6 +3,7 @@ package be.ucll.service;
 import be.ucll.config.ApplicationConfiguration;
 
 import be.ucll.service.models.Match;
+import be.ucll.service.models.individuallyMatch.IndividuallyMatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class MatchHistoryService {
 
     private final RestTemplate RESTTEMPLATE;
     private final String URL_SEARCH_BY_MATCH_ID = "https://euw1.api.riotgames.com/lol/match/v4/matches/";
+    private final String URL_SEARCH_EXTRA_MATCHINFO_BY_MATCH_ID = "https://euw1.api.riotgames.com/lol/match/v4/timelines/by-match/";
     private final ApplicationConfiguration applicationConfiguration;
 
     @Autowired
@@ -33,6 +35,11 @@ public class MatchHistoryService {
 
     }
 
+    public Optional<IndividuallyMatch> getExtraMatchinfo(Long matchId){
+        URLEncoder.encode(matchId.toString(), StandardCharsets.UTF_8);
+        return Optional.ofNullable(RESTTEMPLATE.getForObject(URL_SEARCH_EXTRA_MATCHINFO_BY_MATCH_ID + matchId + "?api_key=" + applicationConfiguration.getApiKey(), IndividuallyMatch.class));
+
+    }
 
     public List<Match> getMatches(List<Long> matchId){
         int counter =10;
