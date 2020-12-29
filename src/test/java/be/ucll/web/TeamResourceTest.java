@@ -25,7 +25,6 @@ class TeamResourceTest extends AbstractIntegrationTest {
     private WebApplicationContext wac;
 
     private MockMvc mockMvc;
-    private Long teamId;
 
     @Autowired
     private TeamRepository teamRepository;
@@ -34,14 +33,6 @@ class TeamResourceTest extends AbstractIntegrationTest {
     @BeforeEach
     void setUp(){
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-
-        Team testTeam = new Team.TeamBuilder()
-                .name("testTeam")
-                .build();
-         this.teamId = teamRepository.save(testTeam).getId();
-    }
-    @AfterEach
-    void tearDown() {
     }
 
     @Test
@@ -63,6 +54,11 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
     @Test // bij deze test kijken we of het te maken team al bestaat op basis van naam
     void createTeamAlreadyExists() throws Exception {
+        Team testTeam = new Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        teamRepository.save(testTeam).getId();
+
         // given
         TeamDTO teamDTO = new TeamDTO("testTeam");
 
@@ -116,6 +112,11 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateTeamOk() throws Exception {
+        Team testTeam = new Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        Long teamId = teamRepository.save(testTeam).getId();
+
         // Given
         TeamDTO teamDTO = new TeamDTO("veranderdTeam");
 
@@ -135,6 +136,11 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateTeamNameIsNull() throws Exception {
+        Team testTeam = new Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        Long teamId = teamRepository.save(testTeam).getId();
+
         // Given
         TeamDTO teamDTO = new TeamDTO(null);
 
@@ -154,6 +160,11 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateTeamNameIsEmpty() throws Exception {
+        Team testTeam = new Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        Long teamId = teamRepository.save(testTeam).getId();
+
         // Given
         TeamDTO teamDTO = new TeamDTO("");
 
@@ -171,6 +182,11 @@ class TeamResourceTest extends AbstractIntegrationTest {
     }
     @Test
     void getTeamOk() throws Exception {
+        Team testTeam = new Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        Long teamId = teamRepository.save(testTeam).getId();
+
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/team/" + teamId))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -201,6 +217,11 @@ class TeamResourceTest extends AbstractIntegrationTest {
     
     @Test
     void deleteTeamOk()throws Exception{
+        Team testTeam = new Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        Long teamId = teamRepository.save(testTeam).getId();
+
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/team/" + teamId))
                 .andExpect(status().isNoContent())
                 .andReturn();
