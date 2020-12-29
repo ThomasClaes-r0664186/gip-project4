@@ -7,6 +7,12 @@ public class BannedChampion {
     private int teamId;
     private int pickTurn;
 
+    public BannedChampion(int championId, int teamId, int pickTurn) {
+        this.championId = championId;
+        this.teamId = teamId;
+        this.pickTurn = pickTurn;
+    }
+
     public int getChampionId() {
         return championId;
     }

@@ -20,6 +20,9 @@ public class CurrentGameInfo {
     private int gameStartTime;
     private int gameLength;
 
+    public CurrentGameInfo() {
+    }
+
     public int getGameId() {
         return gameId;
     }

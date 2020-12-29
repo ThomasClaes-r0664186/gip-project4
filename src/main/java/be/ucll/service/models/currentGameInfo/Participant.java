@@ -15,6 +15,19 @@ public class Participant {
     private List<Object> gameCustomizationObjects = null;
     private Perks perks;
 
+    public Participant(int teamId, int spell1Id, int spell2Id, int championId, int profileIconId, String summonerName, boolean bot, String summonerId, List<Object> gameCustomizationObjects, Perks perks) {
+        this.teamId = teamId;
+        this.spell1Id = spell1Id;
+        this.spell2Id = spell2Id;
+        this.championId = championId;
+        this.profileIconId = profileIconId;
+        this.summonerName = summonerName;
+        this.bot = bot;
+        this.summonerId = summonerId;
+        this.gameCustomizationObjects = gameCustomizationObjects;
+        this.perks = perks;
+    }
+
     public int getTeamId() {
         return teamId;
     }

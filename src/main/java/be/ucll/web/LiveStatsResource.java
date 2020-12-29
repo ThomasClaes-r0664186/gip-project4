@@ -61,7 +61,7 @@ public class LiveStatsResource {
         teamPlayers.forEach((teamPlayer -> {
             Player player = teamPlayer.getPlayer();
             System.out.println("found player "+player.getSummonerID()); //debug
-            Optional<CurrentGameInfo> currentGameInfo = liveStatsService.getActiveGames(player.getSummonerID());
+            Optional<CurrentGameInfo> currentGameInfo = liveStatsService.getActiveGames(player.getSummonerID()); //TODO geeft error
             System.out.println("currentGameInfo "+currentGameInfo.toString()); //debug
             if(currentGameInfo.isPresent()){
                 System.out.println("currentGameInfo "+currentGameInfo.get().toString()); //debug
@@ -76,9 +76,9 @@ public class LiveStatsResource {
         if(liveStats.isEmpty()){
             throw new NotFoundException("live stats of players in team "+teamId);
         }
-        if(liveStats.size()<2){
-            throw new NotFoundException("Too few players active in team "+teamId);
-        }
+//        if(liveStats.size()<2){
+//            throw new NotFoundException("Too few players active in team "+teamId);
+//        }
 
         return ResponseEntity.status(HttpStatus.OK).body(liveStats);
     }

@@ -8,6 +8,12 @@ public class Perks {
     private int perkStyle;
     private int perkSubStyle;
 
+    public Perks(List<Integer> perkIds, int perkStyle, int perkSubStyle) {
+        this.perkIds = perkIds;
+        this.perkStyle = perkStyle;
+        this.perkSubStyle = perkSubStyle;
+    }
+
     public List<Integer> getPerkIds() {
         return perkIds;
     }

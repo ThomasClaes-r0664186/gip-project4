@@ -5,6 +5,10 @@ public class Observers {
 
     private String encryptionKey;
 
+    public Observers(String encryptionKey) {
+        this.encryptionKey = encryptionKey;
+    }
+
     public String getEncryptionKey() {
         return encryptionKey;
     }

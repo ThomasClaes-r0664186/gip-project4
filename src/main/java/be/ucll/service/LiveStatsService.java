@@ -30,6 +30,7 @@ public class LiveStatsService {
 
     public Optional<CurrentGameInfo> getActiveGames(String summonerId){
         URLEncoder.encode(summonerId, StandardCharsets.UTF_8);
-        return Optional.ofNullable(RESTTEMPLATE.getForObject(URL_SEARCH_BY_SUMMONER_ID + summonerId + "?api_key=" + applicationConfiguration.getApiKey(), CurrentGameInfo.class));
+        CurrentGameInfo currentGameInfo = RESTTEMPLATE.getForObject(URL_SEARCH_BY_SUMMONER_ID + summonerId + "?api_key=" + applicationConfiguration.getApiKey(), CurrentGameInfo.class);
+        return Optional.ofNullable(currentGameInfo);
     }
 }
