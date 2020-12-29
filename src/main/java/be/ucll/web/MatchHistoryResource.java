@@ -64,7 +64,23 @@ public class MatchHistoryResource {
             throw new ParameterInvalidException(date);
         }
 
-        List<Long> machIds = matchRepository.findAll().stream()
+        List<Match> allMatchesFromDb = matchRepository.findAll();
+
+        if (!teamId.equals(0L)){
+            Optional<Match> team = allMatchesFromDb.stream()
+                    .filter( m -> m.getTeam1().getId().equals(teamId))
+                    .findFirst();
+            if (team.isEmpty()) throw new NotFoundException(teamId.toString());
+        }
+
+        if (!date.equals("01-01-2000")){
+            Optional<Match> match = allMatchesFromDb.stream()
+                    .filter(m -> simpleDateFormat.format(m.getDate()).equals(date))
+                    .findFirst();
+            if (match.isEmpty()) throw new NotFoundException(date);
+        }
+
+        List<Long> machIds = allMatchesFromDb.stream()
                 .filter(teamId.equals(0L) ? m -> m.getTeam1().getId() > 0 : m -> m.getTeam1().getId().equals(teamId))
                 .filter(date.equals("01-01-2000") ? m -> m.getDate().after(dateFilter) : m -> simpleDateFormat.format(m.getDate()).equals(date))
                 .map(m -> m.getMatchId())
@@ -96,6 +112,13 @@ public class MatchHistoryResource {
                 .filter(t -> t.getPlayer().getId().equals(playerid))
                 .map(p -> p.getTeam())
                 .collect(Collectors.toList());
+
+        if (!matchId.equals(0L)){
+            Optional<be.ucll.models.Team> team = teamsFromPlayer.stream()
+                    .filter( t -> matchRepository.findMatchByTeam1(t).get().getId().equals(matchId))
+                    .findFirst();
+            if (team.isEmpty()) throw new NotFoundException(matchId.toString());
+        }
 
         List<Long> matchIdsFromPlayer = teamsFromPlayer.stream()
                 .filter(matchId.equals(0L) ? t -> matchRepository.findMatchByTeam1(t).get().getId() > 0 : t -> matchRepository.findMatchByTeam1(t).get().getId().equals(matchId))

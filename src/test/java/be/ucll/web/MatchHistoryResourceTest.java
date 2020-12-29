@@ -5,6 +5,7 @@ import be.ucll.dao.MatchRepository;
 import be.ucll.dao.PlayerRepository;
 import be.ucll.dao.TeamPlayerRepository;
 import be.ucll.dao.TeamRepository;
+import be.ucll.dto.IndividuallyPlayerDTO;
 import be.ucll.dto.MatchHistoryDTO;
 import be.ucll.models.Match;
 import be.ucll.models.Player;
@@ -65,6 +66,9 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
     private Long testMiguelin8Id;
     private Long testAnagumaInuId;
     private Long testMarcoilfusoId;
+
+    private Long testMatch1Id;
+    private Long testMatch2Id;
 
     @BeforeEach
     void setUp() throws ParseException {
@@ -244,7 +248,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
                 .matchID(4795138627L)
                 .build();
 
-        matchRepository.save(match1);
+        testMatch1Id = matchRepository.save(match1).getId();
 
         Match match2 = new Match.MatchBuilder()
                 .date(date2)
@@ -252,21 +256,17 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
                 .matchID(4841161542L)
                 .build();
 
-        matchRepository.save(match2);
+        testMatch2Id = matchRepository.save(match2).getId();
 
     }
 
 
     @Test
     void getMatchHistoryAllOk() throws Exception {
-        final String EXPECTED_RESPONS = "[{\"teamId\":1,\"won1\":\"Fail\",\"killsTeam1\":41,\"deathsTeam1\":54,\"assistsTeam1\":92,\"killsTeam2\":54,\"deathsTeam2\":41,\"assistsTeam2\":118,\"matchDate\":\"Sun Dec 20 00:00:00 CET 2020\",\"playersTeam1\":[{\"summonerName\":\"Marcoilfuso\",\"playerId\":9},{\"summonerName\":\"pvppowners\",\"playerId\":1},{\"summonerName\":\"AnagumaInu\",\"playerId\":8},{\"summonerName\":\"miguelin8\",\"playerId\":7},{\"summonerName\":\"hylloi\",\"playerId\":6}],\"playersTeam2\":[\"Connie Lingus\",\"AemaethDragon\",\"mobby2010\",\"Ethaire\",\"Hi im YÃ¸ne\"]},{\"teamId\":2,\"won1\":\"Fail\",\"killsTeam1\":33,\"deathsTeam1\":51,\"assistsTeam1\":101,\"killsTeam2\":51,\"deathsTeam2\":33,\"assistsTeam2\":165,\"matchDate\":\"Mon Dec 21 00:00:00 CET 2020\",\"playersTeam1\":[{\"summonerName\":\"Xellania\",\"playerId\":5},{\"summonerName\":\"pvppowners\",\"playerId\":1},{\"summonerName\":\"TwinniesDad\",\"playerId\":4},{\"summonerName\":\"DorriShokouh\",\"playerId\":3},{\"summonerName\":\"Dragorius\",\"playerId\":2}],\"playersTeam2\":[\"KamÃ®yada\",\"metroYRN\",\"ParÃ´\",\"Habibti PIease \",\"ThatWasInVaÃ½ne\"]}]";
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory"))
                 .andExpect(status().isOk())
                 .andReturn();
-
-        String responsMessage = mvcResult.getResponse().getContentAsString();
-        assertEquals(EXPECTED_RESPONS, responsMessage);
 
     }
 
@@ -281,11 +281,37 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
 
         ObjectMapper mapper = new ObjectMapper();
 
-// this uses a TypeReference to inform Jackson about the Lists's generic type
+        // this uses a TypeReference to inform Jackson about the Lists's generic type
         List<MatchHistoryDTO> actual = mapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<MatchHistoryDTO>>() {});
 
         assertEquals("Sun Dec 20 00:00:00 CET 2020", actual.get(0).getMatchDate());
 
+    }
+
+    @Test
+    void getMatchHistoryFilterDateInvalid() throws Exception {
+        final String DATE = "*";
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
+                .param("date", DATE))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals(DATE + " is not valid!", responsMessage);
+    }
+
+    @Test
+    void getMatchHistoryFilterDateNotFound() throws Exception {
+        final String DATE = "03-05-2016";
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
+                .param("date", DATE))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals(DATE + " was not found!", responsMessage);
     }
 
     @Test
@@ -304,5 +330,96 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
 
     }
 
+    @Test
+    void getMatchHistoryFilterTeamIdInvalid() throws Exception {
+        final String TEAM = "*";
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
+                .param("teamId", TEAM))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+    }
+
+    @Test
+    void getMatchHistoryFilterTeamIdNotFound() throws Exception {
+        final String TEAM = "925";
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
+                .param("teamId", TEAM))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals(TEAM + " was not found!", responsMessage);
+
+    }
+
+
+    @Test
+    void getIndividuallyMatchHistoryAllOk() throws Exception {
+        final String PLAYER_ID = testPvppownersId.toString();
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player"))
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    @Test
+    void getIndividuallyMatchHistoryALLPlayerNotFound() throws Exception {
+        final String PLAYER_ID = "52869";
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals( PLAYER_ID + " was not found!", responsMessage);
+
+    }
+
+    @Test
+    void getIndividuallyMatchHistoryFilterMatchIdOk() throws Exception {
+        final String MATCH_ID = testMatch1Id.toString();
+        final String PLAYER_ID = testPvppownersId.toString();
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player")
+                .param("matchId", MATCH_ID))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        ObjectMapper mapper = new ObjectMapper();
+        List<IndividuallyPlayerDTO> actual = mapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<IndividuallyPlayerDTO>>() {});
+
+        assertEquals(MATCH_ID, actual.get(0).getMatchId().toString());
+
+    }
+
+    @Test
+    void getIndividuallyMatchHistoryFilterMatchIdInvalid() throws Exception {
+        final String MATCH_ID = "*";
+        final String PLAYER_ID = testPvppownersId.toString();
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player")
+                .param("matchId", MATCH_ID))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+    }
+
+    @Test
+    void getIndividuallyMatchHistoryFilterMatchIdNotFound() throws Exception {
+        final String MATCH_ID = "9569";
+        final String PLAYER_ID = testPvppownersId.toString();
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID  + "/player")
+                .param("matchId", MATCH_ID))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals(MATCH_ID + " was not found!", responsMessage);
+
+    }
 
 }
