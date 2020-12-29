@@ -32,22 +32,10 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	@Autowired
 	private PlayerResource playerResource;
 
-	private Long idPlayerWannesV;
-	private Long idPlayerArdes;
-	private Long idPlayerAvaIanche;
-
 	@BeforeEach
-	void setUp() throws NotFoundException, ParameterInvalidException, AlreadyExistsException {
+	void setUp() {
 
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-
-		PlayerDTO playerWannesV = new PlayerDTO("WannesV", "Wannes", "Verschraegen");
-		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
-		PlayerDTO playerAvaIanche = new PlayerDTO("AvaIanche", "Ava", "Ianche");
-
-		idPlayerWannesV = Objects.requireNonNull(playerResource.createPlayer(playerWannesV).getBody()).getId();
-		idPlayerArdes = Objects.requireNonNull(playerResource.createPlayer(playerArdes).getBody()).getId();
-		idPlayerAvaIanche = Objects.requireNonNull(playerResource.createPlayer(playerAvaIanche).getBody()).getId();
 
 	}
 
@@ -116,6 +104,9 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void createPlayerLeagueNameAlreadyExists() throws Exception {
+		PlayerDTO playerWannesV = new PlayerDTO("WannesV", "Wannes", "Verschraegen");
+		playerResource.createPlayer(playerWannesV);
+
 		PlayerDTO playerDTO = new PlayerDTO("WannesV", "Wannes", "Verschraegen");
 
 		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player")
@@ -188,6 +179,9 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerOk() throws Exception {
+		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
+		Long idPlayerArdes = Objects.requireNonNull(playerResource.createPlayer(playerArdes).getBody()).getId();
+
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("Ardes", "Arno", "De Smet");
 
@@ -207,6 +201,9 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerLeagueNameNULL() throws Exception {
+		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
+		Long idPlayerArdes = Objects.requireNonNull(playerResource.createPlayer(playerArdes).getBody()).getId();
+
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO(null, "Arno", "De Smet");
 
@@ -223,6 +220,9 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerLeagueNameEmpty() throws Exception {
+		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
+		Long idPlayerArdes = Objects.requireNonNull(playerResource.createPlayer(playerArdes).getBody()).getId();
+
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("", "Arno", "De Smet");
 
@@ -239,6 +239,9 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerLeagueNameNotExists() throws Exception {
+		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
+		Long idPlayerArdes = Objects.requireNonNull(playerResource.createPlayer(playerArdes).getBody()).getId();
+
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("*", "Arno", "De Smet");
 
@@ -255,6 +258,12 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerLeagueNameAlreadyExists() throws Exception {
+		PlayerDTO player = new PlayerDTO("WannesV", "Arno", "De Smet");
+		playerResource.createPlayer(player);
+
+		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
+		Long idPlayerArdes = Objects.requireNonNull(playerResource.createPlayer(playerArdes).getBody()).getId();
+
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("WannesV", "Arno", "De Smet");
 
@@ -271,6 +280,9 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerFirstNameNULL() throws Exception {
+		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
+		Long idPlayerArdes = Objects.requireNonNull(playerResource.createPlayer(playerArdes).getBody()).getId();
+
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("Ardes", null, "De Smet");
 
@@ -287,6 +299,9 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerFirstNameEmpty() throws Exception {
+		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
+		Long idPlayerArdes = Objects.requireNonNull(playerResource.createPlayer(playerArdes).getBody()).getId();
+
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("Ardes", "", "De Smet");
 
@@ -303,6 +318,9 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerLastNameNULL() throws Exception {
+		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
+		Long idPlayerArdes = Objects.requireNonNull(playerResource.createPlayer(playerArdes).getBody()).getId();
+
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("Ardes", "Arno", null);
 
@@ -319,6 +337,9 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerLastNameEmpty() throws Exception {
+		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
+		Long idPlayerArdes = Objects.requireNonNull(playerResource.createPlayer(playerArdes).getBody()).getId();
+
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("Ardes", "Arno", "");
 
@@ -335,6 +356,9 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void getPlayerOk() throws Exception {
+		PlayerDTO playerAvaIanche = new PlayerDTO("AvaIanche", "Ava", "Ianche");
+		Long idPlayerAvaIanche = Objects.requireNonNull(playerResource.createPlayer(playerAvaIanche).getBody()).getId();
+
 		final String ID = idPlayerAvaIanche.toString();
 		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID))
 				.andExpect(status().isOk())
@@ -381,6 +405,9 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void deletePlayerOk() throws Exception {
+		PlayerDTO playerAvaIanche = new PlayerDTO("AvaIanche", "Ava", "Ianche");
+		Long idPlayerAvaIanche = Objects.requireNonNull(playerResource.createPlayer(playerAvaIanche).getBody()).getId();
+
 		final String ID = idPlayerAvaIanche.toString();
 		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID)
 				.contentType(MediaType.APPLICATION_JSON))
