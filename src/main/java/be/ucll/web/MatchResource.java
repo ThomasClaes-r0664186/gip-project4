@@ -39,14 +39,17 @@ public class MatchResource {
             description = "Using a teamname and a date (DD/MM/YYYY), create a new match"
     )
     @PostMapping
-    public ResponseEntity<Match> createMatch(@RequestBody MatchDTO matchDTO) throws ParameterInvalidException, AlreadyExistsException {
-        //Parse datum
+    public ResponseEntity<Match> createMatch(@RequestBody MatchDTO matchDTO) throws ParameterInvalidException, AlreadyExistsException, NotFoundException {
+        if (matchDTO.getDate() == null || matchDTO.getTeamId() == null) throw new ParameterInvalidException();
+        if (matchDTO.getTeamId() <= 0) throw new ParameterInvalidException(matchDTO.getTeamId().toString());
+        //Parse datum||
         Optional<Date> matchDate = Optional.ofNullable(parseDate(matchDTO.getDate()));
-
         //Team opzoeken
         Optional<Team> team1 = teamRepository.findTeamById(matchDTO.getTeamId());
         //TeamName juist ingegeven en gevonden
-        if(team1.isPresent() && matchDate.isPresent()){
+        if (team1.isEmpty()) throw new NotFoundException(matchDTO.getTeamId().toString());
+
+        if(matchDate.isPresent()){
 
             //Kijk dat de datum niet in het verleden is
             if(isDateExpired(matchDate.get())){
@@ -54,7 +57,7 @@ public class MatchResource {
             }
 
             //Geen match gevonden waar het team in zit en op dezelfde datum afspeelt
-            if(!matchRepository.findMatchByTeam1AndAndDate(team1.get(),matchDate.get()).isPresent()){
+            if(matchRepository.findMatchByTeam1AndAndDate(team1.get(),matchDate.get()).isEmpty()){
                 Match newMatch = matchRepository.save(
                     new Match.MatchBuilder()
                         .team1Id(team1.get())
