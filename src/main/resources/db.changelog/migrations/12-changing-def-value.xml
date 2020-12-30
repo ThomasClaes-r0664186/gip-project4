@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="12" author="Thomas Claes">
+        <update tableName="player" schemaName="liquibase">
+            <column name="password" value="$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"/>
+            <where>password='defValUserPw'</where>
+        </update>
+
+        <dropDefaultValue  columnDataType="varchar(255)"
+                           columnName="password"
+                           schemaName="liquibase"
+                           tableName="player"/>
+
+        <addDefaultValue  columnDataType="varchar(255)"
+                          columnName="password"
+                          defaultValue="$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"
+                          schemaName="liquibase"
+                          tableName="player"/>
+    </changeSet>
+
+</databaseChangeLog>

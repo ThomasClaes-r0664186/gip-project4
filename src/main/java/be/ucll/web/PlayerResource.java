@@ -3,6 +3,7 @@ package be.ucll.web;
 import be.ucll.dto.PlayerDTO;
 import be.ucll.models.Player;
 import be.ucll.dao.PlayerRepository;
+import be.ucll.models.Role;
 import be.ucll.service.SummonerService;
 import be.ucll.service.models.Summoner;
 import be.ucll.exceptions.*;
@@ -10,6 +11,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -23,6 +26,9 @@ public class PlayerResource {
     private PlayerRepository playerRepository;
 
     @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
     public PlayerResource(SummonerService summonerService, PlayerRepository playerRepository) {
         this.summonerService = summonerService;
         this.playerRepository = playerRepository;
@@ -30,6 +36,7 @@ public class PlayerResource {
 
     @ApiOperation("De Summoner/Speler van league of legends creëren) ")
     @PostMapping
+    @PreAuthorize("hasRole('MANAGER')")
     // De functie wordt aangeroepen door middel van een postrequest. met als input: JSON-object Player: { "leagueName" : "7Stijn7" }
     public ResponseEntity<Player> createPlayer(@RequestBody PlayerDTO player) throws ParameterInvalidException, NotFoundException, AlreadyExistsException {
 
@@ -53,6 +60,8 @@ public class PlayerResource {
                     .lastName(player.getLastName())
                     .summonerID(summoner.getId())
                     .puuID(summoner.getPuuid())
+                    .password(passwordEncoder.encode("test"))
+                    .role(Role.PLAYER)
                     .build());
             // Nu returnen we status: 201 created. Omdat onze player succesvol is aangemaakt.
             // Ook geven we als respons-body een PlayerDTO mee. TODO: Een aparte playerDTO is in de toekomst misschien niet meer nodig omdat alle velden van player kunnen gebruikt worden.
