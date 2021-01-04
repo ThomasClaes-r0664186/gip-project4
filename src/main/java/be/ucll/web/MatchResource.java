@@ -39,22 +39,29 @@ public class MatchResource {
             description = "Using a teamname and a date (DD/MM/YYYY), create a new match"
     )
     @PostMapping
-    public ResponseEntity<Match> createMatch(@RequestBody MatchDTO matchDTO) throws ParameterInvalidException, AlreadyExistsException {
-        //Parse datum
+    public ResponseEntity<Match> createMatch(@RequestBody MatchDTO matchDTO) throws ParameterInvalidException, AlreadyExistsException, NotFoundException {
+        if (matchDTO.getDate() == null || matchDTO.getTeamId() == null) throw new ParameterInvalidException();
+        if (matchDTO.getTeamId() <= 0) throw new ParameterInvalidException(matchDTO.getTeamId().toString());
+        //Parse datum||
         Optional<Date> matchDate = Optional.ofNullable(parseDate(matchDTO.getDate()));
-
         //Team opzoeken
         Optional<Team> team1 = teamRepository.findTeamById(matchDTO.getTeamId());
         //TeamName juist ingegeven en gevonden
-        if(team1.isPresent() && matchDate.isPresent()){
+        if (team1.isEmpty()) throw new NotFoundException(matchDTO.getTeamId().toString());
+
+        if(matchDate.isPresent()){
 
             //Kijk dat de datum niet in het verleden is
             if(isDateExpired(matchDate.get())){
                 throw new ParameterInvalidException("Date has expired, "+matchDTO.getDate());
             }
 
+            if(matchRepository.findMatchByTeam1AndAndDate(team1.get(),matchDate.get()).isPresent()){
+                throw new AlreadyExistsException("Team "+team1.get().getName()+" on date "+matchDTO.getDate()+" ");
+            }
+
             //Geen match gevonden waar het team in zit en op dezelfde datum afspeelt
-            if(!matchRepository.findMatchByTeam1AndAndDate(team1.get(),matchDate.get()).isPresent()){
+            if(matchRepository.findMatchByTeam1AndAndDate(team1.get(),matchDate.get()).isEmpty()){
                 Match newMatch = matchRepository.save(
                     new Match.MatchBuilder()
                         .team1Id(team1.get())
@@ -85,6 +92,9 @@ public class MatchResource {
     )
     @PutMapping("{matchId}")
     public ResponseEntity<Match> updateMatch(@PathVariable("matchId") Long matchId,@RequestBody MatchDTO matchDTO) throws NotFoundException, ParameterInvalidException, AlreadyExistsException {
+        if (matchDTO.getDate() == null || matchDTO.getTeamId() == null) throw new ParameterInvalidException();
+        if (matchDTO.getTeamId() <= 0) throw new ParameterInvalidException(matchDTO.getTeamId().toString());
+
         Match match = getMatchFromId(matchId);
         //check date
         Date newDate = parseDate(matchDTO.getDate());
@@ -113,13 +123,13 @@ public class MatchResource {
     @DeleteMapping("{matchId}")
     public ResponseEntity deleteMatch(@PathVariable("matchId") Long matchId) throws ParameterInvalidException, NotFoundException {
         matchRepository.delete(getMatchFromId(matchId));
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
     @Operation(
             summary = "Set match as won",
             description = "Updates the isWinner status for this match"
     )
-    @PutMapping("{matchId}/isWinner/{isWinner}")
+    @PutMapping("{matchId}/matchId/{isWinner}/isWinner")
     public ResponseEntity<Match> setWinnerValue(@PathVariable("matchId") Long matchId,@PathVariable("isWinner") Boolean isWinner) throws ParameterInvalidException, NotFoundException {
         Match match = getMatchFromId(matchId);
         if(!(isWinner instanceof Boolean)){
