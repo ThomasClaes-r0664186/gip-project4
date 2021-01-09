@@ -18,6 +18,7 @@ import be.ucll.service.models.match.Participant;
 import be.ucll.service.models.match.ParticipantIdentity;
 import be.ucll.service.models.match.Player;
 import be.ucll.service.models.match.Team;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +50,11 @@ public class MatchHistoryResource {
         this.playerRepository = playerRepository;
         this.teamRepository = teamRepository;
     }
+
+    @Operation(
+            summary = "Get the history from a match",
+            description = "Filter optional by team or/and date"
+    )
 
     @GetMapping
     public ResponseEntity<List<MatchHistoryDTO>> getMatchHistory(@RequestParam(value = "teamId", defaultValue = "0") Long teamId, @RequestParam(value = "date", defaultValue = "01-01-2000") String date) throws NotFoundException, ParseException, ParameterInvalidException {
@@ -99,6 +105,10 @@ public class MatchHistoryResource {
 
     }
 
+    @Operation(
+            summary = "Get the history from a individually player",
+            description = "Filter optional by a match"
+    )
 
     @GetMapping("/{playerid}/player")
     public ResponseEntity<List<IndividuallyPlayerDTO>> getIndividuallyMatchHistory(@PathVariable("playerid") Long playerid, @RequestParam(value = "matchId", defaultValue = "0") Long matchId) throws NotFoundException {
