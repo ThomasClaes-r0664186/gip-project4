@@ -28,6 +28,7 @@ import java.util.GregorianCalendar;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -52,7 +53,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
     @BeforeEach
     void setUp()  {
         passwordEncoder = new BCryptPasswordEncoder();
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac)
+                .apply(springSecurity()).build();
         Player playerPvppowners = new Player.PlayerBuilder()
                 .firstName("jaimie")
                 .lastName("haesevoets")

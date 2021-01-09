@@ -6,6 +6,7 @@ import be.ucll.dao.TeamPlayerRepository;
 import be.ucll.dao.TeamRepository;
 import be.ucll.dto.TeamPlayerDTO;
 import be.ucll.models.Player;
+import be.ucll.models.Role;
 import be.ucll.models.Team;
 
 import be.ucll.models.TeamPlayer;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -54,12 +56,24 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     private Long test7Stijn7Id;
     private Long testLolname5;
     private Long testLolname6;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+    private Player testPvppowners;
 
     @BeforeEach
     void setUp() {
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).apply(springSecurity()).build();
-
+        passwordEncoder = new BCryptPasswordEncoder();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        testPvppowners = playerRepository.save(playerPvppowners);
 
 
         Team team = new Team.TeamBuilder()
@@ -193,11 +207,12 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
 
 
     @Test
-    void addPlayerToTeamOk() throws Exception {
-        final String ID_PLAYER = testLOLnameId.toString();
+    void addPlayerToTeamOk() throws Exception{
+        final String password = "test";
+final String ID_PLAYER = testLOLnameId.toString();
         final String ID_TEAM = testTeamId.toString();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player" ).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player" ).with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isCreated())
                 .andReturn();
 
@@ -210,31 +225,34 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
 
 
     @Test
-    void addPlayerToTeamPlayerIdNULL() throws Exception {
-        final String ID_PLAYER = null;
+    void addPlayerToTeamPlayerIdNULL() throws Exception{
+        final String password = "test";
+final String ID_PLAYER = null;
         final String ID_TEAM = testTeamId.toString();
 
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
 
     @Test
-    void addPlayerToTeamTeamIdNULL() throws Exception {
-        final String ID_PLAYER = testLOLnameId.toString();
+    void addPlayerToTeamTeamIdNULL() throws Exception{
+        final String password = "test";
+final String ID_PLAYER = testLOLnameId.toString();
         final String ID_TEAM = null;
 
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
 
     @Test
-    void addPlayerToTeamPlayerId0() throws Exception {
-        final String ID_PLAYER = "0";
+    void addPlayerToTeamPlayerId0() throws Exception{
+        final String password = "test";
+final String ID_PLAYER = "0";
         final String ID_TEAM = testTeamId.toString();
 
-       MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+       MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -244,11 +262,12 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void addPlayerToTeamTeamId0() throws Exception {
-        final String ID_PLAYER = testLOLnameId.toString();
+    void addPlayerToTeamTeamId0() throws Exception{
+        final String password = "test";
+final String ID_PLAYER = testLOLnameId.toString();
         final String ID_TEAM = "0";
 
-       MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+       MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -258,11 +277,12 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void addPlayerToTeamPlayerIdNegative() throws Exception {
-        final String ID_PLAYER = "-1";
+    void addPlayerToTeamPlayerIdNegative() throws Exception{
+        final String password = "test";
+final String ID_PLAYER = "-1";
         final String ID_TEAM = testTeamId.toString();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -272,11 +292,12 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void addPlayerToTeamTeamIdNegative() throws Exception {
-        final String ID_PLAYER = testLOLnameId.toString();
+    void addPlayerToTeamTeamIdNegative() throws Exception{
+        final String password = "test";
+final String ID_PLAYER = testLOLnameId.toString();
         final String ID_TEAM = "-1";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -286,11 +307,12 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void addPlayerToTeamTeamIdNotFound() throws Exception {
-        final String ID_PLAYER = testLOLnameId.toString();
+    void addPlayerToTeamTeamIdNotFound() throws Exception{
+        final String password = "test";
+final String ID_PLAYER = testLOLnameId.toString();
         final String ID_TEAM = "9000";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -300,11 +322,12 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void addPlayerToTeamPlayerIdNotFound() throws Exception {
-        final String ID_PLAYER = "9000";
+    void addPlayerToTeamPlayerIdNotFound() throws Exception{
+        final String password = "test";
+final String ID_PLAYER = "9000";
         final String ID_TEAM = testTeamId.toString();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -314,11 +337,12 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void addPlayerToTeamPlayerAlreadyInTeam() throws Exception {
-        final String ID_PLAYER = test7Stijn7Id.toString();
+    void addPlayerToTeamPlayerAlreadyInTeam() throws Exception{
+        final String password = "test";
+final String ID_PLAYER = test7Stijn7Id.toString();
         final String ID_TEAM = testTeamId.toString();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isConflict())
                 .andReturn();
 
@@ -328,12 +352,13 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void makePlayerReserveNotMoreThan5ActivePlayersInTeamOK() throws Exception {
-        final String ID_PLAYER = testLolname5.toString();
+    void makePlayerReserveNotMoreThan5ActivePlayersInTeamOK() throws Exception{
+        final String password = "test";
+final String ID_PLAYER = testLolname5.toString();
         final String ID_TEAM = testTeam2Id.toString();
         final String IS_ACTIVE = "false";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic(testPvppowners.getLeagueName(), password))
                 .param("isActive", IS_ACTIVE))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -345,12 +370,13 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void makePlayerReserveNotMoreThan5ActivePlayersInTeam() throws Exception {
-        final String ID_PLAYER = testLolname6.toString();
+    void makePlayerReserveNotMoreThan5ActivePlayersInTeam() throws Exception{
+        final String password = "test";
+final String ID_PLAYER = testLolname6.toString();
         final String ID_TEAM = testTeam2Id.toString();
         final String IS_ACTIVE = "true";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic(testPvppowners.getLeagueName(), password))
                 .param("isActive", IS_ACTIVE))
                 .andExpect(status().isForbidden())
                 .andReturn();
@@ -361,11 +387,12 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void getPlayersFromTeamOk() throws Exception {
-        final String ID_TEAM = testTeamId.toString();
+    void getPlayersFromTeamOk() throws Exception{
+        final String password = "test";
+final String ID_TEAM = testTeamId.toString();
         final String EXPECTED_RESPONS = "[{\"leagueName\":\"7Stijn7\",\"firstName\":\"Stijn\",\"lastName\":\"Verbieren\"},{\"leagueName\":\"LOLname1\",\"firstName\":\"Stijn\",\"lastName\":\"Verbieren\"}]";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/teamplayer/" + ID_TEAM + "/team").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/teamplayer/" + ID_TEAM + "/team").with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -374,10 +401,11 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void getPlayersFromTeamTeamId0() throws Exception {
-        final String ID_TEAM = "0";
+    void getPlayersFromTeamTeamId0() throws Exception{
+        final String password = "test";
+final String ID_TEAM = "0";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/teamplayer/" + ID_TEAM + "/team").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/teamplayer/" + ID_TEAM + "/team").with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -386,10 +414,11 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void getPlayersFromTeamTeamIdNegative() throws Exception {
-        final String ID_TEAM = "-1";
+    void getPlayersFromTeamTeamIdNegative() throws Exception{
+        final String password = "test";
+final String ID_TEAM = "-1";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/teamplayer/" + ID_TEAM + "/team").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/teamplayer/" + ID_TEAM + "/team").with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -398,10 +427,11 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void getPlayersFromTeamTeamIdNotFound() throws Exception {
-        final String ID_TEAM = "90000";
+    void getPlayersFromTeamTeamIdNotFound() throws Exception{
+        final String password = "test";
+final String ID_TEAM = "90000";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/teamplayer/" + ID_TEAM + "/team").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/teamplayer/" + ID_TEAM + "/team").with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -410,9 +440,10 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void deletePlayerFromTeamOk() throws Exception {
-        final String ID_TEAM = testLolname5.toString();
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/teamplayer/" + ID_TEAM + "/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+    void deletePlayerFromTeamOk() throws Exception{
+        final String password = "test";
+final String ID_TEAM = testLolname5.toString();
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/teamplayer/" + ID_TEAM + "/player").with(httpBasic(testPvppowners.getLeagueName(), password))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andReturn();
@@ -422,9 +453,10 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void deletePlayerFromTeam0() throws Exception {
-        final String ID_TEAM = "0";
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/teamplayer/" + ID_TEAM + "/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+    void deletePlayerFromTeam0() throws Exception{
+        final String password = "test";
+final String ID_TEAM = "0";
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/teamplayer/" + ID_TEAM + "/player").with(httpBasic(testPvppowners.getLeagueName(), password))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
                 .andReturn();
@@ -434,9 +466,10 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void deletePlayerFromTeamNegative() throws Exception {
-        final String ID_TEAM = "-1";
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/teamplayer/" + ID_TEAM + "/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+    void deletePlayerFromTeamNegative() throws Exception{
+        final String password = "test";
+final String ID_TEAM = "-1";
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/teamplayer/" + ID_TEAM + "/player").with(httpBasic(testPvppowners.getLeagueName(), password))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
                 .andReturn();
@@ -446,9 +479,10 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void deletePlayerFromTeamNotFound() throws Exception {
-        final String ID_TEAM = "90000";
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/teamplayer/" + ID_TEAM + "/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+    void deletePlayerFromTeamNotFound() throws Exception{
+        final String password = "test";
+final String ID_TEAM = "90000";
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/teamplayer/" + ID_TEAM + "/player").with(httpBasic(testPvppowners.getLeagueName(), password))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andReturn();

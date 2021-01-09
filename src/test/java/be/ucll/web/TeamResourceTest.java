@@ -1,14 +1,18 @@
 package be.ucll.web;
 
 import be.ucll.AbstractIntegrationTest;
+import be.ucll.dao.PlayerRepository;
 import be.ucll.dao.TeamRepository;
 import be.ucll.dto.TeamDTO;
+import be.ucll.models.Player;
+import be.ucll.models.Role;
 import be.ucll.models.Team;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -16,6 +20,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -29,19 +35,37 @@ class TeamResourceTest extends AbstractIntegrationTest {
     @Autowired
     private TeamRepository teamRepository;
 
+    @Autowired
+    private PlayerRepository playerRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+    private Player testPvppowners;
 
     @BeforeEach
     void setUp(){
+        passwordEncoder = new BCryptPasswordEncoder();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac)
+                .apply(springSecurity()).build();
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        testPvppowners = playerRepository.save(playerPvppowners);
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
     }
 
     @Test
     void createTeamOk() throws Exception{
-        //Given
+        final String password = "test";
+//Given
         TeamDTO teamDTO = new TeamDTO("teamNaam");
 
         //When
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team")
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team").with(httpBasic(testPvppowners.getLeagueName(), password))
         .content(toJson(teamDTO))
         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
@@ -54,6 +78,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
     @Test // bij deze test kijken we of het te maken team al bestaat op basis van naam
     void createTeamAlreadyExists() throws Exception {
+        final String password = "test";
         Team testTeam = new Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -63,7 +88,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
         TeamDTO teamDTO = new TeamDTO("testTeam");
 
         // when
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team")
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team").with(httpBasic(testPvppowners.getLeagueName(), password))
             .content(toJson(teamDTO))
             .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isConflict())
@@ -76,11 +101,12 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
     @Test // bij deze test kijken we na of de mee te geven teamnaam niet null is (teamDTO in requestbody)
     void CreateTeamNameNotNull() throws Exception {
+        final String password = "test";
         //Given
         TeamDTO teamDTO = new TeamDTO(null);
 
         //When
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team")
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team").with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(teamDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
@@ -93,11 +119,12 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
     @Test // bij deze test kijken we na of de mee te geven teamnaam niet leeg(een lege string) is (teamDTO in requestbody)
     void CreateTeamNameEmpty() throws Exception {
+        final String password = "test";
         //Given
         TeamDTO teamDTO = new TeamDTO("");
 
         //When
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team")
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/team").with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(teamDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
@@ -112,6 +139,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateTeamOk() throws Exception {
+        final String password = "test";
         Team testTeam = new Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -121,7 +149,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
         TeamDTO teamDTO = new TeamDTO("veranderdTeam");
 
         //when
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/team/" + teamId)
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/team/" + teamId).with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(teamDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -136,6 +164,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateTeamNameIsNull() throws Exception {
+        final String password = "test";
         Team testTeam = new Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -145,7 +174,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
         TeamDTO teamDTO = new TeamDTO(null);
 
         //when
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/team/" + teamId)
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/team/" + teamId).with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(teamDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
@@ -160,6 +189,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateTeamNameIsEmpty() throws Exception {
+        final String password = "test";
         Team testTeam = new Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -182,12 +212,13 @@ class TeamResourceTest extends AbstractIntegrationTest {
     }
     @Test
     void getTeamOk() throws Exception {
+        final String password = "test";
         Team testTeam = new Team.TeamBuilder()
                 .name("testTeam")
                 .build();
         Long teamId = teamRepository.save(testTeam).getId();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/team/" + teamId))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/team/" + teamId).with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isOk())
                 .andReturn();
         Team getTeam = fromMvcResult(mvcResult, Team.class);
@@ -197,7 +228,8 @@ class TeamResourceTest extends AbstractIntegrationTest {
     @Test
     void getTeamIdIsNegative() throws Exception {
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/team/" + -5L ))
+        final String password = "test";
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/team/" + -5L ).with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -207,22 +239,24 @@ class TeamResourceTest extends AbstractIntegrationTest {
     @Test
     void getTeamIdIs0() throws Exception {
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/team/" + 0L ))
+        final String password = "test";
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/team/" + 0L ).with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
         String responsMessage = mvcResult.getResponse().getContentAsString();
         assertEquals(0L +" is not valid!", responsMessage );
     }
-    
+
     @Test
     void deleteTeamOk()throws Exception{
-        Team testTeam = new Team.TeamBuilder()
+        final String password = "test";
+Team testTeam = new Team.TeamBuilder()
                 .name("testTeam")
                 .build();
         Long teamId = teamRepository.save(testTeam).getId();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/team/" + teamId))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/team/" + teamId).with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isNoContent())
                 .andReturn();
         try {
@@ -239,8 +273,9 @@ class TeamResourceTest extends AbstractIntegrationTest {
 
     @Test
     void deleteTeamId0()throws Exception{
-        String ID = "0";
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/team/" + ID))
+        final String password = "test";
+String ID = "0";
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/team/" + ID).with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isForbidden())
                 .andReturn();
 

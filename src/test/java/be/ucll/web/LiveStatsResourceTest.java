@@ -21,6 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class LiveStatsResourceTest extends AbstractIntegrationTest {
@@ -47,7 +48,8 @@ public class LiveStatsResourceTest extends AbstractIntegrationTest {
     void setUp() {
 
         passwordEncoder = new BCryptPasswordEncoder();
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac)
+                .apply(springSecurity()).build();
         Player playerPvppowners = new Player.PlayerBuilder()
                 .firstName("jaimie")
                 .lastName("haesevoets")
