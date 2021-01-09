@@ -14,6 +14,8 @@ import be.ucll.models.TeamPlayer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -31,6 +33,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+
+@SpringBootTest
+@AutoConfigureMockMvc
 public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
 
     @Autowired
@@ -73,7 +80,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
     @BeforeEach
     void setUp() throws ParseException {
 
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).apply(springSecurity()).build();
 
         Team team = new Team.TeamBuilder()
                 .name("TestTeam")
@@ -264,7 +271,8 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
     @Test
     void getMatchHistoryAllOk() throws Exception {
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory"))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
+                .with(httpBasic("7stijn7", "test")))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -275,7 +283,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
         final String DATE = "20-12-2020";
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
-                .param("date", DATE))
+                .param("date", DATE).with(httpBasic("7stijn7", "test")))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -293,7 +301,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
         final String DATE = "*";
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
-                .param("date", DATE))
+                .param("date", DATE).with(httpBasic("7stijn7", "test")))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -306,7 +314,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
         final String DATE = "03-05-2016";
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
-                .param("date", DATE))
+                .param("date", DATE).with(httpBasic("7stijn7", "test")))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -319,7 +327,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
         final String TEAM = testTeamId.toString();
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
-                .param("teamId", TEAM))
+                .param("teamId", TEAM).with(httpBasic("7stijn7", "test")))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -335,7 +343,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
         final String TEAM = "*";
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
-                .param("teamId", TEAM))
+                .param("teamId", TEAM).with(httpBasic("7stijn7", "test")))
                 .andExpect(status().isBadRequest())
                 .andReturn();
 
@@ -346,7 +354,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
         final String TEAM = "925";
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
-                .param("teamId", TEAM))
+                .param("teamId", TEAM).with(httpBasic("7stijn7", "test")))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -360,7 +368,8 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
     void getIndividuallyMatchHistoryAllOk() throws Exception {
         final String PLAYER_ID = testPvppownersId.toString();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player"))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player")
+                .with(httpBasic("7stijn7", "test")))
                 .andExpect(status().isOk())
                 .andReturn();
     }
@@ -369,7 +378,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
     void getIndividuallyMatchHistoryALLPlayerNotFound() throws Exception {
         final String PLAYER_ID = "52869";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player"))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player").with(httpBasic("7stijn7", "test")))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -400,8 +409,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
         final String MATCH_ID = "*";
         final String PLAYER_ID = testPvppownersId.toString();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player")
-                .param("matchId", MATCH_ID))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player").with(httpBasic("7stijn7", "test"))                .param("matchId", MATCH_ID))
                 .andExpect(status().isBadRequest())
                 .andReturn();
 
@@ -412,7 +420,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
         final String MATCH_ID = "9569";
         final String PLAYER_ID = testPvppownersId.toString();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID  + "/player")
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID  + "/player").with(httpBasic("7stijn7", "test"))
                 .param("matchId", MATCH_ID))
                 .andExpect(status().isNotFound())
                 .andReturn();
