@@ -13,8 +13,6 @@ import be.ucll.models.TeamPlayer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,8 +27,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
-@SpringBootTest
-@AutoConfigureMockMvc
 public class TeamPlayerResourceTest extends AbstractIntegrationTest {
 
     @Autowired
