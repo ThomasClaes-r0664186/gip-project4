@@ -5,6 +5,7 @@ import be.ucll.dao.PlayerRepository;
 import be.ucll.dao.TeamPlayerRepository;
 import be.ucll.dao.TeamRepository;
 import be.ucll.exceptions.NotFoundException;
+import be.ucll.exceptions.ParameterInvalidException;
 import be.ucll.models.Player;
 import be.ucll.models.Team;
 import be.ucll.models.TeamPlayer;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +42,10 @@ public class LiveStatsResource {
             description = "Get live stats from players in a team"
     )
     @GetMapping("/{teamId}")
-    public ResponseEntity<List<CurrentGameInfo>> getLiveStats(@PathVariable("teamId") Long teamId) throws NotFoundException {
+    public ResponseEntity<List<CurrentGameInfo>> getLiveStats(@PathVariable("teamId") Long teamId) throws NotFoundException, ParameterInvalidException {
+
+        if (teamId <= 0) throw new ParameterInvalidException(teamId.toString());
+
         //1. vraag team op
         Optional<Team> team = teamRepository.findTeamById(teamId);
         if(team.isEmpty()){
@@ -57,7 +62,7 @@ public class LiveStatsResource {
         System.out.println(teamPlayers.size()+" size"); //debug
 
         //3. Maak request voor alle players active games
-        List<CurrentGameInfo> liveStats = null;
+        List<CurrentGameInfo> liveStats = new ArrayList<>();
         teamPlayers.forEach(((teamPlayer) -> {
             Player player = teamPlayer.getPlayer();
             System.out.println("found player "+player.getSummonerID()); //debug
