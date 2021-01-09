@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -177,7 +178,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
     }
     @Test
     void getTeamOk() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/team/" + teamId)).with(httpBasic("7stijn7", "test"))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/team/" + teamId).with(httpBasic("7stijn7", "test")))
                 .andExpect(status().isOk())
                 .andReturn();
         Team getTeam = fromMvcResult(mvcResult, Team.class);
