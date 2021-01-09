@@ -7,10 +7,7 @@ import be.ucll.dao.TeamPlayerRepository;
 import be.ucll.dao.TeamRepository;
 import be.ucll.dto.IndividuallyPlayerDTO;
 import be.ucll.dto.MatchHistoryDTO;
-import be.ucll.models.Match;
-import be.ucll.models.Player;
-import be.ucll.models.Team;
-import be.ucll.models.TeamPlayer;
+import be.ucll.models.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +95,8 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password("test")
                 .build();
         testPvppownersId = playerRepository.save(playerPvppowners).getId();
 
@@ -105,6 +104,8 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
                 .firstName("Charles")
                 .lastName("Rubens")
                 .leagueName("Dragorius")
+                .role(Role.PLAYER)
+                .password("test")
                 .build();
         testDragoriusId = playerRepository.save(playerDragorius).getId();
 
@@ -112,6 +113,8 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
                 .firstName("Marie")
                 .lastName("Lansier")
                 .leagueName("DorriShokouh")
+                .role(Role.PLAYER)
+                .password("test")
                 .build();
         testDorriShokouhId = playerRepository.save(playerDorriShokouh).getId();
 
@@ -119,6 +122,8 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
                 .firstName("Fries")
                 .lastName("Londaz")
                 .leagueName("TwinniesDad")
+                .role(Role.PLAYER)
+                .password("test")
                 .build();
         testTwinniesDadId = playerRepository.save(playerTwinniesDad).getId();
 
@@ -126,6 +131,8 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
                 .firstName("Frade")
                 .lastName("Loeqd")
                 .leagueName("Xellania")
+                .role(Role.PLAYER)
+                .password("test")
                 .build();
         testXellaniaId = playerRepository.save(playerXellania).getId();
 
@@ -133,6 +140,8 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
                 .firstName("Feop")
                 .lastName("Loi")
                 .leagueName("hylloi")
+                .role(Role.PLAYER)
+                .password("test")
                 .build();
         testHylloiId = playerRepository.save(playerHylloi).getId();
 
@@ -140,6 +149,8 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
                 .firstName("Geoe")
                 .lastName("Maezz")
                 .leagueName("miguelin8")
+                .role(Role.PLAYER)
+                .password("test")
                 .build();
         testMiguelin8Id = playerRepository.save(playerMiguelin8).getId();
 
@@ -147,6 +158,8 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
                 .firstName("anna")
                 .lastName("Iuna")
                 .leagueName("AnagumaInu")
+                .role(Role.PLAYER)
+                .password("test")
                 .build();
         testAnagumaInuId = playerRepository.save(playerAnagumaInu).getId();
 
@@ -154,6 +167,8 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
                 .firstName("Marco")
                 .lastName("Fusoliner")
                 .leagueName("Marcoilfuso")
+                .role(Role.PLAYER)
+                .password("test")
                 .build();
         testMarcoilfusoId = playerRepository.save(playerMarcoilfuso).getId();
 
