@@ -5,11 +5,13 @@ import be.ucll.dao.PlayerRepository;
 import be.ucll.dao.TeamPlayerRepository;
 import be.ucll.dao.TeamRepository;
 import be.ucll.models.Player;
+import be.ucll.models.Role;
 import be.ucll.models.Team;
 import be.ucll.models.TeamPlayer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -18,6 +20,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class LiveStatsResourceTest extends AbstractIntegrationTest {
@@ -36,17 +39,32 @@ public class LiveStatsResourceTest extends AbstractIntegrationTest {
     @Autowired
     private TeamPlayerRepository teamPlayerRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+    private Player testPvppowners;
+
     @BeforeEach
     void setUp() {
+
+        passwordEncoder = new BCryptPasswordEncoder();
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        testPvppowners = playerRepository.save(playerPvppowners);
     }
 
     @Test
     void getLiveStatsTeamId0() throws Exception {
-
+        final String password = "test";
         final String TEAM_ID = "0";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/liveStats/" + TEAM_ID))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/liveStats/" + TEAM_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -57,10 +75,11 @@ public class LiveStatsResourceTest extends AbstractIntegrationTest {
 
     @Test
     void getLiveStatsTeamIdNegative() throws Exception {
-
+        final String password = "test";
         final String TEAM_ID = "-1";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/liveStats/" + TEAM_ID))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/liveStats/" + TEAM_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -71,10 +90,11 @@ public class LiveStatsResourceTest extends AbstractIntegrationTest {
 
     @Test
     void getLiveStatsTeamIdNotFound() throws Exception {
-
+        final String password = "test";
         final String TEAM_ID = "10";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/liveStats/" + TEAM_ID))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/liveStats/" + TEAM_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -85,13 +105,14 @@ public class LiveStatsResourceTest extends AbstractIntegrationTest {
 
     @Test
     void getLiveStatsTeamPlayersNotFound() throws Exception {
-        Team team = new Team.TeamBuilder()
+        final String password = "test";        Team team = new Team.TeamBuilder()
                 .name("team")
                 .build();
 
         Long teamId = teamRepository.save(team).getId();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/liveStats/" + teamId))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/liveStats/" + teamId)
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -102,7 +123,7 @@ public class LiveStatsResourceTest extends AbstractIntegrationTest {
 
     @Test
     void getLiveStatsOfPlayersNotFound() throws Exception {
-        Player player = new Player.PlayerBuilder()
+        final String password = "test";        Player player = new Player.PlayerBuilder()
                 .leagueName("7Stijn7")
                 .firstName("Stijn")
                 .lastName("Verbieren")
@@ -127,7 +148,8 @@ public class LiveStatsResourceTest extends AbstractIntegrationTest {
 
         teamPlayerRepository.save(teamPlayer);
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/liveStats/" + teamId))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/liveStats/" + teamId)
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isNotFound())
                 .andReturn();
 

@@ -2,14 +2,18 @@ package be.ucll.web;
 
 import be.ucll.AbstractIntegrationTest;
 import be.ucll.dao.MatchRepository;
+import be.ucll.dao.PlayerRepository;
 import be.ucll.dao.TeamRepository;
 import be.ucll.dto.MatchDTO;
 import be.ucll.models.Match;
+import be.ucll.models.Player;
+import be.ucll.models.Role;
 import be.ucll.models.Team;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -23,6 +27,7 @@ import java.util.GregorianCalendar;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,9 +44,23 @@ public class MatchResourceTest extends AbstractIntegrationTest {
     @Autowired
     private MatchRepository matchRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+    private Player testPvppowners;
+    private PlayerRepository playerRepository;
+
     @BeforeEach
     void setUp()  {
+        passwordEncoder = new BCryptPasswordEncoder();
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        testPvppowners = playerRepository.save(playerPvppowners);
     }
 
 
@@ -69,7 +88,9 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         MatchDTO matchDTO = new MatchDTO(teamId, simpleDateFormat.format(dateMatch));
 
+        final String password = "test";
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/match")
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
@@ -101,7 +122,9 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         MatchDTO matchDTO = new MatchDTO(null, simpleDateFormat.format(dateMatch));
 
+        final String password = "test";
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/match")
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
@@ -115,6 +138,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void createMatchTeamNegative() throws Exception {
+
+        final String password = "test";
         final Long TEAM_ID = -1L;
 
         // today
@@ -135,6 +160,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         MatchDTO matchDTO = new MatchDTO(TEAM_ID, simpleDateFormat.format(dateMatch));
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/match")
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
@@ -148,6 +174,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void createMatchTeam0() throws Exception {
+
+        final String password = "test";
         final Long TEAM_ID = 0L;
 
         // today
@@ -168,6 +196,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         MatchDTO matchDTO = new MatchDTO(TEAM_ID, simpleDateFormat.format(dateMatch));
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/match")
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
@@ -181,6 +210,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void createMatchTeamNotFound() throws Exception {
+
+        final String password = "test";
         final Long TEAM_ID = 58569L;
 
         // today
@@ -201,6 +232,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         MatchDTO matchDTO = new MatchDTO(TEAM_ID, simpleDateFormat.format(dateMatch));
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/match")
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -214,6 +246,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void createMatchDateNull() throws Exception {
+
+        final String password = "test";
         Team team = new  Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -222,6 +256,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         MatchDTO matchDTO = new MatchDTO(teamId,null);
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/match")
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
@@ -234,6 +269,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void createMatchDateInvalid() throws Exception {
+
+        final String password = "test";
         final String DATE = "*";
 
         Team team = new  Team.TeamBuilder()
@@ -244,6 +281,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         MatchDTO matchDTO = new MatchDTO(teamId,DATE);
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/match")
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
@@ -256,6 +294,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void createMatchDateInHistory() throws Exception {
+
+        final String password = "test";
         final String DATE = "02/05/2015";
 
         Team team = new  Team.TeamBuilder()
@@ -266,6 +306,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         MatchDTO matchDTO = new MatchDTO(teamId,DATE);
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/match")
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
@@ -279,6 +320,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void createMatchTeamPlayAlreadyOnDate() throws Exception {
+
+        final String password = "test";
         final String DATE = "10/12/2080";
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -297,6 +340,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         MatchDTO matchDTO = new MatchDTO(teamId,DATE);
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/match")
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isConflict())
@@ -310,6 +354,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void getMatchOk() throws Exception {
+
+        final String password = "test";
         Match match = new Match.MatchBuilder()
                 .matchID(4841161542L)
                 .date(new Date())
@@ -331,6 +377,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void getMatchIdNegative() throws Exception {
+
+        final String password = "test";
         final Long MATCH_ID = -1L;
 
         Match match = new Match.MatchBuilder()
@@ -351,6 +399,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void getMatchId0() throws Exception {
+
+        final String password = "test";
         final Long MATCH_ID = 0L;
 
         Match match = new Match.MatchBuilder()
@@ -371,6 +421,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void getMatchIdNull() throws Exception {
+        final String password = "test";
         final Long MATCH_ID = null;
 
         Match match = new Match.MatchBuilder()
@@ -387,6 +438,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void getMatchIdNotFound() throws Exception {
+
+        final String password = "test";
         final Long MATCH_ID = 58569L;
 
         Match match = new Match.MatchBuilder()
@@ -407,6 +460,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateMatchOk() throws Exception {
+        final String password = "test";
+
         Team team = new  Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -441,6 +496,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final Long MATCH_ID = matchRepository.save(match).getId();
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -457,6 +513,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateMatchIdNegative() throws Exception {
+
+        final String password = "test";
         final Long MATCH_ID = -1L;
 
         Team team = new  Team.TeamBuilder()
@@ -493,6 +551,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         matchRepository.save(match);
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
@@ -505,6 +564,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateMatchId0() throws Exception {
+
+        final String password = "test";
         final Long MATCH_ID = 0L;
 
         Team team = new  Team.TeamBuilder()
@@ -541,6 +602,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         matchRepository.save(match);
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
@@ -553,6 +615,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateMatchIdNotFound() throws Exception {
+
+        final String password = "test";
         final Long MATCH_ID = 95995L;
 
         Team team = new  Team.TeamBuilder()
@@ -589,6 +653,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         matchRepository.save(match);
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -601,6 +666,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateMatchTeamId0() throws Exception {
+
+        final String password = "test";
        final Long TEAM_ID = 0L;
 
         Team team = new Team.TeamBuilder()
@@ -632,6 +699,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final Long MATCH_ID = matchRepository.save(match).getId();
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
@@ -643,6 +711,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateMatchTeamIdNegative() throws Exception {
+
+        final String password = "test";
         final Long TEAM_ID = -1L;
 
         Team team = new Team.TeamBuilder()
@@ -674,6 +744,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final Long MATCH_ID = matchRepository.save(match).getId();
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
@@ -685,6 +756,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateMatchTeamIdNull() throws Exception {
+
+        final String password = "test";
         Team team = new Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -714,6 +787,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final Long MATCH_ID = matchRepository.save(match).getId();
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
@@ -725,6 +799,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateMatchTeamIdNotFound() throws Exception {
+
+        final String password = "test";
        Long TEAM_ID = 1548L;
 
         Team team = new Team.TeamBuilder()
@@ -756,6 +832,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final Long MATCH_ID = matchRepository.save(match).getId();
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -767,6 +844,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateMatchDateInvalid() throws Exception {
+
+        final String password = "test";
         final String DATE = "*";
 
         Team team = new  Team.TeamBuilder()
@@ -790,6 +869,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final Long MATCH_ID = matchRepository.save(match).getId();
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
@@ -802,6 +882,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateMatchDateNull() throws Exception {
+
+        final String password = "test";
         final String DATE = null;
 
         Team team = new  Team.TeamBuilder()
@@ -825,6 +907,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final Long MATCH_ID = matchRepository.save(match).getId();
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
@@ -837,6 +920,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateMatchDateEmpty() throws Exception {
+
+        final String password = "test";
         final String DATE = "";
 
         Team team = new  Team.TeamBuilder()
@@ -860,6 +945,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final Long MATCH_ID = matchRepository.save(match).getId();
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
@@ -872,6 +958,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void updateMatchDateInHistory() throws Exception {
+        final String password = "test";
         final String DATE = "02/05/2001";
 
         Team team = new  Team.TeamBuilder()
@@ -895,6 +982,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final Long MATCH_ID = matchRepository.save(match).getId();
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .content(toJson(matchDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
@@ -907,6 +995,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void deleteMatchOk() throws Exception {
+        final String password = "test";
         Team team = new  Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -920,7 +1009,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         final Long MATCH_ID = matchRepository.save(match).getId();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/match/" + MATCH_ID))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/match/" + MATCH_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isNoContent())
                 .andReturn();
 
@@ -931,6 +1021,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void deleteMatchIdNegative() throws Exception {
+        final String password = "test";
         final Long MATCH_ID = -1L;
 
                 Team team = new  Team.TeamBuilder()
@@ -946,7 +1037,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         matchRepository.save(match);
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/match/" + MATCH_ID))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/match/" + MATCH_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -957,6 +1049,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void deleteMatchId0() throws Exception {
+        final String password = "test";
         final Long MATCH_ID = 0L;
 
         Team team = new  Team.TeamBuilder()
@@ -972,7 +1065,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         matchRepository.save(match);
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/match/" + MATCH_ID))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/match/" + MATCH_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -983,6 +1077,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void deleteMatchIdNotFound() throws Exception {
+        final String password = "test";
         final Long MATCH_ID = 559965L;
 
         Team team = new  Team.TeamBuilder()
@@ -998,7 +1093,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         matchRepository.save(match);
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/match/" + MATCH_ID))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/match/" + MATCH_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -1009,6 +1105,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void setWinnerValueOk() throws Exception {
+        final String password = "test";
         String IS_WINNER = "true";
 
         Team team = new  Team.TeamBuilder()
@@ -1025,7 +1122,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         final Long MATCH_ID = matchRepository.save(match).getId();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID + "/matchId/" + IS_WINNER + "/isWinner"))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID + "/matchId/" + IS_WINNER + "/isWinner")
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isOk())
                 .andReturn();
         Match createdMatch = fromMvcResult(mvcResult, Match.class);
@@ -1041,6 +1139,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void setWinnerValueMatchId0() throws Exception {
+        final String password = "test";
         final String IS_WINNER = "true";
         final Long MATCH_ID = 0L;
 
@@ -1058,7 +1157,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         matchRepository.save(match).getId();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID + "/matchId/" + IS_WINNER + "/isWinner"))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID + "/matchId/" + IS_WINNER + "/isWinner")
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -1070,6 +1170,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void setWinnerValueMatchIdNegative() throws Exception {
+        final String password = "test";
         final String IS_WINNER = "true";
         final Long MATCH_ID = -1L;
 
@@ -1087,7 +1188,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         matchRepository.save(match);
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID + "/matchId/" + IS_WINNER + "/isWinner"))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID + "/matchId/" + IS_WINNER + "/isWinner")
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -1098,6 +1200,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void setWinnerValueMatchIdNotFound() throws Exception {
+        final String password = "test";
         final String IS_WINNER = "true";
         final Long MATCH_ID = 15854L;
 
@@ -1115,7 +1218,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         matchRepository.save(match);
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID + "/matchId/" + IS_WINNER + "/isWinner"))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID + "/matchId/" + IS_WINNER + "/isWinner")
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
