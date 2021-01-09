@@ -5,6 +5,7 @@ import be.ucll.dao.PlayerRepository;
 import be.ucll.dto.PlayerDTO;
 import be.ucll.exceptions.*;
 import be.ucll.models.Player;
+import be.ucll.models.Role;
 import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -39,8 +41,16 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	@Autowired
 	private PlayerResource playerResource;
 
+	@Autowired
+	private PlayerRepository playerRepository;
+
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+
 	@BeforeEach
 	void setUp() {
+
+		passwordEncoder = new BCryptPasswordEncoder();
 
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).apply(springSecurity()).build();
 
@@ -49,9 +59,21 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void createPlayerOk() throws Exception {
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.MANAGER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
 		PlayerDTO playerDTO = new PlayerDTO("zazoeke000", "Stijn", "Verbieren");
 
 		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player")
+				.with(httpBasic(player.getLeagueName(), PASSWORD))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated())
@@ -59,19 +81,124 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.andReturn();
 		Player createdPlayer = fromMvcResult(mvcResult, Player.class);
 
-		assertEquals("1xXnvDRMw7EtYUfyqVVE4axhW-TywmiIfVVIZ72dOd92u08", createdPlayer.getSummonerID());
-		assertEquals("b8PgZkOcjRUx7oiHgkD_BhJJ7B3rIGOwMN_1crvtdep39KA", createdPlayer.getAccountId());
-		assertEquals("saaENlT6jyW8dyAS3nOyk8SRXQjXs7qubys0Pls06P9Dk8hVgGOVgntYxAQilz_OxlJbQBL-0Ay5rw", createdPlayer.getPuuID());
+		assertEquals("jXXk8hHq10moWv403zCWm2vyQM1Kp2pmAbJmLpZEf3X28sU", createdPlayer.getSummonerID());
+		assertEquals("1NJ_revWDvssBbN4-ye3rFFi2KFFLRPV8tj6Op5EWHkpUng", createdPlayer.getAccountId());
+		assertEquals("9GXqtZ6G-cNMLXFXYXuhtTIsBi-EvBuJ0CP4xkUmam1RRZJNR-GVB1InR7Wit9BEWKynlrtSCpebyA", createdPlayer.getPuuID());
 		assertEquals(playerDTO.getLeagueName(), createdPlayer.getLeagueName());
 		assertEquals(playerDTO.getFirstName(), createdPlayer.getFirstName());
 		assertEquals(playerDTO.getLastName(), createdPlayer.getLastName());
 	}
 
 	@Test
+	void createPlayerNotAuthorization() throws Exception {
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.PLAYER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
+		PlayerDTO playerDTO = new PlayerDTO("zazoeke000", "Stijn", "Verbieren");
+
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player")
+				.content(toJson(playerDTO))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isUnauthorized())
+				.andReturn();
+	}
+
+	@Test
+	void createPlayeBadAuthorizationBadPassword() throws Exception {
+		final String PASSWORD = "test";
+		final String BAD_PASSWORD = "lala";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.PLAYER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
+		PlayerDTO playerDTO = new PlayerDTO("zazoeke000", "Stijn", "Verbieren");
+
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player")
+				.with(httpBasic(player.getLeagueName(), BAD_PASSWORD))
+				.content(toJson(playerDTO))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isUnauthorized())
+				.andReturn();
+	}
+
+	@Test
+	void createPlayeBadAuthorizationBadUsername() throws Exception {
+		final String PASSWORD = "test";
+		final String BAD_USERNAME = "lala";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.PLAYER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
+		PlayerDTO playerDTO = new PlayerDTO("zazoeke000", "Stijn", "Verbieren");
+
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player")
+				.with(httpBasic(BAD_USERNAME, PASSWORD))
+				.content(toJson(playerDTO))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isUnauthorized())
+				.andReturn();
+	}
+
+	@Test
+	void createPlayeBadAuthorizationBadRole() throws Exception {
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.PLAYER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
+		PlayerDTO playerDTO = new PlayerDTO("zazoeke000", "Stijn", "Verbieren");
+
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player")
+				.with(httpBasic(player.getLeagueName(), PASSWORD))
+				.content(toJson(playerDTO))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isForbidden())
+				.andReturn();
+	}
+
+	@Test
 	void createPlayerLeagueNameNULL() throws Exception {
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.MANAGER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
 		PlayerDTO playerDTO = new PlayerDTO(null, "Stijn", "Verbieren");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player")
+				.with(httpBasic(player.getLeagueName(), PASSWORD))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -83,9 +210,21 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void createPlayerLeagueNameEmpty() throws Exception {
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.MANAGER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
 		PlayerDTO playerDTO = new PlayerDTO("", "Stijn", "Verbieren");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player")
+				.with(httpBasic(player.getLeagueName(), PASSWORD))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -97,9 +236,21 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void createPlayerLeagueNameNotExists() throws Exception {
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.MANAGER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
 		PlayerDTO playerDTO = new PlayerDTO("*", "Stijn", "Verbieren");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player")
+				.with(httpBasic(player.getLeagueName(), PASSWORD))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
@@ -111,12 +262,24 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void createPlayerLeagueNameAlreadyExists() throws Exception {
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.MANAGER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
 		PlayerDTO playerWannesV = new PlayerDTO("WannesV", "Wannes", "Verschraegen");
 		playerResource.createPlayer(playerWannesV);
 
 		PlayerDTO playerDTO = new PlayerDTO("WannesV", "Wannes", "Verschraegen");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player")
+				.with(httpBasic(player.getLeagueName(), PASSWORD))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isConflict())
@@ -128,9 +291,21 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void createPlayerFirstNameNULL() throws Exception {
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.MANAGER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
 		PlayerDTO playerDTO = new PlayerDTO("zazoeke000", null, "Verbieren");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player")
+				.with(httpBasic(player.getLeagueName(), PASSWORD))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -142,9 +317,21 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void createPlayerFirstNameEmpty() throws Exception {
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.MANAGER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
 		PlayerDTO playerDTO = new PlayerDTO("zazoeke000", "", "Verbieren");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player")
+				.with(httpBasic(player.getLeagueName(), PASSWORD))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -156,9 +343,21 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void createPlayerLastNameNULL() throws Exception {
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.MANAGER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
 		PlayerDTO playerDTO = new PlayerDTO("zazoeke000", "Stijn", null);
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player")
+				.with(httpBasic(player.getLeagueName(), PASSWORD))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -170,9 +369,21 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void createPlayerLastNameEmpty() throws Exception {
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.MANAGER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
 		PlayerDTO playerDTO = new PlayerDTO("zazoeke000", "Stijn", "");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player")
+				.with(httpBasic(player.getLeagueName(), PASSWORD))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -186,13 +397,25 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerOk() throws Exception {
+		final String PASSWORD = "test";
+
+		Player playerStijn = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.PLAYER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		playerStijn = playerRepository.save(playerStijn);
+
 		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
 		Long idPlayerArdes = Objects.requireNonNull(playerResource.createPlayer(playerArdes).getBody()).getId();
 
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("Ardes", "Arno", "De Smet");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID)
+				.with(httpBasic(playerStijn.getLeagueName(), PASSWORD))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -208,13 +431,25 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerLeagueNameNULL() throws Exception {
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.PLAYER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
 		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
 		Long idPlayerArdes = Objects.requireNonNull(playerResource.createPlayer(playerArdes).getBody()).getId();
 
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO(null, "Arno", "De Smet");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID)
+				.with(httpBasic(player.getLeagueName(), PASSWORD))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -227,13 +462,22 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerLeagueNameEmpty() throws Exception {
-		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
-		Long idPlayerArdes = Objects.requireNonNull(playerResource.createPlayer(playerArdes).getBody()).getId();
+		final String PASSWORD = "test";
 
-		final String ID = idPlayerArdes.toString();
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.PLAYER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
+		final String ID = player.getId().toString();
 		PlayerDTO playerDTO = new PlayerDTO("", "Arno", "De Smet");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID)
+				.with(httpBasic(player.getLeagueName(), PASSWORD))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -246,13 +490,22 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerLeagueNameNotExists() throws Exception {
-		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
-		Long idPlayerArdes = Objects.requireNonNull(playerResource.createPlayer(playerArdes).getBody()).getId();
+		final String PASSWORD = "test";
 
-		final String ID = idPlayerArdes.toString();
+		Player player = new Player.PlayerBuilder()
+				.firstName("Jarno")
+				.lastName("De Smet")
+				.leagueName("Ardes")
+				.role(Role.PLAYER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
+		final String ID = player.getId().toString();
 		PlayerDTO playerDTO = new PlayerDTO("*", "Arno", "De Smet");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID)
+				.with(httpBasic(player.getLeagueName(), PASSWORD))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
@@ -265,16 +518,31 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerLeagueNameAlreadyExists() throws Exception {
-		PlayerDTO player = new PlayerDTO("WannesV", "Arno", "De Smet");
-		playerResource.createPlayer(player);
+		final String PASSWORD = "test";
 
-		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
-		Long idPlayerArdes = Objects.requireNonNull(playerResource.createPlayer(playerArdes).getBody()).getId();
+		Player playerStijn = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.PLAYER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		playerRepository.save(playerStijn);
 
-		final String ID = idPlayerArdes.toString();
-		PlayerDTO playerDTO = new PlayerDTO("WannesV", "Arno", "De Smet");
+		Player playerWannes = new Player.PlayerBuilder()
+				.firstName("Wannes")
+				.lastName("Verschraegen")
+				.leagueName("WannesV")
+				.role(Role.PLAYER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		playerWannes = playerRepository.save(playerWannes);
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+		final String ID = playerWannes.getId().toString();
+		PlayerDTO playerDTO = new PlayerDTO("7Stijn7", "Arno", "De Smet");
+
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID)
+				.with(httpBasic(playerWannes.getLeagueName(), PASSWORD))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isConflict())
@@ -287,13 +555,22 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerFirstNameNULL() throws Exception {
-		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
-		Long idPlayerArdes = Objects.requireNonNull(playerResource.createPlayer(playerArdes).getBody()).getId();
+		final String PASSWORD = "test";
 
-		final String ID = idPlayerArdes.toString();
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("Ardes")
+				.role(Role.PLAYER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
+		final String ID = player.getId().toString();
 		PlayerDTO playerDTO = new PlayerDTO("Ardes", null, "De Smet");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID)
+				.with(httpBasic(player.getLeagueName(), PASSWORD))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -306,13 +583,25 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerFirstNameEmpty() throws Exception {
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.MANAGER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
 		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
 		Long idPlayerArdes = Objects.requireNonNull(playerResource.createPlayer(playerArdes).getBody()).getId();
 
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("Ardes", "", "De Smet");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID)
+				.with(httpBasic(player.getLeagueName(), PASSWORD))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -325,13 +614,25 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerLastNameNULL() throws Exception {
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.MANAGER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
 		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
 		Long idPlayerArdes = Objects.requireNonNull(playerResource.createPlayer(playerArdes).getBody()).getId();
 
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("Ardes", "Arno", null);
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID)
+				.with(httpBasic(player.getLeagueName(), PASSWORD))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -344,13 +645,25 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void updatePlayerLastNameEmpty() throws Exception {
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.MANAGER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
 		PlayerDTO playerArdes = new PlayerDTO("Ardes", "Jarno", "De Smet");
 		Long idPlayerArdes = Objects.requireNonNull(playerResource.createPlayer(playerArdes).getBody()).getId();
 
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("Ardes", "Arno", "");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID)
+				.with(httpBasic(player.getLeagueName(), PASSWORD))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -363,11 +676,23 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void getPlayerOk() throws Exception {
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.MANAGER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
 		PlayerDTO playerAvaIanche = new PlayerDTO("AvaIanche", "Ava", "Ianche");
 		Long idPlayerAvaIanche = Objects.requireNonNull(playerResource.createPlayer(playerAvaIanche).getBody()).getId();
 
 		final String ID = idPlayerAvaIanche.toString();
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID)
+				.with(httpBasic(player.getLeagueName(), PASSWORD)))
 				.andExpect(status().isOk())
 				.andReturn();
 		Player getPlayer = fromMvcResult(mvcResult, Player.class);
@@ -380,7 +705,19 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	@Test
 	void getPlayerIdIsNegative() throws Exception {
 		final String ID = "-1";
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.MANAGER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID)
+				.with(httpBasic(player.getLeagueName(), PASSWORD)))
 				.andExpect(status().isForbidden())
 				.andReturn();
 
@@ -391,7 +728,19 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	@Test
 	void getPlayerIdIs0() throws Exception {
 		final String ID = "0";
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.MANAGER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID)
+				.with(httpBasic(player.getLeagueName(), PASSWORD)))
 				.andExpect(status().isForbidden())
 				.andReturn();
 
@@ -402,7 +751,19 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	@Test
 	void getPlayerIdIsNotFound() throws Exception {
 		final String ID = "90000";
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.MANAGER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID)
+				.with(httpBasic(player.getLeagueName(), PASSWORD)))
 				.andExpect(status().isNotFound())
 				.andReturn();
 
@@ -412,11 +773,23 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 
 	@Test
 	void deletePlayerOk() throws Exception {
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.MANAGER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
 		PlayerDTO playerAvaIanche = new PlayerDTO("AvaIanche", "Ava", "Ianche");
 		Long idPlayerAvaIanche = Objects.requireNonNull(playerResource.createPlayer(playerAvaIanche).getBody()).getId();
 
 		final String ID = idPlayerAvaIanche.toString();
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID)
+				.with(httpBasic(player.getLeagueName(), PASSWORD))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNoContent())
 				.andReturn();
@@ -428,7 +801,19 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	@Test
 	void deletePlayerIdIsNegative() throws Exception {
 		final String ID = "-1";
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.MANAGER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID)
+				.with(httpBasic(player.getLeagueName(), PASSWORD))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
 				.andReturn();
@@ -440,7 +825,19 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	@Test
 	void deletePlayerIdIs0() throws Exception {
 		final String ID = "0";
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.MANAGER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID)
+				.with(httpBasic(player.getLeagueName(), PASSWORD)))
 				.andExpect(status().isForbidden())
 				.andReturn();
 
@@ -451,7 +848,19 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	@Test
 	void deletePlayerIdIsNotFound() throws Exception {
 		final String ID = "90000";
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+		final String PASSWORD = "test";
+
+		Player player = new Player.PlayerBuilder()
+				.firstName("Stijn")
+				.lastName("Verbieren")
+				.leagueName("7Stijn7")
+				.role(Role.MANAGER)
+				.password(passwordEncoder.encode(PASSWORD))
+				.build();
+		player = playerRepository.save(player);
+
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID)
+				.with(httpBasic(player.getLeagueName(), PASSWORD)))
 				.andExpect(status().isNotFound())
 				.andReturn();
 
