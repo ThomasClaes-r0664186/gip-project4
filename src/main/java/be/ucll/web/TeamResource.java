@@ -8,6 +8,7 @@ import be.ucll.models.Team;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,7 +21,8 @@ public class TeamResource {
         this.teamRepository = teamRepository;
     }
 
-    @PostMapping("")
+    @PostMapping
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<Team> createTeam(@RequestBody TeamDTO teamDTO) throws ParameterInvalidException, AlreadyExistsException {
         if (teamDTO.getName() == null || teamDTO.getName().isEmpty()) throw new ParameterInvalidException();
 
@@ -33,7 +35,8 @@ public class TeamResource {
     }
 
     // team Updaten
-    @PutMapping  ("/{id}")                         // localhost:8080/team?id=
+    @PutMapping  ("/{id}")
+    @PreAuthorize("hasRole('MANAGER')")// localhost:8080/team?id=
         public ResponseEntity<Team> updateTeam(@PathVariable("id") Long id, @RequestBody TeamDTO teamDTO) throws ParameterInvalidException, NotFoundException, AlreadyExistsException {
         Team team;
         if (id <= 0) throw new ParameterInvalidException(id.toString());
@@ -52,6 +55,7 @@ public class TeamResource {
         return ResponseEntity.status(HttpStatus.OK).body(team);
     }
      @GetMapping("/{id}") // teamname veranderen naar id
+     @PreAuthorize("hasRole('MANAGER')")
         public ResponseEntity<TeamDTO> getTeam(@PathVariable("id") Long id) throws NotFoundException, ParameterInvalidException {
             if (id <= 0) throw new ParameterInvalidException (id.toString());
             //controleren of team in onze db bestaat
@@ -64,6 +68,7 @@ public class TeamResource {
         }
 
     @DeleteMapping ("/{id}")// id veranderd
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity deleteTeam(@PathVariable("id") Long id) throws NotFoundException, ParameterInvalidException {
         if (id <= 0) throw new ParameterInvalidException(id.toString());
 
