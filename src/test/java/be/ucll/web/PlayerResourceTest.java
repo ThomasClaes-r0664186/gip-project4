@@ -83,7 +83,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	void createPlayerLeagueNameNULL() throws Exception {
 		PlayerDTO playerDTO = new PlayerDTO(null, "Stijn", "Verbieren");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("7stijn7", "test"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -97,7 +97,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	void createPlayerLeagueNameEmpty() throws Exception {
 		PlayerDTO playerDTO = new PlayerDTO("", "Stijn", "Verbieren");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("7stijn7", "test"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -111,7 +111,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	void createPlayerLeagueNameNotExists() throws Exception {
 		PlayerDTO playerDTO = new PlayerDTO("*", "Stijn", "Verbieren");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("7stijn7", "test"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
@@ -125,7 +125,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	void createPlayerLeagueNameAlreadyExists() throws Exception {
 		PlayerDTO playerDTO = new PlayerDTO("WannesV", "Wannes", "Verschraegen");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("7stijn7", "test"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isConflict())
@@ -139,7 +139,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	void createPlayerFirstNameNULL() throws Exception {
 		PlayerDTO playerDTO = new PlayerDTO("7Stijn7", null, "Verbieren");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("7stijn7", "test"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -153,7 +153,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	void createPlayerFirstNameEmpty() throws Exception {
 		PlayerDTO playerDTO = new PlayerDTO("7Stijn7", "", "Verbieren");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("7stijn7", "test"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -167,7 +167,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	void createPlayerLastNameNULL() throws Exception {
 		PlayerDTO playerDTO = new PlayerDTO("7Stijn7", "Stijn", null);
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("7stijn7", "test"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -181,7 +181,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	void createPlayerLastNameEmpty() throws Exception {
 		PlayerDTO playerDTO = new PlayerDTO("7Stijn7", "Stijn", "");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("7stijn7", "test"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -198,7 +198,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("Ardes", "Arno", "De Smet");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("7stijn7", "test"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -217,7 +217,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO(null, "Arno", "De Smet");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("7stijn7", "test"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -233,7 +233,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("", "Arno", "De Smet");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("7stijn7", "test"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -249,7 +249,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("*", "Arno", "De Smet");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("7stijn7", "test"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
@@ -265,7 +265,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("WannesV", "Arno", "De Smet");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("7stijn7", "test"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isConflict())
@@ -281,7 +281,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("Ardes", null, "De Smet");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("7stijn7", "test"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -297,7 +297,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("Ardes", "", "De Smet");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("7stijn7", "test"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -313,7 +313,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("Ardes", "Arno", null);
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("7stijn7", "test"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -329,7 +329,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 		final String ID = idPlayerArdes.toString();
 		PlayerDTO playerDTO = new PlayerDTO("Ardes", "Arno", "");
 
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("7stijn7", "test"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/player/" + ID).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
@@ -343,7 +343,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	@Test
 	void getPlayerOk() throws Exception {
 		final String ID = idPlayerAvaIanche.toString();
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID).with(httpBasic("7stijn7", "test")))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
 				.andExpect(status().isOk())
 				.andReturn();
 		Player getPlayer = fromMvcResult(mvcResult, Player.class);
@@ -356,7 +356,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	@Test
 	void getPlayerIdIsNegative() throws Exception {
 		final String ID = "-1";
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID).with(httpBasic("7stijn7", "test")))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
 				.andExpect(status().isForbidden())
 				.andReturn();
 
@@ -367,7 +367,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	@Test
 	void getPlayerIdIs0() throws Exception {
 		final String ID = "0";
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID).with(httpBasic("7stijn7", "test")))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
 				.andExpect(status().isForbidden())
 				.andReturn();
 
@@ -378,7 +378,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	@Test
 	void getPlayerIdIsNotFound() throws Exception {
 		final String ID = "90000";
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID).with(httpBasic("7stijn7", "test")))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/player/" + ID).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
 				.andExpect(status().isNotFound())
 				.andReturn();
 
@@ -389,7 +389,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	@Test
 	void deletePlayerOk() throws Exception {
 		final String ID = idPlayerAvaIanche.toString();
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID).with(httpBasic("7stijn7", "test"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNoContent())
 				.andReturn();
@@ -401,7 +401,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	@Test
 	void deletePlayerIdIsNegative() throws Exception {
 		final String ID = "-1";
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID).with(httpBasic("7stijn7", "test"))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden())
 				.andReturn();
@@ -413,7 +413,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	@Test
 	void deletePlayerIdIs0() throws Exception {
 		final String ID = "0";
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID).with(httpBasic("7stijn7", "test")))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
 				.andExpect(status().isForbidden())
 				.andReturn();
 
@@ -424,7 +424,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 	@Test
 	void deletePlayerIdIsNotFound() throws Exception {
 		final String ID = "90000";
-		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID).with(httpBasic("7stijn7", "test")))
+		MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/player/" + ID).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
 				.andExpect(status().isNotFound())
 				.andReturn();
 

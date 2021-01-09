@@ -272,7 +272,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
     void getMatchHistoryAllOk() throws Exception {
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
-                .with(httpBasic("7stijn7", "test")))
+                .with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -283,7 +283,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
         final String DATE = "20-12-2020";
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
-                .param("date", DATE).with(httpBasic("7stijn7", "test")))
+                .param("date", DATE).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -301,7 +301,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
         final String DATE = "*";
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
-                .param("date", DATE).with(httpBasic("7stijn7", "test")))
+                .param("date", DATE).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -314,7 +314,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
         final String DATE = "03-05-2016";
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
-                .param("date", DATE).with(httpBasic("7stijn7", "test")))
+                .param("date", DATE).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -327,7 +327,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
         final String TEAM = testTeamId.toString();
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
-                .param("teamId", TEAM).with(httpBasic("7stijn7", "test")))
+                .param("teamId", TEAM).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -343,7 +343,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
         final String TEAM = "*";
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
-                .param("teamId", TEAM).with(httpBasic("7stijn7", "test")))
+                .param("teamId", TEAM).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isBadRequest())
                 .andReturn();
 
@@ -354,7 +354,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
         final String TEAM = "925";
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
-                .param("teamId", TEAM).with(httpBasic("7stijn7", "test")))
+                .param("teamId", TEAM).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -369,7 +369,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
         final String PLAYER_ID = testPvppownersId.toString();
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player")
-                .with(httpBasic("7stijn7", "test")))
+                .with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isOk())
                 .andReturn();
     }
@@ -378,7 +378,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
     void getIndividuallyMatchHistoryALLPlayerNotFound() throws Exception {
         final String PLAYER_ID = "52869";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player").with(httpBasic("7stijn7", "test")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -409,7 +409,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
         final String MATCH_ID = "*";
         final String PLAYER_ID = testPvppownersId.toString();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player").with(httpBasic("7stijn7", "test"))                .param("matchId", MATCH_ID))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))                .param("matchId", MATCH_ID))
                 .andExpect(status().isBadRequest())
                 .andReturn();
 
@@ -420,7 +420,7 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
         final String MATCH_ID = "9569";
         final String PLAYER_ID = testPvppownersId.toString();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID  + "/player").with(httpBasic("7stijn7", "test"))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID  + "/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
                 .param("matchId", MATCH_ID))
                 .andExpect(status().isNotFound())
                 .andReturn();

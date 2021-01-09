@@ -197,7 +197,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
         final String ID_PLAYER = testLOLnameId.toString();
         final String ID_TEAM = testTeamId.toString();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player" ).with(httpBasic("7stijn7", "test")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player" ).with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isCreated())
                 .andReturn();
 
@@ -214,7 +214,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
         final String ID_PLAYER = null;
         final String ID_TEAM = testTeamId.toString();
 
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "test")))
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
@@ -224,7 +224,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
         final String ID_PLAYER = testLOLnameId.toString();
         final String ID_TEAM = null;
 
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "test")))
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
@@ -234,7 +234,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
         final String ID_PLAYER = "0";
         final String ID_TEAM = testTeamId.toString();
 
-       MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "test")))
+       MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -248,7 +248,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
         final String ID_PLAYER = testLOLnameId.toString();
         final String ID_TEAM = "0";
 
-       MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "test")))
+       MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -262,7 +262,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
         final String ID_PLAYER = "-1";
         final String ID_TEAM = testTeamId.toString();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "test")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -276,7 +276,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
         final String ID_PLAYER = testLOLnameId.toString();
         final String ID_TEAM = "-1";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "test")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -290,7 +290,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
         final String ID_PLAYER = testLOLnameId.toString();
         final String ID_TEAM = "9000";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "test")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -304,7 +304,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
         final String ID_PLAYER = "9000";
         final String ID_TEAM = testTeamId.toString();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "test")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -318,7 +318,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
         final String ID_PLAYER = test7Stijn7Id.toString();
         final String ID_TEAM = testTeamId.toString();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "test")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isConflict())
                 .andReturn();
 
@@ -333,7 +333,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
         final String ID_TEAM = testTeam2Id.toString();
         final String IS_ACTIVE = "false";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "test"))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
                 .param("isActive", IS_ACTIVE))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -350,7 +350,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
         final String ID_TEAM = testTeam2Id.toString();
         final String IS_ACTIVE = "true";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "test"))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/teamplayer/" + ID_TEAM + "/team/" + ID_PLAYER + "/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
                 .param("isActive", IS_ACTIVE))
                 .andExpect(status().isForbidden())
                 .andReturn();
@@ -365,7 +365,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
         final String ID_TEAM = testTeamId.toString();
         final String EXPECTED_RESPONS = "[{\"leagueName\":\"7Stijn7\",\"firstName\":\"Stijn\",\"lastName\":\"Verbieren\"},{\"leagueName\":\"LOLname1\",\"firstName\":\"Stijn\",\"lastName\":\"Verbieren\"}]";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/teamplayer/" + ID_TEAM + "/team").with(httpBasic("7stijn7", "test")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/teamplayer/" + ID_TEAM + "/team").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -377,7 +377,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     void getPlayersFromTeamTeamId0() throws Exception {
         final String ID_TEAM = "0";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/teamplayer/" + ID_TEAM + "/team").with(httpBasic("7stijn7", "test")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/teamplayer/" + ID_TEAM + "/team").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -389,7 +389,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     void getPlayersFromTeamTeamIdNegative() throws Exception {
         final String ID_TEAM = "-1";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/teamplayer/" + ID_TEAM + "/team").with(httpBasic("7stijn7", "test")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/teamplayer/" + ID_TEAM + "/team").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -401,7 +401,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     void getPlayersFromTeamTeamIdNotFound() throws Exception {
         final String ID_TEAM = "90000";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/teamplayer/" + ID_TEAM + "/team").with(httpBasic("7stijn7", "test")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/teamplayer/" + ID_TEAM + "/team").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -412,7 +412,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     @Test
     void deletePlayerFromTeamOk() throws Exception {
         final String ID_TEAM = testLolname5.toString();
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/teamplayer/" + ID_TEAM + "/player").with(httpBasic("7stijn7", "test"))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/teamplayer/" + ID_TEAM + "/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andReturn();
@@ -424,7 +424,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     @Test
     void deletePlayerFromTeam0() throws Exception {
         final String ID_TEAM = "0";
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/teamplayer/" + ID_TEAM + "/player").with(httpBasic("7stijn7", "test"))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/teamplayer/" + ID_TEAM + "/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
                 .andReturn();
@@ -436,7 +436,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     @Test
     void deletePlayerFromTeamNegative() throws Exception {
         final String ID_TEAM = "-1";
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/teamplayer/" + ID_TEAM + "/player").with(httpBasic("7stijn7", "test"))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/teamplayer/" + ID_TEAM + "/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
                 .andReturn();
@@ -448,7 +448,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
     @Test
     void deletePlayerFromTeamNotFound() throws Exception {
         final String ID_TEAM = "90000";
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/teamplayer/" + ID_TEAM + "/player").with(httpBasic("7stijn7", "test"))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/teamplayer/" + ID_TEAM + "/player").with(httpBasic("7stijn7", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andReturn();
