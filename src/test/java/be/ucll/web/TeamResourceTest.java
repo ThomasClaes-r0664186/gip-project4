@@ -251,7 +251,7 @@ class TeamResourceTest extends AbstractIntegrationTest {
     @Test
     void deleteTeamOk()throws Exception{
         final String password = "test";
-Team testTeam = new Team.TeamBuilder()
+        Team testTeam = new Team.TeamBuilder()
                 .name("testTeam")
                 .build();
         Long teamId = teamRepository.save(testTeam).getId();

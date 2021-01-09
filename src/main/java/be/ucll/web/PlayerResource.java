@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
@@ -39,7 +41,9 @@ public class PlayerResource {
     @PreAuthorize("hasRole('MANAGER')")
     // De functie wordt aangeroepen door middel van een postrequest. met als input: JSON-object Player: { "leagueName" : "7Stijn7" }
     public ResponseEntity<Player> createPlayer(@RequestBody PlayerDTO player) throws ParameterInvalidException, NotFoundException, AlreadyExistsException {
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        System.out.println(currentPrincipalName.toString());
         // check of alles ingevult is.
         if (player.getLeagueName() == null || player.getLeagueName().trim().isEmpty()
                 || player.getFirstName() == null || player.getFirstName().trim().isEmpty()
@@ -73,7 +77,12 @@ public class PlayerResource {
 
     // player Updaten
     @PutMapping("{id}")
-    public PlayerDTO updatePlayer(@PathVariable("id") Long id, @RequestBody PlayerDTO playerDTO) throws HttpClientErrorException, ParameterInvalidException, NotFoundException, AlreadyExistsException {
+    public PlayerDTO updatePlayer(@PathVariable("id") Long id, @RequestBody PlayerDTO playerDTO) throws HttpClientErrorException, ParameterInvalidException, NotFoundException, AlreadyExistsException, UnauthorizedException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Player current = playerRepository.findPlayerByLeagueNameIgnoreCase(authentication.getName()).get();
+        if(current.getRole().toString()=="PLAYER" && current.getId() != id ){
+            throw new UnauthorizedException();
+        }
         // check of alles ingevult is.
         if (playerDTO.getLeagueName() == null || playerDTO.getLeagueName().trim().isEmpty()
                 || playerDTO.getFirstName() == null || playerDTO.getFirstName().trim().isEmpty()
@@ -125,7 +134,6 @@ public class PlayerResource {
 
     @GetMapping("{id}")
     public ResponseEntity<PlayerDTO> getPlayer(@PathVariable("id") Long id) throws NotFoundException, ParameterInvalidException {
-
         if (id <= 0) throw new ParameterInvalidException(id.toString());
 
         //controleren of speler in onze db bestaat
@@ -138,8 +146,12 @@ public class PlayerResource {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity deletePlayer(@PathVariable("id") Long id) throws NotFoundException, ParameterInvalidException {
-
+    public ResponseEntity deletePlayer(@PathVariable("id") Long id) throws NotFoundException, ParameterInvalidException, UnauthorizedException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Player current = playerRepository.findPlayerByLeagueNameIgnoreCase(authentication.getName()).get();
+        if(current.getRole().toString()=="PLAYER"){
+            throw new UnauthorizedException();
+        }
         if (id <= 0) throw new ParameterInvalidException(id.toString());
 
         //We gaan controleren of de speler waarvan de leagueName gegeven is, of deze wel bestaat in onze db
@@ -160,5 +172,6 @@ public class PlayerResource {
             throw new AlreadyExistsException(leagueName);
         }
     }
+
 
 }

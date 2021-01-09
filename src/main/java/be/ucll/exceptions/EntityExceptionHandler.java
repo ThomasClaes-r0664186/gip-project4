@@ -41,4 +41,9 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity ParameterInvalidException(TooManyActivePlayersException exception){
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
     }
+    @ExceptionHandler(UnauthorizedException .class)
+    public ResponseEntity UnauthorizedException(UnauthorizedException exception){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
+    }
+
 }
