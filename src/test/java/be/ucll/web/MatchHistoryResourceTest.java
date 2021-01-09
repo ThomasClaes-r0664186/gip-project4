@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -57,25 +58,30 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
     @Autowired
     private TeamPlayerRepository teamPlayerRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     private Long testTeamId;
     private Long testTeam2Id;
 
 
-    private Long testPvppownersId;
-    private Long testDragoriusId;
-    private Long testDorriShokouhId;
-    private Long testTwinniesDadId;
-    private Long testXellaniaId;
-    private Long testHylloiId;
-    private Long testMiguelin8Id;
-    private Long testAnagumaInuId;
-    private Long testMarcoilfusoId;
+    private Player testPvppowners;
+    private Player testDragorius;
+    private Player testDorriShokouh;
+    private Player testTwinniesDad;
+    private Player testXellania;
+    private Player testHylloi;
+    private Player testMiguelin8;
+    private Player testAnagumaInu;
+    private Player testMarcoilfuso;
 
     private Long testMatch1Id;
     private Long testMatch2Id;
 
     @BeforeEach
     void setUp() throws ParseException {
+
+        passwordEncoder = new BCryptPasswordEncoder();
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).apply(springSecurity()).build();
 
@@ -96,81 +102,81 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
                 .role(Role.PLAYER)
-                .password("test")
+                .password(passwordEncoder.encode("test"))
                 .build();
-        testPvppownersId = playerRepository.save(playerPvppowners).getId();
+        testPvppowners = playerRepository.save(playerPvppowners);
 
         Player playerDragorius = new Player.PlayerBuilder()
                 .firstName("Charles")
                 .lastName("Rubens")
                 .leagueName("Dragorius")
                 .role(Role.PLAYER)
-                .password("test")
+                .password(passwordEncoder.encode("test"))
                 .build();
-        testDragoriusId = playerRepository.save(playerDragorius).getId();
+        testDragorius = playerRepository.save(playerDragorius);
 
         Player playerDorriShokouh = new Player.PlayerBuilder()
                 .firstName("Marie")
                 .lastName("Lansier")
                 .leagueName("DorriShokouh")
                 .role(Role.PLAYER)
-                .password("test")
+                .password(passwordEncoder.encode("test"))
                 .build();
-        testDorriShokouhId = playerRepository.save(playerDorriShokouh).getId();
+        testDorriShokouh = playerRepository.save(playerDorriShokouh);
 
         Player playerTwinniesDad = new Player.PlayerBuilder()
                 .firstName("Fries")
                 .lastName("Londaz")
                 .leagueName("TwinniesDad")
                 .role(Role.PLAYER)
-                .password("test")
+                .password(passwordEncoder.encode("test"))
                 .build();
-        testTwinniesDadId = playerRepository.save(playerTwinniesDad).getId();
+        testTwinniesDad = playerRepository.save(playerTwinniesDad);
 
         Player playerXellania = new Player.PlayerBuilder()
                 .firstName("Frade")
                 .lastName("Loeqd")
                 .leagueName("Xellania")
                 .role(Role.PLAYER)
-                .password("test")
+                .password(passwordEncoder.encode("test"))
                 .build();
-        testXellaniaId = playerRepository.save(playerXellania).getId();
+        testXellania = playerRepository.save(playerXellania);
 
         Player playerHylloi = new Player.PlayerBuilder()
                 .firstName("Feop")
                 .lastName("Loi")
                 .leagueName("hylloi")
                 .role(Role.PLAYER)
-                .password("test")
+                .password(passwordEncoder.encode("test"))
                 .build();
-        testHylloiId = playerRepository.save(playerHylloi).getId();
+        testHylloi = playerRepository.save(playerHylloi);
 
         Player playerMiguelin8 = new Player.PlayerBuilder()
                 .firstName("Geoe")
                 .lastName("Maezz")
                 .leagueName("miguelin8")
                 .role(Role.PLAYER)
-                .password("test")
+                .password(passwordEncoder.encode("test"))
                 .build();
-        testMiguelin8Id = playerRepository.save(playerMiguelin8).getId();
+        testMiguelin8 = playerRepository.save(playerMiguelin8);
 
         Player playerAnagumaInu = new Player.PlayerBuilder()
                 .firstName("anna")
                 .lastName("Iuna")
                 .leagueName("AnagumaInu")
                 .role(Role.PLAYER)
-                .password("test")
+                .password(passwordEncoder.encode("test"))
                 .build();
-        testAnagumaInuId = playerRepository.save(playerAnagumaInu).getId();
+        testAnagumaInu = playerRepository.save(playerAnagumaInu);
 
         Player playerMarcoilfuso = new Player.PlayerBuilder()
                 .firstName("Marco")
                 .lastName("Fusoliner")
                 .leagueName("Marcoilfuso")
                 .role(Role.PLAYER)
-                .password("test")
+                .password(passwordEncoder.encode("test"))
                 .build();
-        testMarcoilfusoId = playerRepository.save(playerMarcoilfuso).getId();
+        testMarcoilfuso = playerRepository.save(playerMarcoilfuso);
 
 
 
@@ -285,9 +291,9 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
 
     @Test
     void getMatchHistoryAllOk() throws Exception {
-
+        final String password = "test";
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
-                .with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -296,9 +302,10 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
     @Test
     void getMatchHistoryFilterDateOk() throws Exception {
         final String DATE = "20-12-2020";
-
+        final String password = "test";
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
-                .param("date", DATE).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+                .param("date", DATE)
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -314,9 +321,11 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
     @Test
     void getMatchHistoryFilterDateInvalid() throws Exception {
         final String DATE = "*";
+        final String password = "test";
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
-                .param("date", DATE).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+                .param("date", DATE)
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -327,9 +336,11 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
     @Test
     void getMatchHistoryFilterDateNotFound() throws Exception {
         final String DATE = "03-05-2016";
+        final String password = "test";
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
-                .param("date", DATE).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+                .param("date", DATE)
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -340,9 +351,11 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
     @Test
     void getMatchHistoryFilterTeamIdOk() throws Exception {
         final String TEAM = testTeamId.toString();
+        final String password = "test";
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
-                .param("teamId", TEAM).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+                .param("teamId", TEAM)
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -356,9 +369,11 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
     @Test
     void getMatchHistoryFilterTeamIdInvalid() throws Exception {
         final String TEAM = "*";
+        final String password = "test";
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
-                .param("teamId", TEAM).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+                .param("teamId", TEAM)
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
 
@@ -367,9 +382,11 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
     @Test
     void getMatchHistoryFilterTeamIdNotFound() throws Exception {
         final String TEAM = "925";
+        final String password = "test";
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
-                .param("teamId", TEAM).with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+                .param("teamId", TEAM)
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -381,10 +398,11 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
 
     @Test
     void getIndividuallyMatchHistoryAllOk() throws Exception {
-        final String PLAYER_ID = testPvppownersId.toString();
+        final String PLAYER_ID = testPvppowners.getId().toString();
+        final String password = "test";
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player")
-                .with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isOk())
                 .andReturn();
     }
@@ -392,8 +410,10 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
     @Test
     void getIndividuallyMatchHistoryALLPlayerNotFound() throws Exception {
         final String PLAYER_ID = "52869";
+        final String password = "test";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC")))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player")
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -405,9 +425,11 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
     @Test
     void getIndividuallyMatchHistoryFilterMatchIdOk() throws Exception {
         final String MATCH_ID = testMatch1Id.toString();
-        final String PLAYER_ID = testPvppownersId.toString();
+        final String PLAYER_ID = testPvppowners.getId().toString();
+        final String password = "test";
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player")
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .param("matchId", MATCH_ID))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -422,9 +444,12 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
     @Test
     void getIndividuallyMatchHistoryFilterMatchIdInvalid() throws Exception {
         final String MATCH_ID = "*";
-        final String PLAYER_ID = testPvppownersId.toString();
+        final String PLAYER_ID = testPvppowners.getId().toString();
+        final String password = "test";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))                .param("matchId", MATCH_ID))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player")
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
+                .param("matchId", MATCH_ID))
                 .andExpect(status().isBadRequest())
                 .andReturn();
 
@@ -433,9 +458,11 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
     @Test
     void getIndividuallyMatchHistoryFilterMatchIdNotFound() throws Exception {
         final String MATCH_ID = "9569";
-        final String PLAYER_ID = testPvppownersId.toString();
+        final String PLAYER_ID = testPvppowners.getId().toString();
+        final String password = "test";
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID  + "/player").with(httpBasic("zazoeke000", "$2a$10$Km8ysr1THJzH4PdP.cnJHu4lkV4SN0lE0gX4NPDz8xqzjfaE3q4aC"))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID  + "/player")
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
                 .param("matchId", MATCH_ID))
                 .andExpect(status().isNotFound())
                 .andReturn();
