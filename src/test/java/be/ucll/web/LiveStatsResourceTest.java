@@ -58,7 +58,7 @@ public class LiveStatsResourceTest extends AbstractIntegrationTest {
     @Test
     void getLiveStatsTeamIdNegative() throws Exception {
 
-        final String TEAM_ID = "0";
+        final String TEAM_ID = "-1";
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/liveStats/" + TEAM_ID))
                 .andExpect(status().isForbidden())
