@@ -1,117 +1,124 @@
 package be.ucll.service.models.individuallyMatch;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
 
 public class ParticipantFrames {
 
     @JsonProperty("1")
-    private One one;
+    private Participant participant;
 
     @JsonProperty("2")
-    private Two two;
+    private Participant two;
 
     @JsonProperty("3")
-    private Three three;
+    private Participant three;
 
     @JsonProperty("4")
-    private Four four;
+    private Participant four;
 
     @JsonProperty("5")
-    private Five five;
+    private Participant five;
 
     @JsonProperty("6")
-    private Six six;
+    private Participant six;
 
     @JsonProperty("7")
-    private Seven seven;
+    private Participant seven;
 
     @JsonProperty("8")
-    private Eight eight;
+    private Participant eight;
 
     @JsonProperty("9")
-    private Nine nine;
+    private Participant nine;
 
     @JsonProperty("10")
-    private Ten ten;
+    private Participant ten;
 
-    public One getOne() {
-        return one;
+    public Participant getOne() {
+        return participant;
     }
 
-    public void setOne(One one) {
-        this.one = one;
+    public void setOne(Participant participant) {
+        this.participant = participant;
     }
 
-    public Two getTwo() {
+    public Participant getParticipant() {
+        return participant;
+    }
+
+    public void setParticipant(Participant participant) {
+        this.participant = participant;
+    }
+
+    public Participant getTwo() {
         return two;
     }
 
-    public void setTwo(Two two) {
+    public void setTwo(Participant two) {
         this.two = two;
     }
 
-    public Three getThree() {
+    public Participant getThree() {
         return three;
     }
 
-    public void setThree(Three three) {
+    public void setThree(Participant three) {
         this.three = three;
     }
 
-    public Four getFour() {
+    public Participant getFour() {
         return four;
     }
 
-    public void setFour(Four four) {
+    public void setFour(Participant four) {
         this.four = four;
     }
 
-    public Five getFive() {
+    public Participant getFive() {
         return five;
     }
 
-    public void setFive(Five five) {
+    public void setFive(Participant five) {
         this.five = five;
     }
 
-    public Six getSix() {
+    public Participant getSix() {
         return six;
     }
 
-    public void setSix(Six six) {
+    public void setSix(Participant six) {
         this.six = six;
     }
 
-    public Seven getSeven() {
+    public Participant getSeven() {
         return seven;
     }
 
-    public void setSeven(Seven seven) {
+    public void setSeven(Participant seven) {
         this.seven = seven;
     }
 
-    public Eight getEight() {
+    public Participant getEight() {
         return eight;
     }
 
-    public void setEight(Eight eight) {
+    public void setEight(Participant eight) {
         this.eight = eight;
     }
 
-    public Nine getNine() {
+    public Participant getNine() {
         return nine;
     }
 
-    public void setNine(Nine nine) {
+    public void setNine(Participant nine) {
         this.nine = nine;
     }
 
-    public Ten getTen() {
+    public Participant getTen() {
         return ten;
     }
 
-    public void setTen(Ten ten) {
+    public void setTen(Participant ten) {
         this.ten = ten;
     }
 }

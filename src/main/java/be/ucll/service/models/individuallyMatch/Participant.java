@@ -2,8 +2,8 @@ package be.ucll.service.models.individuallyMatch;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 
-@JsonRootName(value = "3")
-public class Three {
+@JsonRootName(value = "1")
+public class Participant {
 
     private Long participantId;
     private Long currentGold;
