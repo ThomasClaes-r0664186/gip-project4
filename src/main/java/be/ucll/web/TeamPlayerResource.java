@@ -14,6 +14,7 @@ import be.ucll.models.Team;
 import be.ucll.models.TeamPlayer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public class TeamPlayerResource {
     }
 
     @PostMapping("/{teamId}/team/{playerId}/player")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<TeamPlayerDTO> addPlayerToTeam(@PathVariable("teamId") Long teamId, @PathVariable("playerId") Long playerId) throws TooManyActivePlayersException, NotFoundException, AlreadyExistsException, ParameterInvalidException {
         // TODO: geen twee dezelfde spelers aan team toekennnen, Max 5 main spelers
         if (teamId <= 0) throw new ParameterInvalidException(teamId.toString());
@@ -61,6 +63,7 @@ public class TeamPlayerResource {
 
 
     @GetMapping("/{teamId}/team")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<List<PlayerDTO>> getPlayersFromTeam(@PathVariable("teamId") Long teamId) throws NotFoundException, ParameterInvalidException {
 
         if (teamId <= 0) throw new ParameterInvalidException(teamId.toString());
@@ -85,6 +88,7 @@ public class TeamPlayerResource {
     }
 
     @PutMapping("/{teamId}/team/{playerId}/player")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<TeamPlayerDTO> makePlayerActive(@PathVariable("teamId") Long teamId, @PathVariable("playerId") Long playerId, @RequestParam("isActive") boolean isActive) throws NotFoundException, TooManyActivePlayersException, ParameterInvalidException {
 
         if (playerId <= 0) throw new ParameterInvalidException(playerId.toString());
@@ -113,6 +117,7 @@ public class TeamPlayerResource {
 
 
     @DeleteMapping("/{playerId}/player")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity deletePlayerFromTeam(@PathVariable("playerId") Long playerId) throws NotFoundException, ParameterInvalidException {
 
         if (playerId <= 0) throw new ParameterInvalidException(playerId.toString());

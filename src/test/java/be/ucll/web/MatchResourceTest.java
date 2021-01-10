@@ -395,7 +395,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
