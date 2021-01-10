@@ -541,7 +541,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.with(httpBasic(playerWannes.getLeagueName(), PASSWORD))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isForbidden())
+				.andExpect(status().isConflict())
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();

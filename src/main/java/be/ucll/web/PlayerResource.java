@@ -71,7 +71,7 @@ public class PlayerResource {
             return ResponseEntity.status(HttpStatus.CREATED).body(newPlayer);
         }
 
-        throw new NotFoundException(player.getLeagueName()); 
+        throw new NotFoundException(player.getLeagueName());
     }
 
     @ApiOperation("Change the player's data")
