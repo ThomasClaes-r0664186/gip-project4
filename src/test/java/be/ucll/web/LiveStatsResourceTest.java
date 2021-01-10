@@ -132,6 +132,8 @@ public class LiveStatsResourceTest extends AbstractIntegrationTest {
                 .summonerID("1xXnvDRMw7EtYUfyqVVE4axhW-TywmiIfVVIZ72dOd92u08")
                 .accountId("b8PgZkOcjRUx7oiHgkD_BhJJ7B3rIGOwMN_1crvtdep39KA")
                 .puuID("saaENlT6jyW8dyAS3nOyk8SRXQjXs7qubys0Pls06P9Dk8hVgGOVgntYxAQilz_OxlJbQBL-0Ay5rw")
+                .password("test")
+                .role(Role.PLAYER)
                 .build();
 
         Team team = new Team.TeamBuilder()
