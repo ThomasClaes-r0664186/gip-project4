@@ -1,11 +1,5 @@
 package be.ucll.dto;
 
-//TODO setters not implemented in Player
-
-//TODO add firstname and lastname to playerDTO
-
-// Deze DTO werd oorsponkelijk gebruikt omdat sommige velden overbodig waren. Dit moet nog bekeken worden of deze DTO nog nuttig is.
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Column;
@@ -20,6 +14,10 @@ public class PlayerDTO {
         this.leagueName = leagueName;
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+    public PlayerDTO() {
+
     }
 
 

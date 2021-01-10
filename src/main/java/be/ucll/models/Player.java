@@ -2,7 +2,6 @@ package be.ucll.models;
 
 import javax.persistence.*;
 
-//TODO setters not implemented in Player
 @Entity
 @Table(name = "player", schema= "liquibase")
 public class Player {
@@ -23,7 +22,10 @@ public class Player {
     private String firstName;
     @Column(name = "last_name")
     private String lastName;
-
+    @Column(name="password")
+    private String password;
+    @Column(name="role")
+    private Role role;
 
     private Player(PlayerBuilder playerBuilder){
         setId(playerBuilder.id);
@@ -33,6 +35,8 @@ public class Player {
         setLastName(playerBuilder.lastName);
         setPuuID(playerBuilder.puuID);
         setSummonerID(playerBuilder.summonerID);
+        password = playerBuilder.password;
+        role = playerBuilder.role;
     }
 
     public Player(){
@@ -95,6 +99,21 @@ public class Player {
         this.lastName = lastName;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Role getRole(){return this.role;}
+
+    public void setRole(Role role){
+        this.role = role;
+    }
+
+
     public static final class PlayerBuilder {
         private Long id;
         private String accountId;
@@ -103,6 +122,8 @@ public class Player {
         private String lastName;
         private String summonerID;
         private String puuID;
+        private String password;
+        private Role role;
 
         public PlayerBuilder() {
         }
@@ -119,6 +140,8 @@ public class Player {
             this.lastName = copy.lastName;
             this.summonerID = copy.summonerID;
             this.puuID = copy.puuID;
+            this.password = copy.password;
+            this.role = copy.role;
         }
 
         public PlayerBuilder id(Long id) {
@@ -153,6 +176,16 @@ public class Player {
 
         public PlayerBuilder puuID(String puuID) {
             this.puuID = puuID;
+            return this;
+        }
+
+        public PlayerBuilder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public PlayerBuilder role(Role role) {
+            this.role = role;
             return this;
         }
 

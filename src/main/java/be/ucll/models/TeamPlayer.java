@@ -1,10 +1,7 @@
 package be.ucll.models;
 
-import org.hibernate.cfg.NotYetImplementedException;
-
 import javax.persistence.*;
 
-//TODO: implement setter for TeamPLayer
 @Entity
 @Table(name= "team_player", schema= "liquibase" )
 public class TeamPlayer {
@@ -71,16 +68,15 @@ public class TeamPlayer {
         private Player player;
         private Boolean isSelected;
 
-        private Builder(TeamPlayer copy) {
+        public Builder(TeamPlayer copy) {
             this.id = copy.getId();
             this.team = copy.getTeam();
             this.isSelected = copy.isSelected();
             this.player = copy.getPlayer();
         }
 
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
+        public Builder() {
+
         }
 
         public Builder team(Team team) {
