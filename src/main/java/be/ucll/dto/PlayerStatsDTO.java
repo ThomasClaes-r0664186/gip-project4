@@ -4,7 +4,6 @@ public class PlayerStatsDTO {
 
     private String summonerName;
     private Long playerId;
-    // mss nog aangeven in welk team hij zat
 
     public PlayerStatsDTO(String summonerName, Long playerId) {
         this.summonerName = summonerName;

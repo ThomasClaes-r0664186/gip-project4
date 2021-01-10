@@ -3,7 +3,6 @@ package be.ucll.models;
 import javax.persistence.*;
 import java.util.Date;
 
-//Todo setters for match
 @Entity
 @Table(name ="match", schema = "liquibase")
 public class Match {

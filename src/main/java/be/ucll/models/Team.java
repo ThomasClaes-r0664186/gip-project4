@@ -4,7 +4,6 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: implement setter for Team
 @Entity
 @Table(name = "team", schema = "liquibase")
 public class Team {
