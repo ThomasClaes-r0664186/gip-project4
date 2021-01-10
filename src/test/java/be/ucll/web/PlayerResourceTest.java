@@ -464,7 +464,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.firstName("Stijn")
 				.lastName("Verbieren")
 				.leagueName("7Stijn7")
-				.role(Role.PLAYER)
+				.role(Role.MANAGER)
 				.password(passwordEncoder.encode(PASSWORD))
 				.build();
 		player = playerRepository.save(player);
@@ -492,7 +492,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.firstName("Jarno")
 				.lastName("De Smet")
 				.leagueName("Ardes")
-				.role(Role.PLAYER)
+				.role(Role.MANAGER)
 				.password(passwordEncoder.encode(PASSWORD))
 				.build();
 		player = playerRepository.save(player);
@@ -541,7 +541,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.with(httpBasic(playerWannes.getLeagueName(), PASSWORD))
 				.content(toJson(playerDTO))
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isConflict())
+				.andExpect(status().isForbidden())
 				.andReturn();
 
 		String responsMessage = mvcResult.getResponse().getContentAsString();
@@ -557,7 +557,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.firstName("Stijn")
 				.lastName("Verbieren")
 				.leagueName("Ardes")
-				.role(Role.PLAYER)
+				.role(Role.MANAGER)
 				.password(passwordEncoder.encode(PASSWORD))
 				.build();
 		player = playerRepository.save(player);
@@ -585,7 +585,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.firstName("De Smet")
 				.lastName("Jarno")
 				.leagueName("Ardes")
-				.role(Role.PLAYER)
+				.role(Role.MANAGER)
 				.password(passwordEncoder.encode(PASSWORD))
 				.build();
 		player = playerRepository.save(player);
@@ -613,7 +613,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.firstName("De Smet")
 				.lastName("Jarno")
 				.leagueName("Ardes")
-				.role(Role.PLAYER)
+				.role(Role.MANAGER)
 				.password(passwordEncoder.encode(PASSWORD))
 				.build();
 		player = playerRepository.save(player);
@@ -641,7 +641,7 @@ public class PlayerResourceTest extends AbstractIntegrationTest {
 				.firstName("Ardes")
 				.lastName("Jarno")
 				.leagueName("De Smet")
-				.role(Role.PLAYER)
+				.role(Role.MANAGER)
 				.password(passwordEncoder.encode(PASSWORD))
 				.build();
 		player = playerRepository.save(player);
