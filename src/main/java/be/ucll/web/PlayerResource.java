@@ -19,7 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
-//TODO url shouldn't contain verbs => you can deduct what is going to happen from POST values
 
 @RestController
 @RequestMapping("player")
@@ -69,11 +68,10 @@ public class PlayerResource {
                     .role(Role.PLAYER)
                     .build());
             // Nu returnen we status: 201 created. Omdat onze player succesvol is aangemaakt.
-            // Ook geven we als respons-body een PlayerDTO mee. TODO: Een aparte playerDTO is in de toekomst misschien niet meer nodig omdat alle velden van player kunnen gebruikt worden.
             return ResponseEntity.status(HttpStatus.CREATED).body(newPlayer);
         }
-        // Indien ook de summonerService geen geldige summoner terug krijgt als response. gooien we een exception dat de spelersnaam ongeldig is.
-        throw new NotFoundException(player.getLeagueName()); //todo: check what's wrong
+
+        throw new NotFoundException(player.getLeagueName()); 
     }
 
     @ApiOperation("Change the player's data")
