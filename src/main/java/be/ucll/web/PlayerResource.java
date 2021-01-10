@@ -3,13 +3,19 @@ package be.ucll.web;
 import be.ucll.dto.PlayerDTO;
 import be.ucll.models.Player;
 import be.ucll.dao.PlayerRepository;
+import be.ucll.models.Role;
 import be.ucll.service.SummonerService;
 import be.ucll.service.models.Summoner;
 import be.ucll.exceptions.*;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -23,6 +29,9 @@ public class PlayerResource {
     private PlayerRepository playerRepository;
 
     @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
     public PlayerResource(SummonerService summonerService, PlayerRepository playerRepository) {
         this.summonerService = summonerService;
         this.playerRepository = playerRepository;
@@ -30,9 +39,12 @@ public class PlayerResource {
 
     @ApiOperation("De Summoner/Speler van league of legends creëren) ")
     @PostMapping
+    @PreAuthorize("hasRole('MANAGER')")
     // De functie wordt aangeroepen door middel van een postrequest. met als input: JSON-object Player: { "leagueName" : "7Stijn7" }
     public ResponseEntity<Player> createPlayer(@RequestBody PlayerDTO player) throws ParameterInvalidException, NotFoundException, AlreadyExistsException {
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        System.out.println(currentPrincipalName.toString());
         // check of alles ingevult is.
         if (player.getLeagueName() == null || player.getLeagueName().trim().isEmpty()
                 || player.getFirstName() == null || player.getFirstName().trim().isEmpty()
@@ -53,6 +65,8 @@ public class PlayerResource {
                     .lastName(player.getLastName())
                     .summonerID(summoner.getId())
                     .puuID(summoner.getPuuid())
+                    .password(passwordEncoder.encode("test"))
+                    .role(Role.PLAYER)
                     .build());
             // Nu returnen we status: 201 created. Omdat onze player succesvol is aangemaakt.
             // Ook geven we als respons-body een PlayerDTO mee. TODO: Een aparte playerDTO is in de toekomst misschien niet meer nodig omdat alle velden van player kunnen gebruikt worden.
@@ -62,9 +76,15 @@ public class PlayerResource {
         throw new NotFoundException(player.getLeagueName()); //todo: check what's wrong
     }
 
+    @ApiOperation("Change the player's data")
     // player Updaten
     @PutMapping("{id}")
-    public PlayerDTO updatePlayer(@PathVariable("id") Long id, @RequestBody PlayerDTO playerDTO) throws HttpClientErrorException, ParameterInvalidException, NotFoundException, AlreadyExistsException {
+    public PlayerDTO updatePlayer(@ApiParam(value = "The id of the player where you want to change his data", example = "18", required = true) @PathVariable("id") Long id, @RequestBody PlayerDTO playerDTO) throws HttpClientErrorException, ParameterInvalidException, NotFoundException, AlreadyExistsException, UnauthorizedException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Player current = playerRepository.findPlayerByLeagueNameIgnoreCase(authentication.getName()).get();
+        if(current.getRole().toString()=="PLAYER" && current.getId() != id ){
+            throw new UnauthorizedException();
+        }
         // check of alles ingevult is.
         if (playerDTO.getLeagueName() == null || playerDTO.getLeagueName().trim().isEmpty()
                 || playerDTO.getFirstName() == null || playerDTO.getFirstName().trim().isEmpty()
@@ -114,9 +134,9 @@ public class PlayerResource {
         throw new NotFoundException(id.toString());
     }
 
+    @ApiOperation("Get the data from this player")
     @GetMapping("{id}")
-    public ResponseEntity<PlayerDTO> getPlayer(@PathVariable("id") Long id) throws NotFoundException, ParameterInvalidException {
-
+    public ResponseEntity<PlayerDTO> getPlayer(@ApiParam(value = "The id of the player where you want to get his data", example = "18", required = true) @PathVariable("id") Long id) throws NotFoundException, ParameterInvalidException {
         if (id <= 0) throw new ParameterInvalidException(id.toString());
 
         //controleren of speler in onze db bestaat
@@ -128,9 +148,14 @@ public class PlayerResource {
         throw new NotFoundException(id.toString());
     }
 
+    @ApiOperation("Delete a player")
     @DeleteMapping("{id}")
-    public ResponseEntity deletePlayer(@PathVariable("id") Long id) throws NotFoundException, ParameterInvalidException {
-
+    public ResponseEntity deletePlayer(@ApiParam(value = "The id of the player where you want to delete him", example = "18", required = true) @PathVariable("id") Long id) throws NotFoundException, ParameterInvalidException, UnauthorizedException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Player current = playerRepository.findPlayerByLeagueNameIgnoreCase(authentication.getName()).get();
+        if(current.getRole().toString()=="PLAYER"){
+            throw new UnauthorizedException();
+        }
         if (id <= 0) throw new ParameterInvalidException(id.toString());
 
         //We gaan controleren of de speler waarvan de leagueName gegeven is, of deze wel bestaat in onze db
@@ -151,5 +176,6 @@ public class PlayerResource {
             throw new AlreadyExistsException(leagueName);
         }
     }
+
 
 }
