@@ -68,7 +68,7 @@ public class LiveStatsResource {
             System.out.println("found player "+player.getSummonerID()); //debug
             Optional<CurrentGameInfo> currentGameInfo = Optional.empty();
             try {
-                currentGameInfo= liveStatsService.getActiveGames(player.getSummonerID()); //TODO geeft error
+                currentGameInfo= liveStatsService.getActiveGames(player.getSummonerID());
             }catch(Exception e){
 
             }

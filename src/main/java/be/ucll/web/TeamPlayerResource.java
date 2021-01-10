@@ -38,7 +38,7 @@ public class TeamPlayerResource {
     @PostMapping("/{teamId}/team/{playerId}/player")
     @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<TeamPlayerDTO> addPlayerToTeam(@PathVariable("teamId") Long teamId, @PathVariable("playerId") Long playerId) throws TooManyActivePlayersException, NotFoundException, AlreadyExistsException, ParameterInvalidException {
-        // TODO: geen twee dezelfde spelers aan team toekennnen, Max 5 main spelers
+
         if (teamId <= 0) throw new ParameterInvalidException(teamId.toString());
 
         if (playerId <= 0) throw new ParameterInvalidException(playerId.toString());

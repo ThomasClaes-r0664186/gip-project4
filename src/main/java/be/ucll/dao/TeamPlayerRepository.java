@@ -17,5 +17,4 @@ public interface TeamPlayerRepository extends JpaRepository<TeamPlayer, Long> {
     Optional<TeamPlayer> findTeamPlayerByPlayer(Player player);
 
     List<TeamPlayer> findTeamsByPlayer(Player individuallyPlayer);
-    //No extra's yet
 }

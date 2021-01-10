@@ -3,14 +3,14 @@ package be.ucll.service.models.match;
 
 public class Player {
 
-    public String currentPlatformId=null;
-    public String summonerName=null;
-    public String matchHistoryUri=null;
-    public String platformId=null;
-    public String currentAccountId=null;
-    public Long profileIcon=null;
-    public String summonerId=null;
-    public String accountId=null;
+    public String currentPlatformId;
+    public String summonerName;
+    public String matchHistoryUri;
+    public String platformId;
+    public String currentAccountId;
+    public Long profileIcon;
+    public String summonerId;
+    public String accountId;
 
     /**
      *

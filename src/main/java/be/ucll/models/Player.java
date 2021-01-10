@@ -2,7 +2,6 @@ package be.ucll.models;
 
 import javax.persistence.*;
 
-//TODO setters not implemented in Player
 @Entity
 @Table(name = "player", schema= "liquibase")
 public class Player {

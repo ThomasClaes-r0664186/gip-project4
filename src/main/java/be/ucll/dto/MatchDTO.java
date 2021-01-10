@@ -7,11 +7,6 @@ public class MatchDTO {
     private Long teamId;
     private String date;
 
-    /**
-     *
-     * @param teamId - Id van het team
-     * @param date - in formaat DD/MM/YYYY, wordt nadien geconverteerd naar Date Object
-     */
     public MatchDTO(Long teamId, String date) {
         this.teamId = teamId;
         this.date = date;

@@ -1,10 +1,7 @@
 package be.ucll.models;
 
-import org.hibernate.cfg.NotYetImplementedException;
-
 import javax.persistence.*;
 
-//TODO: implement setter for TeamPLayer
 @Entity
 @Table(name= "team_player", schema= "liquibase" )
 public class TeamPlayer {

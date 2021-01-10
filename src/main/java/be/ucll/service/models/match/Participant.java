@@ -9,16 +9,16 @@ import java.util.List;
 
 public class Participant {
 
-    private Long spell1Id=null;
-    private Long participantId=null;
-    private Timeline timeline=null;
-    private Long spell2Id=null;
-    private Long teamId=null;
-    private Stats stats=null;
-    private Long championId=null;
-    private String highestAchievedSeasonTier=null;
-    private List<Rune> runes=null;
-    private List<Mastery> masteries=null;
+    private Long spell1Id;
+    private Long participantId;
+    private Timeline timeline;
+    private Long spell2Id;
+    private Long teamId;
+    private Stats stats;
+    private Long championId;
+    private String highestAchievedSeasonTier;
+    private List<Rune> runes;
+    private List<Mastery> masteries;
 
     /**
      *
@@ -126,7 +126,7 @@ public class Participant {
         return highestAchievedSeasonTier;
     }
 
-    public void setHighestAchievedSeasonTier(String highestAchievedSeasonTier) throws ParameterInvalidException {
+    public void setHighestAchievedSeasonTier(String highestAchievedSeasonTier) {
         this.highestAchievedSeasonTier = highestAchievedSeasonTier;
     }
 }

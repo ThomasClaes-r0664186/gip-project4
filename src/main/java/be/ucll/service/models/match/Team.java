@@ -8,7 +8,7 @@ import java.util.List;
 public class Team {
 
     private Boolean firstDragon;
-    private List<Ban> bans = null;
+    private List<Ban> bans;
     private Boolean firstInhibitor;
     private String win;
     private Boolean firstRiftHerald;

@@ -13,10 +13,10 @@ public class CurrentGameInfo {
     private String gameMode;
     private String gameType;
     private int gameQueueConfigId;
-    private List<Participant> participants = null;
+    private List<Participant> participants;
     private Observers observers;
     private String platformId;
-    private List<BannedChampion> bannedChampions = null;
+    private List<BannedChampion> bannedChampions;
     private int gameStartTime;
     private int gameLength;
 

@@ -1,6 +1,5 @@
 package be.ucll.service.models;
 
-//TODO summoner setters not yet implemented
 // Het summoner object: afkomstig van de league of legends api.
 public class Summoner {
 
