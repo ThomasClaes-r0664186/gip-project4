@@ -366,7 +366,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         Long MATCH_ID = matchRepository.save(match).getId();
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/match/" + MATCH_ID))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/match/" + MATCH_ID).with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -391,7 +391,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         matchRepository.save(match);
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/match/" + MATCH_ID))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/match/" + MATCH_ID).with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -413,7 +413,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         matchRepository.save(match);
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/match/" + MATCH_ID))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/match/" + MATCH_ID).with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -434,7 +434,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         matchRepository.save(match);
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/match/" + MATCH_ID))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/match/" + MATCH_ID).with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
@@ -452,7 +452,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         matchRepository.save(match);
 
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/match/" + MATCH_ID))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/match/" + MATCH_ID).with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
