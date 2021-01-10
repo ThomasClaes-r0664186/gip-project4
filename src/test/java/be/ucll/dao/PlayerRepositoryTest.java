@@ -2,6 +2,7 @@ package be.ucll.dao;
 
 import be.ucll.AbstractIntegrationTest;
 import be.ucll.models.Player;
+import be.ucll.models.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,6 +23,8 @@ public class PlayerRepositoryTest extends AbstractIntegrationTest {
                 .firstName("Stijn")
                 .lastName("Verbieren")
                 .leagueName("7Stijn7")
+                .role(Role.PLAYER)
+                .password("test")
                 .accountId("b8PgZkOcjRUx7oiHgkD_BhJJ7B3rIGOwMN_1crvtdep39KA")
                 .puuID("saaENlT6jyW8dyAS3nOyk8SRXQjXs7qubys0Pls06P9Dk8hVgGOVgntYxAQilz_OxlJbQBL-0Ay5rw")
                 .summonerID("1xXnvDRMw7EtYUfyqVVE4axhW-TywmiIfVVIZ72dOd92u08")
@@ -35,6 +38,8 @@ public class PlayerRepositoryTest extends AbstractIntegrationTest {
         assertEquals(found.get().getLeagueName(), player7Stijn7.getLeagueName());
         assertEquals(found.get().getFirstName(), player7Stijn7.getFirstName());
         assertEquals(found.get().getLastName(), player7Stijn7.getLastName());
+        assertEquals(found.get().getRole(), player7Stijn7.getRole());
+        assertEquals(found.get().getPassword(), player7Stijn7.getPassword());
         assertEquals(found.get().getAccountId(), player7Stijn7.getAccountId());
         assertEquals(found.get().getSummonerID(), player7Stijn7.getSummonerID());
         assertEquals(found.get().getPuuID(), player7Stijn7.getPuuID());
@@ -47,6 +52,8 @@ public class PlayerRepositoryTest extends AbstractIntegrationTest {
                 .firstName("Stijn")
                 .lastName("Verbieren")
                 .leagueName("7Stijn7")
+                .role(Role.PLAYER)
+                .password("test")
                 .accountId("b8PgZkOcjRUx7oiHgkD_BhJJ7B3rIGOwMN_1crvtdep39KA")
                 .puuID("saaENlT6jyW8dyAS3nOyk8SRXQjXs7qubys0Pls06P9Dk8hVgGOVgntYxAQilz_OxlJbQBL-0Ay5rw")
                 .summonerID("1xXnvDRMw7EtYUfyqVVE4axhW-TywmiIfVVIZ72dOd92u08")
@@ -67,6 +74,8 @@ public class PlayerRepositoryTest extends AbstractIntegrationTest {
                 .firstName("Stijn")
                 .lastName("Verbieren")
                 .leagueName("7Stijn7")
+                .role(Role.PLAYER)
+                .password("test")
                 .accountId("b8PgZkOcjRUx7oiHgkD_BhJJ7B3rIGOwMN_1crvtdep39KA")
                 .puuID("saaENlT6jyW8dyAS3nOyk8SRXQjXs7qubys0Pls06P9Dk8hVgGOVgntYxAQilz_OxlJbQBL-0Ay5rw")
                 .summonerID("1xXnvDRMw7EtYUfyqVVE4axhW-TywmiIfVVIZ72dOd92u08")
@@ -80,6 +89,8 @@ public class PlayerRepositoryTest extends AbstractIntegrationTest {
         assertEquals(found.get().getLeagueName(), player7Stijn7.getLeagueName());
         assertEquals(found.get().getFirstName(), player7Stijn7.getFirstName());
         assertEquals(found.get().getLastName(), player7Stijn7.getLastName());
+        assertEquals(found.get().getRole(), player7Stijn7.getRole());
+        assertEquals(found.get().getPassword(), player7Stijn7.getPassword());
         assertEquals(found.get().getAccountId(), player7Stijn7.getAccountId());
         assertEquals(found.get().getSummonerID(), player7Stijn7.getSummonerID());
         assertEquals(found.get().getPuuID(), player7Stijn7.getPuuID());
@@ -92,6 +103,8 @@ public class PlayerRepositoryTest extends AbstractIntegrationTest {
                 .firstName("Stijn")
                 .lastName("Verbieren")
                 .leagueName("7Stijn7")
+                .role(Role.PLAYER)
+                .password("test")
                 .accountId("b8PgZkOcjRUx7oiHgkD_BhJJ7B3rIGOwMN_1crvtdep39KA")
                 .puuID("saaENlT6jyW8dyAS3nOyk8SRXQjXs7qubys0Pls06P9Dk8hVgGOVgntYxAQilz_OxlJbQBL-0Ay5rw")
                 .summonerID("1xXnvDRMw7EtYUfyqVVE4axhW-TywmiIfVVIZ72dOd92u08")
@@ -105,6 +118,8 @@ public class PlayerRepositoryTest extends AbstractIntegrationTest {
         assertEquals(found.get().getLeagueName(), player7Stijn7.getLeagueName());
         assertEquals(found.get().getFirstName(), player7Stijn7.getFirstName());
         assertEquals(found.get().getLastName(), player7Stijn7.getLastName());
+        assertEquals(found.get().getRole(), player7Stijn7.getRole());
+        assertEquals(found.get().getPassword(), player7Stijn7.getPassword());
         assertEquals(found.get().getAccountId(), player7Stijn7.getAccountId());
         assertEquals(found.get().getSummonerID(), player7Stijn7.getSummonerID());
         assertEquals(found.get().getPuuID(), player7Stijn7.getPuuID());

@@ -2,6 +2,7 @@ package be.ucll.dao;
 
 import be.ucll.AbstractIntegrationTest;
 import be.ucll.models.Player;
+import be.ucll.models.Role;
 import be.ucll.models.Team;
 import be.ucll.models.TeamPlayer;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,8 @@ public class TeamPlayerRepositoryTest extends AbstractIntegrationTest {
                 .firstName("Wannes")
                 .lastName(" Verschraegen")
                 .leagueName("WannesV")
+                .role(Role.PLAYER)
+                .password("test")
                 .puuID("1")
                 .summonerID("3")
                 .build();
@@ -53,6 +56,8 @@ public class TeamPlayerRepositoryTest extends AbstractIntegrationTest {
         assertEquals(found.get().getPlayer().getAccountId(), teamPlayerWannes.getPlayer().getAccountId());
         assertEquals(found.get().getPlayer().getFirstName(), teamPlayerWannes.getPlayer().getFirstName());
         assertEquals(found.get().getPlayer().getLastName(), teamPlayerWannes.getPlayer().getLastName());
+        assertEquals(found.get().getPlayer().getRole(), teamPlayerWannes.getPlayer().getRole());
+        assertEquals(found.get().getPlayer().getPassword(), teamPlayerWannes.getPlayer().getPassword());
         assertEquals(found.get().getPlayer().getPuuID(), teamPlayerWannes.getPlayer().getPuuID());
         assertEquals(found.get().getPlayer().getLeagueName(), teamPlayerWannes.getPlayer().getLeagueName());
         assertEquals(found.get().getPlayer().getSummonerID(), teamPlayerWannes.getPlayer().getSummonerID());
@@ -74,6 +79,8 @@ public class TeamPlayerRepositoryTest extends AbstractIntegrationTest {
                 .firstName("Wannes")
                 .lastName(" Verschraegen")
                 .leagueName("WannesV")
+                .role(Role.PLAYER)
+                .password("test")
                 .puuID("1")
                 .summonerID("3")
                 .build();
@@ -107,6 +114,8 @@ public class TeamPlayerRepositoryTest extends AbstractIntegrationTest {
                 .firstName("Wannes")
                 .lastName(" Verschraegen")
                 .leagueName("WannesV")
+                .role(Role.PLAYER)
+                .password("test")
                 .puuID("1")
                 .summonerID("3")
                 .build();
@@ -125,6 +134,8 @@ public class TeamPlayerRepositoryTest extends AbstractIntegrationTest {
         assertEquals(found.get(0).getPlayer().getAccountId(), teamPlayerWannes.getPlayer().getAccountId());
         assertEquals(found.get(0).getPlayer().getFirstName(), teamPlayerWannes.getPlayer().getFirstName());
         assertEquals(found.get(0).getPlayer().getLastName(), teamPlayerWannes.getPlayer().getLastName());
+        assertEquals(found.get(0).getPlayer().getRole(), teamPlayerWannes.getPlayer().getRole());
+        assertEquals(found.get(0).getPlayer().getPassword(), teamPlayerWannes.getPlayer().getPassword());
         assertEquals(found.get(0).getPlayer().getPuuID(), teamPlayerWannes.getPlayer().getPuuID());
         assertEquals(found.get(0).getPlayer().getLeagueName(), teamPlayerWannes.getPlayer().getLeagueName());
         assertEquals(found.get(0).getPlayer().getSummonerID(), teamPlayerWannes.getPlayer().getSummonerID());
@@ -146,6 +157,8 @@ public class TeamPlayerRepositoryTest extends AbstractIntegrationTest {
                 .firstName("Wannes")
                 .lastName(" Verschraegen")
                 .leagueName("WannesV")
+                .role(Role.PLAYER)
+                .password("test")
                 .puuID("1")
                 .summonerID("3")
                 .build();
@@ -164,6 +177,8 @@ public class TeamPlayerRepositoryTest extends AbstractIntegrationTest {
         assertEquals(found.get(0).getPlayer().getAccountId(), teamPlayerWannes.getPlayer().getAccountId());
         assertEquals(found.get(0).getPlayer().getFirstName(), teamPlayerWannes.getPlayer().getFirstName());
         assertEquals(found.get(0).getPlayer().getLastName(), teamPlayerWannes.getPlayer().getLastName());
+        assertEquals(found.get(0).getPlayer().getRole(), teamPlayerWannes.getPlayer().getRole());
+        assertEquals(found.get(0).getPlayer().getPassword(), teamPlayerWannes.getPlayer().getPassword());
         assertEquals(found.get(0).getPlayer().getPuuID(), teamPlayerWannes.getPlayer().getPuuID());
         assertEquals(found.get(0).getPlayer().getLeagueName(), teamPlayerWannes.getPlayer().getLeagueName());
         assertEquals(found.get(0).getPlayer().getSummonerID(), teamPlayerWannes.getPlayer().getSummonerID());
@@ -182,6 +197,8 @@ public class TeamPlayerRepositoryTest extends AbstractIntegrationTest {
                 .firstName("Wannes")
                 .lastName(" Verschraegen")
                 .leagueName("WannesV")
+                .role(Role.PLAYER)
+                .password("test")
                 .puuID("1")
                 .summonerID("3")
                 .build();
@@ -200,6 +217,8 @@ public class TeamPlayerRepositoryTest extends AbstractIntegrationTest {
         assertEquals(found.get().getPlayer().getAccountId(), teamPlayerWannes.getPlayer().getAccountId());
         assertEquals(found.get().getPlayer().getFirstName(), teamPlayerWannes.getPlayer().getFirstName());
         assertEquals(found.get().getPlayer().getLastName(), teamPlayerWannes.getPlayer().getLastName());
+        assertEquals(found.get().getPlayer().getRole(), teamPlayerWannes.getPlayer().getRole());
+        assertEquals(found.get().getPlayer().getPassword(), teamPlayerWannes.getPlayer().getPassword());
         assertEquals(found.get().getPlayer().getPuuID(), teamPlayerWannes.getPlayer().getPuuID());
         assertEquals(found.get().getPlayer().getLeagueName(), teamPlayerWannes.getPlayer().getLeagueName());
         assertEquals(found.get().getPlayer().getSummonerID(), teamPlayerWannes.getPlayer().getSummonerID());
@@ -218,6 +237,8 @@ public class TeamPlayerRepositoryTest extends AbstractIntegrationTest {
                 .firstName("Wannes")
                 .lastName(" Verschraegen")
                 .leagueName("WannesV")
+                .role(Role.PLAYER)
+                .password("test")
                 .puuID("1")
                 .summonerID("3")
                 .build();
@@ -236,6 +257,8 @@ public class TeamPlayerRepositoryTest extends AbstractIntegrationTest {
         assertEquals(found.get(0).getPlayer().getAccountId(), teamPlayerWannes.getPlayer().getAccountId());
         assertEquals(found.get(0).getPlayer().getFirstName(), teamPlayerWannes.getPlayer().getFirstName());
         assertEquals(found.get(0).getPlayer().getLastName(), teamPlayerWannes.getPlayer().getLastName());
+        assertEquals(found.get(0).getPlayer().getRole(), teamPlayerWannes.getPlayer().getRole());
+        assertEquals(found.get(0).getPlayer().getPassword(), teamPlayerWannes.getPlayer().getPassword());
         assertEquals(found.get(0).getPlayer().getPuuID(), teamPlayerWannes.getPlayer().getPuuID());
         assertEquals(found.get(0).getPlayer().getLeagueName(), teamPlayerWannes.getPlayer().getLeagueName());
         assertEquals(found.get(0).getPlayer().getSummonerID(), teamPlayerWannes.getPlayer().getSummonerID());
