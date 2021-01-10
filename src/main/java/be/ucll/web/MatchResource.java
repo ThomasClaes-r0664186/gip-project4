@@ -13,6 +13,7 @@ import liquibase.pro.packaged.M;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.swing.text.html.Option;
@@ -39,6 +40,7 @@ public class MatchResource {
             description = "Using a teamname and a date (DD/MM/YYYY), create a new match"
     )
     @PostMapping
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<Match> createMatch(@RequestBody MatchDTO matchDTO) throws ParameterInvalidException, AlreadyExistsException, NotFoundException {
         if (matchDTO.getDate() == null || matchDTO.getTeamId() == null) throw new ParameterInvalidException();
         if (matchDTO.getTeamId() <= 0) throw new ParameterInvalidException(matchDTO.getTeamId().toString());
@@ -82,6 +84,7 @@ public class MatchResource {
             description = "use a match id to retrieve the full match information"
     )
     @GetMapping("{matchId}")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<Match> getMatch(@PathVariable("matchId") Long matchId) throws NotFoundException, ParameterInvalidException {
         return ResponseEntity.status(HttpStatus.OK).body(getMatchFromId(matchId));
     }
@@ -91,6 +94,7 @@ public class MatchResource {
             description = "Update an already created match"
     )
     @PutMapping("{matchId}")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<Match> updateMatch(@PathVariable("matchId") Long matchId,@RequestBody MatchDTO matchDTO) throws NotFoundException, ParameterInvalidException, AlreadyExistsException {
         if (matchDTO.getDate() == null || matchDTO.getTeamId() == null) throw new ParameterInvalidException();
         if (matchDTO.getTeamId() <= 0) throw new ParameterInvalidException(matchDTO.getTeamId().toString());
@@ -121,6 +125,7 @@ public class MatchResource {
             description = "Delete a specific match by id"
     )
     @DeleteMapping("{matchId}")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity deleteMatch(@PathVariable("matchId") Long matchId) throws ParameterInvalidException, NotFoundException {
         matchRepository.delete(getMatchFromId(matchId));
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -130,6 +135,7 @@ public class MatchResource {
             description = "Updates the isWinner status for this match"
     )
     @PutMapping("{matchId}/matchId/{isWinner}/isWinner")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<Match> setWinnerValue(@PathVariable("matchId") Long matchId,@PathVariable("isWinner") Boolean isWinner) throws ParameterInvalidException, NotFoundException {
         Match match = getMatchFromId(matchId);
         if(!(isWinner instanceof Boolean)){

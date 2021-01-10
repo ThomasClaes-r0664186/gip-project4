@@ -64,7 +64,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -105,14 +105,161 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         assertEquals("testTeam", createdMatch.getTeam1().getName());
 
     }
+    @Test
+    void createMatchNotAuthorized() throws Exception {
+        Team team = new  Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        Long teamId = teamRepository.save(team).getId();
 
+        // today
+        Calendar date = new GregorianCalendar();
+        // reset hour, minutes, seconds and millis
+        date.set(Calendar.HOUR_OF_DAY, 0);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.SECOND, 0);
+        date.set(Calendar.MILLISECOND, 0);
+
+        // next day
+        date.add(Calendar.DAY_OF_MONTH, 1);
+
+        Date dateMatch = date.getTime();
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        MatchDTO matchDTO = new MatchDTO(teamId, simpleDateFormat.format(dateMatch));
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/match")
+                .content(toJson(matchDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+
+    }
+    @Test
+    void createMatchBadPassword() throws Exception {
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.MANAGER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
+        Team team = new  Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        Long teamId = teamRepository.save(team).getId();
+
+        // today
+        Calendar date = new GregorianCalendar();
+        // reset hour, minutes, seconds and millis
+        date.set(Calendar.HOUR_OF_DAY, 0);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.SECOND, 0);
+        date.set(Calendar.MILLISECOND, 0);
+
+        // next day
+        date.add(Calendar.DAY_OF_MONTH, 1);
+
+        Date dateMatch = date.getTime();
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        MatchDTO matchDTO = new MatchDTO(teamId, simpleDateFormat.format(dateMatch));
+
+        final String BAD_PASSWORD = "BAD_PASSWORD";
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/match")
+                .with(httpBasic(testPvppowners.getLeagueName(), BAD_PASSWORD))
+                .content(toJson(matchDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+
+    }
+    @Test
+    void createMatchBadUsername() throws Exception {
+        Team team = new  Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        Long teamId = teamRepository.save(team).getId();
+
+        // today
+        Calendar date = new GregorianCalendar();
+        // reset hour, minutes, seconds and millis
+        date.set(Calendar.HOUR_OF_DAY, 0);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.SECOND, 0);
+        date.set(Calendar.MILLISECOND, 0);
+
+        // next day
+        date.add(Calendar.DAY_OF_MONTH, 1);
+
+        Date dateMatch = date.getTime();
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        MatchDTO matchDTO = new MatchDTO(teamId, simpleDateFormat.format(dateMatch));
+
+        final String password = "test";
+        final String BAD_USERNAME = "BAD_USERNAME";
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/match")
+                .with(httpBasic(BAD_USERNAME, password))
+                .content(toJson(matchDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+
+    }
+    @Test
+    void createMatchBadRole() throws Exception {
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
+        Team team = new  Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        Long teamId = teamRepository.save(team).getId();
+
+        // today
+        Calendar date = new GregorianCalendar();
+        // reset hour, minutes, seconds and millis
+        date.set(Calendar.HOUR_OF_DAY, 0);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.SECOND, 0);
+        date.set(Calendar.MILLISECOND, 0);
+
+        // next day
+        date.add(Calendar.DAY_OF_MONTH, 1);
+
+        Date dateMatch = date.getTime();
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        MatchDTO matchDTO = new MatchDTO(teamId, simpleDateFormat.format(dateMatch));
+
+        final String password = "test";
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/match")
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
+                .content(toJson(matchDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+    }
     @Test
     void createMatchTeamNull() throws Exception {
         Player playerPvppowners = new Player.PlayerBuilder()
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -158,7 +305,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -203,7 +350,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -248,7 +395,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -292,7 +439,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -326,7 +473,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -360,7 +507,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -437,7 +584,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -460,7 +607,85 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         assertEquals(match.getDate(), createdMatch.getDate());
 
     }
+    @Test
+    void getMatchNotAuthorized() throws Exception {
+        Match match = new Match.MatchBuilder()
+                .matchID(4841161542L)
+                .date(new Date())
+                .build();
 
+        Long MATCH_ID = matchRepository.save(match).getId();
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/match/" + MATCH_ID))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+
+    }
+    @Test
+    void getMatchBadPassword() throws Exception {
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.MANAGER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
+        Match match = new Match.MatchBuilder()
+                .matchID(4841161542L)
+                .date(new Date())
+                .build();
+
+        Long MATCH_ID = matchRepository.save(match).getId();
+        final String BAD_PASSWORD = "BAD_PASSWORD";
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/match/" + MATCH_ID).with(httpBasic(testPvppowners.getLeagueName(), BAD_PASSWORD)))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+    @Test
+    void getMatchBadUsername() throws Exception {
+
+        final String password = "test";
+        final String BAD_USERNAME = "BAD_USERNAME";
+        Match match = new Match.MatchBuilder()
+                .matchID(4841161542L)
+                .date(new Date())
+                .build();
+
+        Long MATCH_ID = matchRepository.save(match).getId();
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/match/" + MATCH_ID).with(httpBasic(BAD_USERNAME, password)))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+
+    }
+    @Test
+    void getMatchBadRole() throws Exception {
+
+        final String password = "test";
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
+        Match match = new Match.MatchBuilder()
+                .matchID(4841161542L)
+                .date(new Date())
+                .build();
+
+        Long MATCH_ID = matchRepository.save(match).getId();
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/match/" + MATCH_ID).with(httpBasic(testPvppowners.getLeagueName(), password)))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+    }
     @Test
     void getMatchIdNegative() throws Exception {
 
@@ -471,7 +696,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -502,7 +727,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -532,7 +757,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -559,7 +784,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -588,7 +813,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -641,6 +866,199 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         assertEquals(match.getTeam1().getId(), createdMatch.getTeam1().getId());
 
     }
+    @Test
+    void updateMatchNotAuthorized() throws Exception {
+        Team team = new  Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        teamRepository.save(team).getId();
+
+        Team team2 = new  Team.TeamBuilder()
+                .name("testTeam2")
+                .build();
+        teamRepository.save(team2).getId();
+
+        Match match = new Match.MatchBuilder()
+                .matchID(4841161542L)
+                .team1Id(team)
+                .date(new Date())
+                .build();
+
+        Calendar date = new GregorianCalendar();
+
+        date.set(Calendar.HOUR_OF_DAY, 0);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.SECOND, 0);
+        date.set(Calendar.MILLISECOND, 0);
+
+        date.add(Calendar.DAY_OF_MONTH, 1);
+
+        Date dateMatch = date.getTime();
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        MatchDTO matchDTO = new MatchDTO(team2.getId(), simpleDateFormat.format(dateMatch));
+
+        final Long MATCH_ID = matchRepository.save(match).getId();
+
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID)
+                .content(toJson(matchDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+
+    }
+    @Test
+    void updateMatchBadPassword() throws Exception {
+        final String BAD_PASSWORD = "BAD_PASSWORD";
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.MANAGER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
+        Team team = new  Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        teamRepository.save(team).getId();
+
+        Team team2 = new  Team.TeamBuilder()
+                .name("testTeam2")
+                .build();
+        teamRepository.save(team2).getId();
+
+        Match match = new Match.MatchBuilder()
+                .matchID(4841161542L)
+                .team1Id(team)
+                .date(new Date())
+                .build();
+
+        Calendar date = new GregorianCalendar();
+
+        date.set(Calendar.HOUR_OF_DAY, 0);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.SECOND, 0);
+        date.set(Calendar.MILLISECOND, 0);
+
+        date.add(Calendar.DAY_OF_MONTH, 1);
+
+        Date dateMatch = date.getTime();
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        MatchDTO matchDTO = new MatchDTO(team2.getId(), simpleDateFormat.format(dateMatch));
+
+        final Long MATCH_ID = matchRepository.save(match).getId();
+
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), BAD_PASSWORD))
+                .content(toJson(matchDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+    @Test
+    void updateMatchBadUsername() throws Exception {
+        final String password = "test";
+        final String BAD_USERNAME = "BAD_USERNAME";
+        Team team = new  Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        teamRepository.save(team).getId();
+
+        Team team2 = new  Team.TeamBuilder()
+                .name("testTeam2")
+                .build();
+        teamRepository.save(team2).getId();
+
+        Match match = new Match.MatchBuilder()
+                .matchID(4841161542L)
+                .team1Id(team)
+                .date(new Date())
+                .build();
+
+        Calendar date = new GregorianCalendar();
+
+        date.set(Calendar.HOUR_OF_DAY, 0);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.SECOND, 0);
+        date.set(Calendar.MILLISECOND, 0);
+
+        date.add(Calendar.DAY_OF_MONTH, 1);
+
+        Date dateMatch = date.getTime();
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        MatchDTO matchDTO = new MatchDTO(team2.getId(), simpleDateFormat.format(dateMatch));
+
+        final Long MATCH_ID = matchRepository.save(match).getId();
+
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID)
+                .with(httpBasic(BAD_USERNAME, password))
+                .content(toJson(matchDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+    @Test
+    void updateMatchBadRole() throws Exception {
+        final String password = "test";
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
+        Team team = new  Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        teamRepository.save(team).getId();
+
+        Team team2 = new  Team.TeamBuilder()
+                .name("testTeam2")
+                .build();
+        teamRepository.save(team2).getId();
+
+        Match match = new Match.MatchBuilder()
+                .matchID(4841161542L)
+                .team1Id(team)
+                .date(new Date())
+                .build();
+
+        Calendar date = new GregorianCalendar();
+
+        date.set(Calendar.HOUR_OF_DAY, 0);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.SECOND, 0);
+        date.set(Calendar.MILLISECOND, 0);
+
+        date.add(Calendar.DAY_OF_MONTH, 1);
+
+        Date dateMatch = date.getTime();
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        MatchDTO matchDTO = new MatchDTO(team2.getId(), simpleDateFormat.format(dateMatch));
+
+        final Long MATCH_ID = matchRepository.save(match).getId();
+
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
+                .content(toJson(matchDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+    }
 
     @Test
     void updateMatchIdNegative() throws Exception {
@@ -652,7 +1070,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -712,7 +1130,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -772,7 +1190,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -832,7 +1250,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -886,7 +1304,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -939,7 +1357,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -993,7 +1411,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -1047,7 +1465,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -1094,7 +1512,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -1141,7 +1559,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -1187,7 +1605,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -1232,7 +1650,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -1259,6 +1677,113 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         assertEquals("", responsMessage );
 
     }
+    @Test
+    void deleteMatchNotAuthorized() throws Exception {
+        Team team = new  Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        teamRepository.save(team);
+
+        Match match = new Match.MatchBuilder()
+                .matchID(4841161542L)
+                .team1Id(team)
+                .date(new Date())
+                .build();
+
+        final Long MATCH_ID = matchRepository.save(match).getId();
+
+        this.mockMvc.perform(MockMvcRequestBuilders.delete("/match/" + MATCH_ID))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+
+    }
+    @Test
+    void deleteMatchBadPassword() throws Exception {
+        final String BAD_PASSWORD = "BAD_PASSWORD";
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.MANAGER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
+        Team team = new  Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        teamRepository.save(team);
+
+        Match match = new Match.MatchBuilder()
+                .matchID(4841161542L)
+                .team1Id(team)
+                .date(new Date())
+                .build();
+
+        final Long MATCH_ID = matchRepository.save(match).getId();
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/match/" + MATCH_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), BAD_PASSWORD)))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+    @Test
+    void deleteMatchBadUsername() throws Exception {
+        final String password = "test";
+        final String BAD_USERNAME = "BAD_USERNAME";
+
+        Team team = new  Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        teamRepository.save(team);
+
+        Match match = new Match.MatchBuilder()
+                .matchID(4841161542L)
+                .team1Id(team)
+                .date(new Date())
+                .build();
+
+        final Long MATCH_ID = matchRepository.save(match).getId();
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/match/" + MATCH_ID)
+                .with(httpBasic(BAD_USERNAME, password)))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+
+    }
+    @Test
+    void deleteMatchBadRole() throws Exception {
+        final String password = "test";
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
+        Team team = new  Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        teamRepository.save(team);
+
+        Match match = new Match.MatchBuilder()
+                .matchID(4841161542L)
+                .team1Id(team)
+                .date(new Date())
+                .build();
+
+        final Long MATCH_ID = matchRepository.save(match).getId();
+
+        this.mockMvc.perform(MockMvcRequestBuilders.delete("/match/" + MATCH_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+    }
 
     @Test
     void deleteMatchIdNegative() throws Exception {
@@ -1269,7 +1794,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -1306,7 +1831,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -1343,7 +1868,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -1380,7 +1905,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -1412,6 +1937,124 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
 
     }
+    @Test
+    void setWinnerValueNotAuthorized() throws Exception {
+        final String password = "test";
+        String IS_WINNER = "true";
+        Team team = new  Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        teamRepository.save(team);
+
+        Match match = new Match.MatchBuilder()
+                .matchID(4841161542L)
+                .team1Id(team)
+                .isWinner(false)
+                .date(new Date())
+                .build();
+
+        final Long MATCH_ID = matchRepository.save(match).getId();
+
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID + "/matchId/" + IS_WINNER + "/isWinner"))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+    @Test
+    void setWinnerValueBadPassword() throws Exception {
+        final String BAD_PASSWORD = "BAD_PASSWORD";
+        String IS_WINNER = "true";
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.MANAGER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
+        Team team = new  Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        teamRepository.save(team);
+
+        Match match = new Match.MatchBuilder()
+                .matchID(4841161542L)
+                .team1Id(team)
+                .isWinner(false)
+                .date(new Date())
+                .build();
+
+        final Long MATCH_ID = matchRepository.save(match).getId();
+
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID + "/matchId/" + IS_WINNER + "/isWinner")
+                .with(httpBasic(testPvppowners.getLeagueName(), BAD_PASSWORD)))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+
+
+    }
+    @Test
+    void setWinnerValueBadUsername() throws Exception {
+        final String password = "test";
+        final String BAD_USERNAME = "BAD_USERNAME";
+        String IS_WINNER = "true";
+        Team team = new  Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        teamRepository.save(team);
+
+        Match match = new Match.MatchBuilder()
+                .matchID(4841161542L)
+                .team1Id(team)
+                .isWinner(false)
+                .date(new Date())
+                .build();
+
+        final Long MATCH_ID = matchRepository.save(match).getId();
+
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID + "/matchId/" + IS_WINNER + "/isWinner")
+                .with(httpBasic(BAD_USERNAME, password)))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+
+
+    }
+    @Test
+    void setWinnerValueBadRole() throws Exception {
+        final String password = "test";
+        String IS_WINNER = "true";
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
+        Team team = new  Team.TeamBuilder()
+                .name("testTeam")
+                .build();
+        teamRepository.save(team);
+
+        Match match = new Match.MatchBuilder()
+                .matchID(4841161542L)
+                .team1Id(team)
+                .isWinner(false)
+                .date(new Date())
+                .build();
+
+        final Long MATCH_ID = matchRepository.save(match).getId();
+
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/match/" + MATCH_ID + "/matchId/" + IS_WINNER + "/isWinner")
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+
+    }
 
 
     @Test
@@ -1424,7 +2067,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -1464,7 +2107,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
@@ -1503,7 +2146,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .firstName("jaimie")
                 .lastName("haesevoets")
                 .leagueName("pvppowners")
-                .role(Role.PLAYER)
+                .role(Role.MANAGER)
                 .password(passwordEncoder.encode("test"))
                 .build();
         Player testPvppowners = playerRepository.save(playerPvppowners);
