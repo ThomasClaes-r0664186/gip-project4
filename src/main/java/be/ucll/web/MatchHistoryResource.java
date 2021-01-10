@@ -53,7 +53,7 @@ public class MatchHistoryResource {
 
     @Operation(
             summary = "Get the history from a match",
-            description = "Filter optional by team or/and date"
+            description = "Filter optional by team or/and date format dd-mm-yyyy"
     )
 
     @GetMapping
@@ -87,6 +87,7 @@ public class MatchHistoryResource {
         }
 
         List<Long> machIds = allMatchesFromDb.stream()
+                .filter(m -> m.getMatchId() != null)
                 .filter(teamId.equals(0L) ? m -> m.getTeam1().getId() > 0 : m -> m.getTeam1().getId().equals(teamId))
                 .filter(date.equals("01-01-2000") ? m -> m.getDate().after(dateFilter) : m -> simpleDateFormat.format(m.getDate()).equals(date))
                 .map(m -> m.getMatchId())
