@@ -74,6 +74,30 @@ public class LiveStatsResourceTest extends AbstractIntegrationTest {
     }
 
     @Test
+    void getLiveStatsTeamId0WithManagerRole() throws Exception {
+        final String password = "test";
+        final String TEAM_ID = "0";
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.MANAGER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/liveStats/" + TEAM_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        String responsMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals( TEAM_ID + " is not valid!", responsMessage );
+
+    }
+    
+    @Test
     void getLiveStatsTeamIdNegative() throws Exception {
         final String password = "test";
         final String TEAM_ID = "-1";
@@ -199,5 +223,45 @@ public class LiveStatsResourceTest extends AbstractIntegrationTest {
         assertEquals("live stats of players in team " + teamId + " was not found!", responsMessage );
 
     }
+
+    @Test
+    void getLiveStatsTeamNotAuthorized() throws Exception {
+        final String TEAM_ID = "0";
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/liveStats/" + TEAM_ID))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+
+    @Test
+    void getLiveStatsTeamBadPassword() throws Exception {
+        final String BAD_PASSWORD = "BAD_PASSWORD";
+        final String TEAM_ID = "0";
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/liveStats/" + TEAM_ID)
+                .with(httpBasic(testPvppowners.getLeagueName(), BAD_PASSWORD)))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+
+    @Test
+    void getLiveStatsTeamBadUsername() throws Exception {
+        final String password = "test";
+        final String TEAM_ID = "0";
+        final String BAD_USERNAME = "BAD_USERNAME";
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/liveStats/" + TEAM_ID)
+                .with(httpBasic(BAD_USERNAME, password)))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+
 
 }
