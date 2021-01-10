@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Perks {
 
-    private List<Integer> perkIds = null;
+    private List<Integer> perkIds;
     private int perkStyle;
     private int perkSubStyle;
 

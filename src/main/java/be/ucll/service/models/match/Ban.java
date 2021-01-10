@@ -3,8 +3,8 @@ package be.ucll.service.models.match;
 
 public class Ban {
 
-    private Long pickTurn=null;
-    private Long championId=null;
+    private Long pickTurn;
+    private Long championId;
 
     /**
      *

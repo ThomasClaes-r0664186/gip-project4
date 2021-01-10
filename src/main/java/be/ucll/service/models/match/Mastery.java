@@ -2,8 +2,8 @@ package be.ucll.service.models.match;
 
 public class Mastery {
 
-    private Long rank=null;
-    private Long masteryId=null;
+    private Long rank;
+    private Long masteryId;
 
     public Mastery(Long rank, Long masteryId) {
         setRank(rank);

@@ -12,7 +12,7 @@ public class Participant {
     private String summonerName;
     private boolean bot;
     private String summonerId;
-    private List<Object> gameCustomizationObjects = null;
+    private List<Object> gameCustomizationObjects;
     private Perks perks;
 
     public Participant(int teamId, int spell1Id, int spell2Id, int championId, int profileIconId, String summonerName, boolean bot, String summonerId, List<Object> gameCustomizationObjects, Perks perks) {

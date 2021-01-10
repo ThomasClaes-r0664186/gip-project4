@@ -1,8 +1,8 @@
 package be.ucll.service.models.match;
 
 public class Rune {
-    private Long runeId=null;
-    private Long rank=null;
+    private Long runeId;
+    private Long rank;
 
     /**
      *

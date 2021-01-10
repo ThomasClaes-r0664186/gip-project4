@@ -20,28 +20,28 @@ public class Match {
 
     /**TE KIEZEN PROPERTIES**/
     //properties die je kan opvragen (deze kan in de constructor)
-    private Long seasonId=null;
-    private Long queueId=null;
-    private Long gameId=null;
-    private List<ParticipantIdentity> participantIdentities = null;
-    private String gameVersion=null;
-    private String platformId=null;
-    private String gameMode=null;
-    private Long mapId=null;
-    private String gameType=null;
-    private List<Team> teams = null;
-    private List<Participant> participants = null;
-    private Long gameDuration=null;
-    private Long gameCreation=null;
+    private Long seasonId;
+    private Long queueId;
+    private Long gameId;
+    private List<ParticipantIdentity> participantIdentities;
+    private String gameVersion;
+    private String platformId;
+    private String gameMode;
+    private Long mapId;
+    private String gameType;
+    private List<Team> teams;
+    private List<Participant> participants;
+    private Long gameDuration;
+    private Long gameCreation;
     /**EINDE TE KIEZEN PROPERTIES**/
 
     //Deze properties worden automatisch ingevuld
-    private String seasonName=null;
-    private String mapDescription=null;
-    private String mapNotes=null;
-    private String mapName=null;
-    private String gameModeDescription=null;
-    private String gameTypeDescription=null;
+    private String seasonName;
+    private String mapDescription;
+    private String mapNotes;
+    private String mapName;
+    private String gameModeDescription;
+    private String gameTypeDescription;
     /**
      * @Ign
      * @param seasonId Season ids are used in match history to indicate which season a match was played. Valid types: http://static.developer.riotgames.com/docs/lol/seasons.json

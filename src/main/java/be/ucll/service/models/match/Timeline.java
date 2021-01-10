@@ -10,16 +10,16 @@ import java.util.Map;
 
 public class Timeline {
 
-    private String lane = null;
-    private Long participantId = null;
-    private Map<String, Double> goldPerMinDeltas = null;
-    private Map<String, Double> creepsPerMinDeltas = null;
+    private String lane;
+    private Long participantId;
+    private Map<String, Double> goldPerMinDeltas;
+    private Map<String, Double> creepsPerMinDeltas;
     private Map<String, Double> xpPerMinDeltas;
-    private String role = null;
-    private Map<String, Double> damageTakenPerMinDeltas = null;
-    private Map<String, Double> csDiffPerMinDeltas = null;
-    private Map<String, Double> xpDiffPerMinDeltas = null;
-    private Map<String, Double> damageTakenDiffPerMinDeltas = null;
+    private String role;
+    private Map<String, Double> damageTakenPerMinDeltas;
+    private Map<String, Double> csDiffPerMinDeltas;
+    private Map<String, Double> xpDiffPerMinDeltas;
+    private Map<String, Double> damageTakenDiffPerMinDeltas;
 
     /**
      *
