@@ -5,6 +5,7 @@ import be.ucll.exceptions.AlreadyExistsException;
 import be.ucll.exceptions.NotFoundException;
 import be.ucll.exceptions.ParameterInvalidException;
 import be.ucll.models.Team;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,10 @@ public class TeamResource {
         this.teamRepository = teamRepository;
     }
 
+    @Operation(
+            summary = "Create new Team",
+            description = "Provide a team name and create a team"
+    )
     @PostMapping
     @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<Team> createTeam(@RequestBody TeamDTO teamDTO) throws ParameterInvalidException, AlreadyExistsException {
@@ -34,6 +39,10 @@ public class TeamResource {
         return ResponseEntity.status(HttpStatus.CREATED).body(newTeam);
     }
 
+    @Operation(
+            summary = "Update a Team",
+            description = "Change the Team name based on an existing team ID"
+    )
     // team Updaten
     @PutMapping  ("/{id}")
     @PreAuthorize("hasRole('MANAGER')")// localhost:8080/team?id=
@@ -54,6 +63,11 @@ public class TeamResource {
         teamRepository.save(team);
         return ResponseEntity.status(HttpStatus.OK).body(team);
     }
+
+    @Operation(
+            summary = "Get team by id",
+            description = "get a team based on an existing team id"
+    )
      @GetMapping("/{id}") // teamname veranderen naar id
      @PreAuthorize("hasRole('MANAGER')")
         public ResponseEntity<TeamDTO> getTeam(@PathVariable("id") Long id) throws NotFoundException, ParameterInvalidException {
@@ -67,6 +81,10 @@ public class TeamResource {
             throw new NotFoundException(id.toString());
         }
 
+    @Operation(
+            summary = "Delete team by id",
+            description = "Delete a team based on an existing team id"
+    )
     @DeleteMapping ("/{id}")// id veranderd
     @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity deleteTeam(@PathVariable("id") Long id) throws NotFoundException, ParameterInvalidException {
