@@ -47,15 +47,19 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
-    private Player testPvppowners;
+
     @Autowired
     private PlayerRepository playerRepository;
 
     @BeforeEach
     void setUp()  {
         passwordEncoder = new BCryptPasswordEncoder();
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac)
-                .apply(springSecurity()).build();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).apply(springSecurity()).build();
+    }
+
+
+    @Test
+    void createMatchOk() throws Exception {
         Player playerPvppowners = new Player.PlayerBuilder()
                 .firstName("jaimie")
                 .lastName("haesevoets")
@@ -63,12 +67,8 @@ public class MatchResourceTest extends AbstractIntegrationTest {
                 .role(Role.PLAYER)
                 .password(passwordEncoder.encode("test"))
                 .build();
-        testPvppowners = playerRepository.save(playerPvppowners);
-    }
+        Player testPvppowners = playerRepository.save(playerPvppowners);
 
-
-    @Test
-    void createMatchOk() throws Exception {
           Team team = new  Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -108,6 +108,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
     @Test
     void createMatchTeamNull() throws Exception {
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         // today
         Calendar date = new GregorianCalendar();
         // reset hour, minutes, seconds and millis
@@ -145,6 +154,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final String password = "test";
         final Long TEAM_ID = -1L;
 
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         // today
         Calendar date = new GregorianCalendar();
         // reset hour, minutes, seconds and millis
@@ -180,6 +198,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         final String password = "test";
         final Long TEAM_ID = 0L;
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
 
         // today
         Calendar date = new GregorianCalendar();
@@ -217,6 +244,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final String password = "test";
         final Long TEAM_ID = 58569L;
 
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         // today
         Calendar date = new GregorianCalendar();
         // reset hour, minutes, seconds and millis
@@ -251,6 +287,16 @@ public class MatchResourceTest extends AbstractIntegrationTest {
     void createMatchDateNull() throws Exception {
 
         final String password = "test";
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         Team team = new  Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -275,6 +321,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         final String password = "test";
         final String DATE = "*";
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
 
         Team team = new  Team.TeamBuilder()
                 .name("testTeam")
@@ -301,6 +356,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final String password = "test";
         final String DATE = "02/05/2015";
 
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         Team team = new  Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -326,6 +390,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         final String password = "test";
         final String DATE = "10/12/2080";
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -359,6 +432,16 @@ public class MatchResourceTest extends AbstractIntegrationTest {
     void getMatchOk() throws Exception {
 
         final String password = "test";
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         Match match = new Match.MatchBuilder()
                 .matchID(4841161542L)
                 .date(new Date())
@@ -384,6 +467,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final String password = "test";
         final Long MATCH_ID = -1L;
 
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         Match match = new Match.MatchBuilder()
                 .matchID(4841161542L)
                 .date(new Date())
@@ -406,6 +498,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final String password = "test";
         final Long MATCH_ID = 0L;
 
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         Match match = new Match.MatchBuilder()
                 .matchID(4841161542L)
                 .date(new Date())
@@ -427,6 +528,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final String password = "test";
         final Long MATCH_ID = null;
 
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         Match match = new Match.MatchBuilder()
                 .matchID(4841161542L)
                 .date(new Date())
@@ -444,6 +554,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         final String password = "test";
         final Long MATCH_ID = 58569L;
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
 
         Match match = new Match.MatchBuilder()
                 .matchID(4841161542L)
@@ -464,6 +583,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
     @Test
     void updateMatchOk() throws Exception {
         final String password = "test";
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
 
         Team team = new  Team.TeamBuilder()
                 .name("testTeam")
@@ -520,6 +648,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final String password = "test";
         final Long MATCH_ID = -1L;
 
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         Team team = new  Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -570,6 +707,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         final String password = "test";
         final Long MATCH_ID = 0L;
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
 
         Team team = new  Team.TeamBuilder()
                 .name("testTeam")
@@ -622,6 +768,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final String password = "test";
         final Long MATCH_ID = 95995L;
 
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         Team team = new  Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -673,6 +828,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final String password = "test";
        final Long TEAM_ID = 0L;
 
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         Team team = new Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -718,6 +882,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final String password = "test";
         final Long TEAM_ID = -1L;
 
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         Team team = new Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -761,6 +934,16 @@ public class MatchResourceTest extends AbstractIntegrationTest {
     void updateMatchTeamIdNull() throws Exception {
 
         final String password = "test";
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         Team team = new Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -805,6 +988,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         final String password = "test";
        Long TEAM_ID = 1548L;
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
 
         Team team = new Team.TeamBuilder()
                 .name("testTeam")
@@ -851,6 +1043,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final String password = "test";
         final String DATE = "*";
 
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         Team team = new  Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -888,6 +1089,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
 
         final String password = "test";
         final String DATE = null;
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
 
         Team team = new  Team.TeamBuilder()
                 .name("testTeam")
@@ -927,6 +1137,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final String password = "test";
         final String DATE = "";
 
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         Team team = new  Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -964,6 +1183,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final String password = "test";
         final String DATE = "02/05/2001";
 
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         Team team = new  Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -999,6 +1227,16 @@ public class MatchResourceTest extends AbstractIntegrationTest {
     @Test
     void deleteMatchOk() throws Exception {
         final String password = "test";
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         Team team = new  Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -1026,6 +1264,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
     void deleteMatchIdNegative() throws Exception {
         final String password = "test";
         final Long MATCH_ID = -1L;
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
 
                 Team team = new  Team.TeamBuilder()
                 .name("testTeam")
@@ -1055,6 +1302,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final String password = "test";
         final Long MATCH_ID = 0L;
 
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         Team team = new  Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -1083,6 +1339,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final String password = "test";
         final Long MATCH_ID = 559965L;
 
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         Team team = new  Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -1110,6 +1375,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
     void setWinnerValueOk() throws Exception {
         final String password = "test";
         String IS_WINNER = "true";
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
 
         Team team = new  Team.TeamBuilder()
                 .name("testTeam")
@@ -1146,6 +1420,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final String IS_WINNER = "true";
         final Long MATCH_ID = 0L;
 
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
                 Team team = new  Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -1177,6 +1460,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final String IS_WINNER = "true";
         final Long MATCH_ID = -1L;
 
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         Team team = new  Team.TeamBuilder()
                 .name("testTeam")
                 .build();
@@ -1206,6 +1498,15 @@ public class MatchResourceTest extends AbstractIntegrationTest {
         final String password = "test";
         final String IS_WINNER = "true";
         final Long MATCH_ID = 15854L;
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
 
         Team team = new  Team.TeamBuilder()
                 .name("testTeam")

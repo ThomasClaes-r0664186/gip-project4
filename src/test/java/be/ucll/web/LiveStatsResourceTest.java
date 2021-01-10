@@ -42,14 +42,18 @@ public class LiveStatsResourceTest extends AbstractIntegrationTest {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
-    private Player testPvppowners;
 
     @BeforeEach
     void setUp() {
-
         passwordEncoder = new BCryptPasswordEncoder();
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac)
-                .apply(springSecurity()).build();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).apply(springSecurity()).build();
+    }
+
+    @Test
+    void getLiveStatsTeamId0() throws Exception {
+        final String password = "test";
+        final String TEAM_ID = "0";
+
         Player playerPvppowners = new Player.PlayerBuilder()
                 .firstName("jaimie")
                 .lastName("haesevoets")
@@ -57,13 +61,7 @@ public class LiveStatsResourceTest extends AbstractIntegrationTest {
                 .role(Role.PLAYER)
                 .password(passwordEncoder.encode("test"))
                 .build();
-        testPvppowners = playerRepository.save(playerPvppowners);
-    }
-
-    @Test
-    void getLiveStatsTeamId0() throws Exception {
-        final String password = "test";
-        final String TEAM_ID = "0";
+       Player testPvppowners = playerRepository.save(playerPvppowners);
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/liveStats/" + TEAM_ID)
                 .with(httpBasic(testPvppowners.getLeagueName(), password)))
@@ -80,6 +78,15 @@ public class LiveStatsResourceTest extends AbstractIntegrationTest {
         final String password = "test";
         final String TEAM_ID = "-1";
 
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/liveStats/" + TEAM_ID)
                 .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isForbidden())
@@ -95,6 +102,15 @@ public class LiveStatsResourceTest extends AbstractIntegrationTest {
         final String password = "test";
         final String TEAM_ID = "10";
 
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/liveStats/" + TEAM_ID)
                 .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isNotFound())
@@ -107,7 +123,18 @@ public class LiveStatsResourceTest extends AbstractIntegrationTest {
 
     @Test
     void getLiveStatsTeamPlayersNotFound() throws Exception {
-        final String password = "test";        Team team = new Team.TeamBuilder()
+        final String password = "test";
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
+        Team team = new Team.TeamBuilder()
                 .name("team")
                 .build();
 
@@ -125,7 +152,18 @@ public class LiveStatsResourceTest extends AbstractIntegrationTest {
 
     @Test
     void getLiveStatsOfPlayersNotFound() throws Exception {
-        final String password = "test";        Player player = new Player.PlayerBuilder()
+        final String password = "test";
+
+        Player playerPvppowners = new Player.PlayerBuilder()
+                .firstName("jaimie")
+                .lastName("haesevoets")
+                .leagueName("pvppowners")
+                .role(Role.PLAYER)
+                .password(passwordEncoder.encode("test"))
+                .build();
+        Player testPvppowners = playerRepository.save(playerPvppowners);
+
+        Player player = new Player.PlayerBuilder()
                 .leagueName("7Stijn7")
                 .firstName("Stijn")
                 .lastName("Verbieren")

@@ -61,7 +61,7 @@ public class TeamPlayerResourceTest extends AbstractIntegrationTest {
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).apply(springSecurity()).build();
         passwordEncoder = new BCryptPasswordEncoder();
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+
         Player playerPvppowners = new Player.PlayerBuilder()
                 .firstName("jaimie")
                 .lastName("haesevoets")
