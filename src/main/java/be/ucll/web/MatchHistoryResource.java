@@ -114,38 +114,41 @@ public class MatchHistoryResource {
     @GetMapping("/{playerid}/player")
     public ResponseEntity<List<IndividuallyPlayerDTO>> getIndividuallyMatchHistory(@PathVariable("playerid") Long playerid, @RequestParam(value = "matchId", defaultValue = "0") Long matchId) throws NotFoundException {
 
-        if (playerRepository.findPlayerById(playerid).isEmpty()) throw new NotFoundException(playerid.toString());
-        be.ucll.models.Player individuallyPlayer = playerRepository.findPlayerById(playerid).get();
+            if (playerRepository.findPlayerById(playerid).isEmpty()) throw new NotFoundException(playerid.toString());
+            be.ucll.models.Player individuallyPlayer = playerRepository.findPlayerById(playerid).get();
+    try{
+            List<TeamPlayer> teamPlayers = teamPlayerRepository.findTeamsByPlayer(individuallyPlayer);
 
-        List<TeamPlayer> teamPlayers = teamPlayerRepository.findTeamsByPlayer(individuallyPlayer);
+            List<be.ucll.models.Team> teamsFromPlayer = teamPlayers.stream()
+                    .filter(t -> t.getPlayer().getId().equals(playerid))
+                    .map(p -> p.getTeam())
+                    .collect(Collectors.toList());
 
-        List<be.ucll.models.Team> teamsFromPlayer = teamPlayers.stream()
-                .filter(t -> t.getPlayer().getId().equals(playerid))
-                .map(p -> p.getTeam())
-                .collect(Collectors.toList());
+            if (!matchId.equals(0L)) {
+                Optional<be.ucll.models.Team> team = teamsFromPlayer.stream()
+                        .filter(t -> matchRepository.findMatchByTeam1(t).get().getId().equals(matchId))
+                        .findFirst();
+                if (team.isEmpty()) throw new NotFoundException(matchId.toString());
+            }
 
-        if (!matchId.equals(0L)){
-            Optional<be.ucll.models.Team> team = teamsFromPlayer.stream()
-                    .filter( t -> matchRepository.findMatchByTeam1(t).get().getId().equals(matchId))
-                    .findFirst();
-            if (team.isEmpty()) throw new NotFoundException(matchId.toString());
+            List<Long> matchIdsFromPlayer = teamsFromPlayer.stream()
+                    .filter(matchId.equals(0L) ? t -> matchRepository.findMatchByTeam1(t).get().getId() > 0 : t -> matchRepository.findMatchByTeam1(t).get().getId().equals(matchId))
+                    .map(m -> matchRepository.findMatchByTeam1(m).get().getMatchId())
+                    .collect(Collectors.toList());
+
+            List<be.ucll.service.models.Match> matchesFromLol = getMatchHistoriesFromLol(matchIdsFromPlayer);
+
+
+            List<IndividuallyPlayerDTO> individuallyPlayerDTOList = new ArrayList<>();
+
+            for (be.ucll.service.models.Match m : matchesFromLol) {
+                individuallyPlayerDTOList.add(createIndividuallyDTO(m, individuallyPlayer));
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(individuallyPlayerDTOList);
+        }catch(Exception e){
+            throw new NotFoundException((matchId==null)? String.valueOf(playerid) : String.valueOf(matchId));
         }
-
-        List<Long> matchIdsFromPlayer = teamsFromPlayer.stream()
-                .filter(matchId.equals(0L) ? t -> matchRepository.findMatchByTeam1(t).get().getId() > 0 : t -> matchRepository.findMatchByTeam1(t).get().getId().equals(matchId))
-                .map(m -> matchRepository.findMatchByTeam1(m).get().getMatchId())
-                .collect(Collectors.toList());
-
-        List<be.ucll.service.models.Match> matchesFromLol = getMatchHistoriesFromLol(matchIdsFromPlayer);
-
-
-        List<IndividuallyPlayerDTO> individuallyPlayerDTOList = new ArrayList<>();
-
-        for (be.ucll.service.models.Match m : matchesFromLol) {
-            individuallyPlayerDTOList.add(createIndividuallyDTO(m, individuallyPlayer));
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(individuallyPlayerDTOList);
     }
 
 
