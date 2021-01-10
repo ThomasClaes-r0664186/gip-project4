@@ -296,6 +296,42 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
     }
 
     @Test
+    void getMatchHistoryAllWithManagerRoleOk() throws Exception {
+        final String password = "test";
+        testPvppowners.setRole(Role.MANAGER);
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    @Test
+    void getMatchHistoryAllNotAuthorized() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory"))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+
+    @Test
+    void getMatchHistoryAllBadPassword() throws Exception {
+        final String BAD_PASSWORD = "BAD_PASSWORD";
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
+                .with(httpBasic(testPvppowners.getLeagueName(), BAD_PASSWORD)))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+
+    @Test
+    void getMatchHistoryAllBadUsername() throws Exception {
+        final String password = "test";
+        final String BAD_USERNAME = "BAD_USERNAME";
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
+                .with(httpBasic(BAD_USERNAME, password)))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+
+    @Test
     void getMatchHistoryFilterDateOk() throws Exception {
         final String DATE = "20-12-2020";
         final String password = "test";
@@ -312,6 +348,58 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
 
         assertEquals("Sun Dec 20 00:00:00 CET 2020", actual.get(0).getMatchDate());
 
+    }
+
+    @Test
+    void getMatchHistoryFilterDateWithManagerRoleOk() throws Exception {
+        final String DATE = "20-12-2020";
+        final String password = "test";
+        testPvppowners.setRole(Role.MANAGER);
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
+                .param("date", DATE)
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        // this uses a TypeReference to inform Jackson about the Lists's generic type
+        List<MatchHistoryDTO> actual = mapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<MatchHistoryDTO>>() {});
+
+        assertEquals("Sun Dec 20 00:00:00 CET 2020", actual.get(0).getMatchDate());
+
+    }
+
+    @Test
+    void getMatchHistoryFilterDateNotAuthorized() throws Exception {
+        final String DATE = "20-12-2020";
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
+                .param("date", DATE))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+
+    @Test
+    void getMatchHistoryFilterDateBadPassword() throws Exception {
+        final String DATE = "20-12-2020";
+        final String BAD_PASSWORD = "BAD_PASSWORD";
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
+                .param("date", DATE)
+                .with(httpBasic(testPvppowners.getLeagueName(), BAD_PASSWORD)))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+
+    @Test
+    void getMatchHistoryFilterDateBadUsername() throws Exception {
+        final String DATE = "20-12-2020";
+        final String password = "test";
+        final String BAD_USERNAME = "BAD_USERNAME";
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory")
+                .param("date", DATE)
+                .with(httpBasic(BAD_USERNAME, password)))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
     }
 
     @Test
@@ -391,7 +479,6 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
 
     }
 
-
     @Test
     void getIndividuallyMatchHistoryAllOk() throws Exception {
         final String PLAYER_ID = testPvppowners.getId().toString();
@@ -400,6 +487,47 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player")
                 .with(httpBasic(testPvppowners.getLeagueName(), password)))
                 .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    @Test
+    void getIndividuallyMatchHistoryAllWithManagerRoleOk() throws Exception {
+        final String PLAYER_ID = testPvppowners.getId().toString();
+        final String password = "test";
+        testPvppowners.setRole(Role.MANAGER);
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player")
+                .with(httpBasic(testPvppowners.getLeagueName(), password)))
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    @Test
+    void getIndividuallyMatchHistoryAllNotAuthorized() throws Exception {
+        final String PLAYER_ID = testPvppowners.getId().toString();
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player"))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+
+    @Test
+    void getIndividuallyMatchHistoryAllBadPassword() throws Exception {
+        final String PLAYER_ID = testPvppowners.getId().toString();
+        final String BAD_PASSWORD = "BAD_PASSWORD";
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player")
+                .with(httpBasic(testPvppowners.getLeagueName(), BAD_PASSWORD)))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+
+    @Test
+    void getIndividuallyMatchHistoryAllBadUsername() throws Exception {
+        final String PLAYER_ID = testPvppowners.getId().toString();
+        final String password = "test";
+        final String BAD_USERNAME = "BAD_USERNAME";
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player")
+                .with(httpBasic(BAD_USERNAME, password)))
+                .andExpect(status().isUnauthorized())
                 .andReturn();
     }
 
@@ -435,6 +563,61 @@ public class MatchHistoryResourceTest  extends AbstractIntegrationTest {
 
         assertEquals(MATCH_ID, actual.get(0).getMatchId().toString());
 
+    }
+
+    @Test
+    void getIndividuallyMatchHistoryFilterMatchIdWithManagerRoleOk() throws Exception {
+        final String MATCH_ID = testMatch1Id.toString();
+        final String PLAYER_ID = testPvppowners.getId().toString();
+        final String password = "test";
+        testPvppowners.setRole(Role.MANAGER);
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player")
+                .with(httpBasic(testPvppowners.getLeagueName(), password))
+                .param("matchId", MATCH_ID))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        ObjectMapper mapper = new ObjectMapper();
+        List<IndividuallyPlayerDTO> actual = mapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<IndividuallyPlayerDTO>>() {});
+
+        assertEquals(MATCH_ID, actual.get(0).getMatchId().toString());
+
+    }
+
+    @Test
+    void getIndividuallyMatchHistoryFilterMatchIdNotAuthorized() throws Exception {
+        final String MATCH_ID = testMatch1Id.toString();
+        final String PLAYER_ID = testPvppowners.getId().toString();
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player")
+                .param("matchId", MATCH_ID))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+
+    @Test
+    void getIndividuallyMatchHistoryFilterMatchIdBadPassword() throws Exception {
+        final String MATCH_ID = testMatch1Id.toString();
+        final String PLAYER_ID = testPvppowners.getId().toString();
+        final String BAD_PASSWORD = "BAD_PASSWORD";
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player")
+                .with(httpBasic(testPvppowners.getLeagueName(), BAD_PASSWORD))
+                .param("matchId", MATCH_ID))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+
+    @Test
+    void getIndividuallyMatchHistoryFilterMatchIdBadUsername() throws Exception {
+        final String MATCH_ID = testMatch1Id.toString();
+        final String PLAYER_ID = testPvppowners.getId().toString();
+        final String password = "test";
+        final String BAD_USERNAME = "BAD_USERNAME";
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/matchhistory/" + PLAYER_ID + "/player")
+                .with(httpBasic(BAD_USERNAME, password))
+                .param("matchId", MATCH_ID))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
     }
 
     @Test
