@@ -48,6 +48,7 @@ public class MatchResourceTest extends AbstractIntegrationTest {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
     private Player testPvppowners;
+    @Autowired
     private PlayerRepository playerRepository;
 
     @BeforeEach
