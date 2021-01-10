@@ -82,11 +82,6 @@ public class TeamPlayer {
 
         }
 
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
         public Builder team(Team team) {
             this.team = team;
             return this;
