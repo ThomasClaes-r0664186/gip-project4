@@ -5,7 +5,7 @@
 
 - Jaimie [Github account](https://github.com/JaimieHaesevoets) | [Gitlab account](https://gitlab.com/jaimie123)
 
-- Thomas [Github account](https://github.com/ThomasClaes-r0664186) | [Gitlab account](https://gitlab.com/r0664186)
+- Karel [Github account](https://https://github.com/snakehead007)
 
 - Wannes [Gitlab account](https://gitlab.com/WannesV)
 
